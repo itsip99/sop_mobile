@@ -18,6 +18,11 @@ class _LoginScreenState extends State<LoginScreen> {
         scrolledUnderElevation: 0.0,
         backgroundColor: ConstantColors.primaryColor1,
       ),
+      body: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        color: ConstantColors.primaryColor1,
+      ),
     );
   }
 }
