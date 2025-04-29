@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sop_mobile/core/constant/colors.dart';
+import 'package:sop_mobile/presentation/state/carousel/carousel_bloc.dart';
+import 'package:sop_mobile/presentation/state/carousel/carousel_state.dart';
 import 'package:sop_mobile/presentation/state/provider.dart';
 import 'package:provider/provider.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
@@ -68,31 +71,62 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             // ~:Button Section:~
             Container(
               width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // ~:Login Button:~
-                  CustomButton.primaryButton(
-                    context: context,
-                    text: 'Login',
-                    func: () => Navigator.pushNamed(context, '/login'),
-                    bgColor: ConstantColors.primaryColor1,
-                    textStyle: TextThemes.subtitle,
-                    shadowColor: ConstantColors.shadowColor,
+                  BlocBuilder<CarouselBloc, CarouselState>(
+                    builder: (context, state) {
+                      debugPrint('Current Index: ${state.currentIndex}');
+                      if (state.currentIndex == 3) {
+                        return CustomButton.primaryButton2(
+                          context: context,
+                          text: 'Login',
+                          func: () => Navigator.pushNamed(context, '/login'),
+                          bgColor: ConstantColors.primaryColor1,
+                          textStyle: TextThemes.subtitle,
+                          shadowColor: ConstantColors.shadowColor,
+                        );
+                      } else {
+                        return CustomButton.primaryButton2(
+                          context: context,
+                          text: 'Login',
+                          func: () {},
+                          bgColor: ConstantColors.disabledColor,
+                          textStyle: TextThemes.subtitle,
+                          shadowColor: ConstantColors.shadowColor,
+                        );
+                      }
+                    },
                   ),
 
                   // ~:Divider:~
                   const SizedBox(height: 10),
 
                   // ~:Sign Up Button:~
-                  CustomButton.primaryButton(
-                    context: context,
-                    text: 'Sign Up',
-                    func: () => Navigator.pushNamed(context, '/signin'),
-                    bgColor: ConstantColors.primaryColor3,
-                    textStyle: TextThemes.subtitle,
-                    shadowColor: ConstantColors.shadowColor,
+                  BlocBuilder<CarouselBloc, CarouselState>(
+                    builder: (context, state) {
+                      if (state.currentIndex == 3) {
+                        return CustomButton.primaryButton2(
+                          context: context,
+                          text: 'Sign Up',
+                          func: () => Navigator.pushNamed(context, '/register'),
+                          bgColor: ConstantColors.primaryColor3,
+                          textStyle: TextThemes.subtitle,
+                          shadowColor: ConstantColors.shadowColor,
+                        );
+                      } else {
+                        return CustomButton.primaryButton2(
+                          context: context,
+                          text: 'Sign Up',
+                          func: () {},
+                          bgColor: ConstantColors.disabledColor,
+                          textStyle: TextThemes.subtitle,
+                          shadowColor: ConstantColors.shadowColor,
+                        );
+                      }
+                    },
                   ),
                 ],
               ),

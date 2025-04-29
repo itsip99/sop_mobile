@@ -36,7 +36,7 @@ class CustomCarousel {
             // ~:Welcome Title:~
             Text(
               title,
-              style: TextThemes.title,
+              style: TextThemes.title1,
             ),
             // ~:Welcome Subtitle:~
             Text(

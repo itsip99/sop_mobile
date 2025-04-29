@@ -9,10 +9,16 @@ class TextFontFamily {
 }
 
 class TextThemes {
-  static const TextStyle title = TextStyle(
+  static const TextStyle title1 = TextStyle(
     fontFamily: TextFontFamily.roboto,
     fontSize: 28,
     fontWeight: FontWeight.bold,
+    color: ConstantColors.primaryColor2,
+  );
+
+  static const TextStyle title2 = TextStyle(
+    fontFamily: TextFontFamily.roboto,
+    fontSize: 20,
     color: ConstantColors.primaryColor2,
   );
 
@@ -27,5 +33,24 @@ class TextThemes {
     fontSize: 12,
     fontWeight: FontWeight.normal,
     color: ConstantColors.primaryColor2,
+  );
+
+  static const TextStyle textfieldPlaceholder = TextStyle(
+    fontFamily: TextFontFamily.roboto,
+    fontSize: 16,
+    color: Colors.black,
+  );
+
+  static const TextStyle normal = TextStyle(
+    fontFamily: TextFontFamily.roboto,
+    fontSize: 14,
+    color: ConstantColors.primaryColor2,
+  );
+
+  static const TextStyle textButton = TextStyle(
+    fontFamily: TextFontFamily.roboto,
+    fontSize: 14,
+    color: ConstantColors.textButtonCollor,
+    decoration: TextDecoration.underline,
   );
 }

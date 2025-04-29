@@ -1,5 +1,5 @@
 class APIConstants {
-  static const String baseUrl = 'https://wsip.yamaha-jatim.co.id:2448';
+  static const String baseUrl = 'wsip.yamaha-jatim.co.id:2448';
 
   static const String loginEndpoint = '/api/LoginSubDealer/Login';
   static const String registerEndpoint = '/auth/register'; // change later

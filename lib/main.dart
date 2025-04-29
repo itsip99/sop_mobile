@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:sop_mobile/presentation/screens/home_screen.dart';
 import 'package:sop_mobile/presentation/state/carousel/carousel_bloc.dart';
+import 'package:sop_mobile/presentation/state/login/login_bloc.dart';
 import 'package:sop_mobile/presentation/state/provider.dart';
 import 'package:sop_mobile/presentation/screens/location_screen.dart';
 import 'package:sop_mobile/presentation/screens/login_screen.dart';
@@ -44,8 +46,15 @@ class MyApp extends StatelessWidget {
       data: MediaQuery.of(context).copyWith(
         textScaler: const TextScaler.linear(1.0),
       ),
-      child: BlocProvider(
-        create: (context) => CarouselBloc(),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<CarouselBloc>(
+            create: (context) => CarouselBloc(),
+          ),
+          BlocProvider<LoginBloc>(
+            create: (context) => LoginBloc(),
+          ),
+        ],
         child: MaterialApp(
           title: 'SOP Mobile',
           scrollBehavior: MyCustomScrollBehavior(),
@@ -55,8 +64,9 @@ class MyApp extends StatelessWidget {
           routes: {
             '/welcome': (context) => const WelcomeScreen(),
             '/login': (context) => const LoginScreen(),
-            '/signin': (context) => const SignupScreen(),
+            '/register': (context) => const SignupScreen(),
             '/location': (context) => const LocationScreen(),
+            '/home': (context) => const HomeScreen(),
           },
         ),
       ),

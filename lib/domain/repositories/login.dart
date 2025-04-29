@@ -1,8 +1,6 @@
-import 'package:sop_mobile/data/models/login_model.dart';
-
 abstract class LoginRepo {
-  Future<LoginModel> login(String username, String password);
-  Future<bool> logout();
+  Future<Map<String, dynamic>> login(String username, String password);
+  Future<Map<String, dynamic>> logout();
 
   // Future<bool> isLoggedIn();
   // Future<String?> getToken();

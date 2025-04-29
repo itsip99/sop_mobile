@@ -5,4 +5,6 @@ class ConstantColors {
   static const primaryColor2 = Colors.black;
   static const primaryColor3 = Colors.white;
   static const shadowColor = Colors.grey;
+  static final disabledColor = Colors.grey[400]!;
+  static const textButtonCollor = Colors.blue;
 }

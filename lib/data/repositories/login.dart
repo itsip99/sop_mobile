@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:sop_mobile/core/constant/api.dart';
 import 'package:sop_mobile/data/models/login_model.dart';
@@ -7,7 +8,10 @@ import 'package:http/http.dart' as http;
 
 class LoginRepoImp extends LoginRepo {
   @override
-  Future<LoginModel> login(String username, String password) async {
+  Future<Map<String, dynamic>> login(
+    String username,
+    String password,
+  ) async {
     // Simulate a network call
     Uri uri = Uri.https(APIConstants.baseUrl, APIConstants.loginEndpoint);
 
@@ -15,46 +19,59 @@ class LoginRepoImp extends LoginRepo {
       "UserID": username,
       "DecryptedPassword": password,
     };
+    log('Map Body: $body');
 
-    final res = await http.post(
+    final response = await http.post(
       uri,
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-      },
+      headers: {"Content-Type": "application/json"},
       body: jsonEncode(body),
     );
+    log('Response: $response');
 
     // return LoginModel.fromJson(jsonDecode(res.body));
 
-    if (res.statusCode <= 200) {
-      final data = jsonDecode(res.body);
-      if (data['Status'] == 'Sukses' && data['Code'] == '100') {
-        return LoginModel.fromJson(data['Data']);
+    if (response.statusCode <= 200) {
+      log('Response: ${response.statusCode}');
+      final res = jsonDecode(response.body);
+      log("${res['Msg']}, ${res['Code']}");
+      if (res['Msg'] == 'Sukses' && res['Code'] == '100') {
+        log('Success');
+        return {
+          'status': 'success',
+          'data': LoginModel.fromJson(res['Data'][0]),
+        };
       } else {
-        return LoginModel(
+        log('Fail');
+        return {
+          'status': 'fail',
+          'data': LoginModel(
+            id: '',
+            name: '',
+            memo: LoginModel.fromJson(res['Data'][0]).memo,
+            branch: '',
+            shop: '',
+            data: [],
+          ),
+        };
+      }
+    } else {
+      log('Response: ${response.statusCode}');
+      return {
+        'status': 'fail',
+        'data': LoginModel(
           id: '',
           name: '',
-          memo: LoginModel.fromJson(data['Data']).memo,
+          memo: response.statusCode.toString(),
           branch: '',
           shop: '',
           data: [],
-        );
-      }
-    } else {
-      return LoginModel(
-        id: '',
-        name: '',
-        memo: res.statusCode.toString(),
-        branch: '',
-        shop: '',
-        data: [],
-      );
+        ),
+      };
     }
   }
 
   @override
-  Future<bool> logout() async {
+  Future<Map<String, dynamic>> logout() async {
     // Simulate a network call
     // Uri uri = Uri.https(APIConstants.baseUrl, APIConstants.logoutEndpoint);
 
@@ -67,9 +84,15 @@ class LoginRepoImp extends LoginRepo {
     );
 
     if (res.statusCode == 200) {
-      return true;
+      return {
+        'status': 'success',
+        'data': [],
+      };
     } else {
-      return false;
+      return {
+        'status': 'fail',
+        'data': [],
+      };
     }
   }
 }
