@@ -1,8 +1,13 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sop_mobile/core/constant/colors.dart';
+import 'package:sop_mobile/presentation/state/login/login_bloc.dart';
+import 'package:sop_mobile/presentation/state/login/login_event.dart';
+import 'package:sop_mobile/presentation/state/login/login_state.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -21,7 +26,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
 
-    preprocessing();
+    // preprocessing();
   }
 
   @override
@@ -33,42 +38,55 @@ class _SplashScreenState extends State<SplashScreen> {
         scrolledUnderElevation: 0.0,
         backgroundColor: ConstantColors.primaryColor1,
       ),
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        color: ConstantColors.primaryColor1,
-        child: Wrap(
-          direction: Axis.vertical,
-          runSpacing: 10,
-          alignment: WrapAlignment.center,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          runAlignment: WrapAlignment.center,
-          children: [
-            Image.asset(
-              'assets/images/figma.png',
-              scale: 0.8,
-              width: 200,
-              height: 200,
-            ),
-            Builder(
-              builder: (context) {
-                if (Platform.isIOS) {
-                  return const CupertinoActivityIndicator(
-                    radius: 13,
-                  );
-                } else {
-                  return const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 3.5,
-                      color: Colors.black,
-                    ),
-                  );
-                }
-              },
-            )
-          ],
+      body: BlocListener<LoginBloc, LoginState>(
+        listener: (context, state) {
+          log('Read data');
+          context.read<LoginBloc>().add(LoginButtonPressed());
+          if (state is LoginSuccess) {
+            log('Data available');
+            Navigator.pushReplacementNamed(context, '/home');
+          } else if (state is LoginFailure) {
+            log('No data available');
+            Navigator.pushReplacementNamed(context, '/welcome');
+          }
+        },
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          color: ConstantColors.primaryColor1,
+          child: Wrap(
+            direction: Axis.vertical,
+            runSpacing: 10,
+            alignment: WrapAlignment.center,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            runAlignment: WrapAlignment.center,
+            children: [
+              Image.asset(
+                'assets/images/figma.png',
+                scale: 0.8,
+                width: 200,
+                height: 200,
+              ),
+              Builder(
+                builder: (context) {
+                  if (Platform.isIOS) {
+                    return const CupertinoActivityIndicator(
+                      radius: 13,
+                    );
+                  } else {
+                    return const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 3.5,
+                        color: Colors.black,
+                      ),
+                    );
+                  }
+                },
+              )
+            ],
+          ),
         ),
       ),
     );

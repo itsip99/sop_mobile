@@ -1,4 +1,8 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:sop_mobile/core/constant/colors.dart';
 
 class CustomButton {
   static Widget primaryButton1({
@@ -36,6 +40,7 @@ class CustomButton {
     required TextStyle textStyle,
     required Color shadowColor,
     double height = 50,
+    bool isLoading = false,
   }) {
     return GestureDetector(
       onTap: () => func(),
@@ -56,9 +61,30 @@ class CustomButton {
             ),
           ],
         ),
-        child: Text(
-          text,
-          style: textStyle,
+        child: Builder(
+          builder: (context) {
+            if (isLoading) {
+              if (Platform.isIOS) {
+                return const CupertinoActivityIndicator(
+                  color: ConstantColors.primaryColor3,
+                  radius: 10,
+                );
+              } else {
+                return const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    color: ConstantColors.primaryColor3,
+                  ),
+                );
+              }
+            } else {
+              return Text(
+                text,
+                style: textStyle,
+              );
+            }
+          },
         ),
       ),
     );

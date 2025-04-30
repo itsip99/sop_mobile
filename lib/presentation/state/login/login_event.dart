@@ -6,13 +6,19 @@ class LoginButtonPressed extends LoginEvent {
   final String username;
   final String password;
 
-  LoginButtonPressed(this.username, this.password);
+  LoginButtonPressed({this.username = '', this.password = ''});
 
   // List<Object?> get props => [username, password];
 }
 
 class LogoutButtonPressed extends LoginEvent {
   LogoutButtonPressed();
+
+  List<Object?> get props => [];
+}
+
+class LoadUserData extends LoginEvent {
+  LoadUserData();
 
   List<Object?> get props => [];
 }

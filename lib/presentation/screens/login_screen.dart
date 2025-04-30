@@ -187,11 +187,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           const SizedBox(height: 15),
 
                           // ~:Button Section:~
-                          BlocListener<LoginBloc, LoginState>(
+                          BlocConsumer<LoginBloc, LoginState>(
                             listener: (context, state) {
-                              if (state is LoginLoading) {
-                                log('Loading...');
-                              } else if (state is LoginSuccess) {
+                              if (state is LoginSuccess) {
                                 log('Login Success.');
                                 // log(state.login);
                                 Navigator.pushNamed(context, '/home');
@@ -204,20 +202,40 @@ class _LoginScreenState extends State<LoginScreen> {
                                 );
                               }
                             },
-                            child: CustomButton.primaryButton2(
-                              context: context,
-                              text: 'Sign In',
-                              func: () => context.read<LoginBloc>().add(
-                                    LoginButtonPressed(
-                                      usernameController.text,
-                                      passwordController.text,
-                                    ),
-                                  ),
-                              bgColor: ConstantColors.primaryColor1,
-                              textStyle: TextThemes.subtitle,
-                              shadowColor: ConstantColors.shadowColor,
-                              height: 40,
-                            ),
+                            builder: (context, state) {
+                              if (state is LoginLoading) {
+                                return CustomButton.primaryButton2(
+                                  context: context,
+                                  text: 'Sign In',
+                                  func: () => context.read<LoginBloc>().add(
+                                        LoginButtonPressed(
+                                          username: usernameController.text,
+                                          password: passwordController.text,
+                                        ),
+                                      ),
+                                  bgColor: ConstantColors.primaryColor1,
+                                  textStyle: TextThemes.subtitle,
+                                  shadowColor: ConstantColors.shadowColor,
+                                  height: 40,
+                                  isLoading: true,
+                                );
+                              } else {
+                                return CustomButton.primaryButton2(
+                                  context: context,
+                                  text: 'Sign In',
+                                  func: () => context.read<LoginBloc>().add(
+                                        LoginButtonPressed(
+                                          username: usernameController.text,
+                                          password: passwordController.text,
+                                        ),
+                                      ),
+                                  bgColor: ConstantColors.primaryColor1,
+                                  textStyle: TextThemes.subtitle,
+                                  shadowColor: ConstantColors.shadowColor,
+                                  height: 40,
+                                );
+                              }
+                            },
                           ),
                         ],
                       ),
