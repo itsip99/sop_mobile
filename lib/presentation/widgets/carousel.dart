@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sop_mobile/presentation/state/carousel/carousel_bloc.dart';
 import 'package:sop_mobile/presentation/state/carousel/carousel_event.dart';
 import 'package:sop_mobile/presentation/state/carousel/carousel_state.dart';
-import 'package:sop_mobile/presentation/state/provider.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
 
 class CustomCarousel {
@@ -49,11 +48,8 @@ class CustomCarousel {
     );
   }
 
-  static Widget welcomeSlider(
-    BuildContext context,
-    StateManager state,
-  ) {
-    final PageController carouselController = PageController(initialPage: 0);
+  static Widget welcomeSlider(BuildContext context) {
+    final PageController carouselController = PageController();
 
     return Column(
       children: [
@@ -83,7 +79,7 @@ class CustomCarousel {
                     context: context,
                     imgPath: 'assets/images/acts.png',
                     title: 'Easily',
-                    subtitle: 'Input activities creation',
+                    subtitle: 'Input and create activities',
                   ),
 
                   // ~:Monitor Section:~

@@ -37,7 +37,7 @@ class CustomText {
       onTap: () => pressedFunc(),
       child: Text(
         text,
-        style: TextThemes.textButton,
+        style: TextThemes.styledTextButton,
       ),
     );
   }

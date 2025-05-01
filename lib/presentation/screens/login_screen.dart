@@ -106,7 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Container(
                 width: MediaQuery.of(context).size.width,
                 decoration: const BoxDecoration(
-                  color: ConstantColors.primaryColor3,
+                  color: ConstantColors.primaryColor2,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20),
@@ -192,13 +192,20 @@ class _LoginScreenState extends State<LoginScreen> {
                               if (state is LoginSuccess) {
                                 log('Login Success.');
                                 // log(state.login);
-                                Navigator.pushNamed(context, '/home');
+                                Navigator.pushReplacementNamed(
+                                  context,
+                                  '/home',
+                                );
                               } else if (state is LoginFailure) {
                                 log('Login Failed: ${state.error}');
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(state.error),
                                   ),
+                                );
+                                Navigator.pushReplacementNamed(
+                                  context,
+                                  '/login',
                                 );
                               }
                             },

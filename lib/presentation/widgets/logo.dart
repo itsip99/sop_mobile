@@ -8,7 +8,7 @@ class Logo {
   ) {
     return Container(
       decoration: BoxDecoration(
-        color: ConstantColors.primaryColor3,
+        color: ConstantColors.primaryColor2,
         borderRadius: BorderRadius.circular(20),
       ),
       padding: EdgeInsets.symmetric(

@@ -13,26 +13,26 @@ class TextThemes {
     fontFamily: TextFontFamily.roboto,
     fontSize: 28,
     fontWeight: FontWeight.bold,
-    color: ConstantColors.primaryColor2,
+    color: ConstantColors.primaryColor3,
   );
 
   static const TextStyle title2 = TextStyle(
     fontFamily: TextFontFamily.roboto,
     fontSize: 20,
-    color: ConstantColors.primaryColor2,
+    color: ConstantColors.primaryColor3,
   );
 
   static const TextStyle subtitle = TextStyle(
     fontFamily: TextFontFamily.roboto,
     fontSize: 16,
-    color: ConstantColors.primaryColor2,
+    color: ConstantColors.primaryColor3,
   );
 
   static const TextStyle body = TextStyle(
     fontFamily: TextFontFamily.roboto,
     fontSize: 12,
     fontWeight: FontWeight.normal,
-    color: ConstantColors.primaryColor2,
+    color: ConstantColors.primaryColor3,
   );
 
   static const TextStyle textfieldPlaceholder = TextStyle(
@@ -44,13 +44,19 @@ class TextThemes {
   static const TextStyle normal = TextStyle(
     fontFamily: TextFontFamily.roboto,
     fontSize: 14,
-    color: ConstantColors.primaryColor2,
+    color: ConstantColors.primaryColor3,
   );
 
-  static const TextStyle textButton = TextStyle(
+  static const TextStyle styledTextButton = TextStyle(
     fontFamily: TextFontFamily.roboto,
     fontSize: 14,
     color: ConstantColors.textButtonCollor,
     decoration: TextDecoration.underline,
+  );
+
+  static const TextStyle normalTextButton = TextStyle(
+    fontFamily: TextFontFamily.roboto,
+    fontSize: 14,
+    color: ConstantColors.primaryColor3,
   );
 }

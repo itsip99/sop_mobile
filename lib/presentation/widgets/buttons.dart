@@ -66,7 +66,7 @@ class CustomButton {
             if (isLoading) {
               if (Platform.isIOS) {
                 return const CupertinoActivityIndicator(
-                  color: ConstantColors.primaryColor3,
+                  color: ConstantColors.primaryColor2,
                   radius: 10,
                 );
               } else {
@@ -74,7 +74,7 @@ class CustomButton {
                   width: 20,
                   height: 20,
                   child: CircularProgressIndicator(
-                    color: ConstantColors.primaryColor3,
+                    color: ConstantColors.primaryColor2,
                   ),
                 );
               }

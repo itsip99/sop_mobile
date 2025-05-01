@@ -8,6 +8,7 @@ import 'package:sop_mobile/presentation/state/login/login_state.dart';
 class LoginBloc<BaseEvent, BaseState> extends Bloc<LoginEvent, LoginState> {
   LoginBloc() : super(LoginInitial()) {
     on<LoginButtonPressed>(loginHandler);
+    on<LogoutButtonPressed>(logoutHandler);
     // on<LoadUserData>(readUserCredentials);
   }
 
@@ -69,9 +70,11 @@ class LoginBloc<BaseEvent, BaseState> extends Bloc<LoginEvent, LoginState> {
     try {
       // Emit success state with a dummy token
       emit(LoginInitial());
+      await StorageRepoImp().deleteUserCredentials();
+      emit(LogoutSuccess());
     } catch (e) {
       // Emit failure state with an error message
-      emit(LoginFailure(e.toString()));
+      emit(LogoutFailure(e.toString()));
     }
   }
 

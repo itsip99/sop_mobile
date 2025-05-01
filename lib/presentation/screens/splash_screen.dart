@@ -27,6 +27,10 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
 
     // preprocessing();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Dispatch LoadUserData after the first frame
+      context.read<LoginBloc>().add(LoginButtonPressed());
+    });
   }
 
   @override
@@ -40,8 +44,6 @@ class _SplashScreenState extends State<SplashScreen> {
       ),
       body: BlocListener<LoginBloc, LoginState>(
         listener: (context, state) {
-          log('Read data');
-          context.read<LoginBloc>().add(LoginButtonPressed());
           if (state is LoginSuccess) {
             log('Data available');
             Navigator.pushReplacementNamed(context, '/home');

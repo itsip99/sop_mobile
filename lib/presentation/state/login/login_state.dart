@@ -30,3 +30,15 @@ class LoginFailure extends LoginState {
 
   String get getLoginFailure => error;
 }
+
+class LogoutSuccess extends LoginState {
+  LogoutSuccess();
+}
+
+class LogoutFailure extends LoginState {
+  final String error;
+
+  LogoutFailure(this.error);
+
+  String get getLogoutFailure => error;
+}
