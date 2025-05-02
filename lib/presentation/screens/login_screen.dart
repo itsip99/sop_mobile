@@ -166,9 +166,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ],
                               ),
 
-                              // ~:Divider:~
-                              const SizedBox(height: 10),
-
                               // ~:Password TextField:~
                               CustomTextFormField(
                                 'your password',

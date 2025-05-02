@@ -41,11 +41,9 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
     return Form(
       key: _formKey,
       child: Container(
-        margin: EdgeInsets.symmetric(
-          vertical: MediaQuery.of(context).size.height * 0.005,
-        ),
-        alignment: Alignment.centerLeft,
         width: MediaQuery.of(context).size.width,
+        height: 70,
+        alignment: Alignment.center,
         child: TextFormField(
           maxLines: 1,
           autofocus: widget.isAutoFocusEnable,
@@ -71,6 +69,9 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
               borderRadius: BorderRadius.all(Radius.circular(10.0)),
             ),
             prefixIcon: widget.prefixIcon,
+            helperText: ' ',
+            helperStyle: const TextStyle(height: 1),
+            errorStyle: const TextStyle(height: 1),
           ),
           autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: widget.enableValidator
