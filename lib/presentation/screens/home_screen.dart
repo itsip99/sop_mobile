@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sop_mobile/core/constant/colors.dart';
+import 'package:sop_mobile/presentation/state/filter/filter_bloc.dart';
+import 'package:sop_mobile/presentation/state/filter/filter_state.dart';
 import 'package:sop_mobile/presentation/state/login/login_bloc.dart';
 import 'package:sop_mobile/presentation/state/login/login_event.dart';
 import 'package:sop_mobile/presentation/state/login/login_state.dart';
@@ -157,12 +159,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     // ~:Acts Section:~
                     Expanded(
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black),
-                        ),
-                        child: const SizedBox(),
+                      child: BlocBuilder<FilterBloc, FilterState>(
+                        builder: (context, state) {
+                          return Container(
+                            width: MediaQuery.of(context).size.width,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.black),
+                            ),
+                            child: Text(state.activeFilter.toString()),
+                          );
+                        },
                       ),
                     ),
                   ],

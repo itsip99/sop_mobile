@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:sop_mobile/presentation/screens/home_screen.dart';
 import 'package:sop_mobile/presentation/state/carousel/carousel_bloc.dart';
+import 'package:sop_mobile/presentation/state/filter/filter_bloc.dart';
 import 'package:sop_mobile/presentation/state/login/login_bloc.dart';
 import 'package:sop_mobile/presentation/state/provider.dart';
 import 'package:sop_mobile/presentation/screens/location_screen.dart';
@@ -53,6 +54,9 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider<LoginBloc>(
             create: (context) => LoginBloc(),
+          ),
+          BlocProvider<FilterBloc>(
+            create: (context) => FilterBloc(),
           ),
         ],
         child: MaterialApp(
