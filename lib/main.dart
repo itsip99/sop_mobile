@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:sop_mobile/presentation/screens/briefing_screen.dart';
 import 'package:sop_mobile/presentation/screens/home_screen.dart';
 import 'package:sop_mobile/presentation/state/carousel/carousel_bloc.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_bloc.dart';
@@ -71,6 +72,7 @@ class MyApp extends StatelessWidget {
             '/register': (context) => const SignupScreen(),
             '/location': (context) => const LocationScreen(),
             '/home': (context) => const HomeScreen(),
+            '/brief': (context) => const BriefingScreen(),
           },
         ),
       ),
