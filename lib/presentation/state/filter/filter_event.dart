@@ -3,14 +3,14 @@ import 'package:sop_mobile/presentation/state/base_event.dart';
 
 abstract class FilterEvent extends BaseEvent {}
 
-class SelectedFilter extends FilterEvent {
+class FilterAdded extends FilterEvent {
   final FilterType selectedFilter;
 
-  SelectedFilter(this.selectedFilter);
+  FilterAdded(this.selectedFilter);
 }
 
-class UnselectedFilter extends FilterEvent {
+class FilterRemoved extends FilterEvent {
   final FilterType unselectFilter;
 
-  UnselectedFilter(this.unselectFilter);
+  FilterRemoved(this.unselectFilter);
 }

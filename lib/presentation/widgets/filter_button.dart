@@ -28,19 +28,24 @@ class FilterButton {
       height: 36,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: isActive
-            ? ConstantColors.primaryColor1.withAlpha(130)
-            : ConstantColors.shadowColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: isActive ? ConstantColors.primaryColor1 : Colors.transparent,
-          width: 2,
-        ),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: InkWell(
-        onTap: () => func(),
-        borderRadius: BorderRadius.circular(12),
+      child: ElevatedButton(
+        onPressed: () => func(),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: isActive
+              ? ConstantColors.primaryColor1.withAlpha(130)
+              : ConstantColors.shadowColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+            side: BorderSide(
+              color:
+                  isActive ? ConstantColors.primaryColor1 : Colors.transparent,
+              width: 2,
+            ),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+        ),
         child: Text(
           text,
           style: TextThemes.normalTextButton,

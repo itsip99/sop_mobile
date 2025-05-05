@@ -1,33 +1,30 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sop_mobile/core/constant/enum.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_event.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_state.dart';
 
 class FilterBloc<BaseEvent, BaseState> extends Bloc<FilterEvent, FilterState> {
-  FilterBloc() : super(FilterInitial(FilterType.briefing)) {
-    on<SelectedFilter>(selectedFilterHandler);
-    on<UnselectedFilter>(unselectedFilterHandler);
+  FilterBloc() : super(FilterInitial()) {
+    on<FilterAdded>(addFilterHandler);
+    on<FilterRemoved>(removeFilterHandler);
   }
 
-  Future<void> selectedFilterHandler(
-    SelectedFilter event,
+  Future<void> addFilterHandler(
+    FilterAdded event,
     Emitter<FilterState> emit,
   ) async {
-    emit(FilterSelected(
-      // ...(state as FilterSelected).activeFilter,
-      // event.selectedFilter,
-      activeFilter: event.selectedFilter,
-    ));
+    final currentFilter = state.activeFilter;
+    if (!currentFilter.contains(event.selectedFilter)) {
+      emit(FilterState([...currentFilter, event.selectedFilter]));
+    }
   }
 
-  Future<void> unselectedFilterHandler(
-    UnselectedFilter event,
+  Future<void> removeFilterHandler(
+    FilterRemoved event,
     Emitter<FilterState> emit,
   ) async {
-    emit(FilterUnselected(
-      // ...(state as FilterUnselected).getNonactiveFilter,
-      // event.unselectFilter,
-      activeFilter: event.unselectFilter,
+    final currentFilter = state.activeFilter;
+    emit(FilterState(
+      currentFilter.where((e) => e != event.unselectFilter).toList(),
     ));
   }
 }

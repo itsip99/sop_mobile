@@ -12,14 +12,15 @@ class Filter {
   static filterButton(
     BuildContext context,
     FilterType filterType,
-    // bool isActive,
-    // int index,
   ) {
+    final bloc = context.read<FilterBloc>();
+    final blocState = bloc.state;
+
     log('Filter button pressed: $filterType');
-    if (filterType == FilterType.none) {
-      context.read<FilterBloc>().add(UnselectedFilter(filterType));
+    if (blocState.activeFilter.contains(filterType)) {
+      bloc.add(FilterRemoved(filterType));
     } else {
-      context.read<FilterBloc>().add(SelectedFilter(filterType));
+      bloc.add(FilterAdded(filterType));
     }
   }
 
@@ -48,19 +49,9 @@ class Filter {
                   // ~:Morning Briefing:~
                   BlocBuilder<FilterBloc, FilterState>(
                       builder: (context, state) {
-                    final isActive = state is FilterSelected &&
-                        state.activeFilter == FilterType.briefing;
+                    final isActive =
+                        state.activeFilter.contains(FilterType.briefing);
 
-                    // ~:Unselected:~
-                    if (state is FilterSelected && isActive) {
-                      return FilterButton.textButton(
-                        () => filterButton(context, FilterType.none),
-                        'Morning Briefing',
-                        isActive,
-                      );
-                    }
-
-                    // ~:Default / Selected:~
                     return FilterButton.textButton(
                       () => filterButton(context, FilterType.briefing),
                       'Morning Briefing',
@@ -71,19 +62,9 @@ class Filter {
                   // ~:Daily Report:~
                   BlocBuilder<FilterBloc, FilterState>(
                       builder: (context, state) {
-                    final isActive = state is FilterSelected &&
-                        state.activeFilter == FilterType.report;
+                    final isActive =
+                        state.activeFilter.contains(FilterType.report);
 
-                    // ~:Unselected:~
-                    if (state is FilterSelected) {
-                      return FilterButton.textButton(
-                        () => filterButton(context, FilterType.none),
-                        'Daily Report',
-                        isActive,
-                      );
-                    }
-
-                    // ~:Default / Selected:~
                     return FilterButton.textButton(
                       () => filterButton(context, FilterType.report),
                       'Daily Report',
@@ -94,19 +75,9 @@ class Filter {
                   // ~:Salesman:~
                   BlocBuilder<FilterBloc, FilterState>(
                       builder: (context, state) {
-                    final isActive = state is FilterSelected &&
-                        state.activeFilter == FilterType.salesman;
+                    final isActive =
+                        state.activeFilter.contains(FilterType.salesman);
 
-                    // ~:Unselected:~
-                    if (state is FilterSelected) {
-                      return FilterButton.textButton(
-                        () => filterButton(context, FilterType.none),
-                        'Salesman',
-                        isActive,
-                      );
-                    }
-
-                    // ~:Default / Selected:~
                     return FilterButton.textButton(
                       () => filterButton(context, FilterType.salesman),
                       'Salesman',
