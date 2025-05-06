@@ -3,21 +3,19 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sop_mobile/core/constant/colors.dart';
-import 'package:sop_mobile/core/helpers/formatter.dart';
 import 'package:sop_mobile/presentation/state/route/route_bloc.dart';
 import 'package:sop_mobile/presentation/state/route/route_event.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
-import 'package:sop_mobile/presentation/widgets/textformfield.dart';
 import 'package:sop_mobile/routes.dart';
 
-class BriefingScreen extends StatefulWidget {
-  const BriefingScreen({super.key});
+class SalesmanScreen extends StatefulWidget {
+  const SalesmanScreen({super.key});
 
   @override
-  State<BriefingScreen> createState() => _BriefingScreenState();
+  State<SalesmanScreen> createState() => _SalesmanScreenState();
 }
 
-class _BriefingScreenState extends State<BriefingScreen> {
+class _SalesmanScreenState extends State<SalesmanScreen> {
   final TextEditingController locationController = TextEditingController();
 
   @override
@@ -78,33 +76,24 @@ class _BriefingScreenState extends State<BriefingScreen> {
             ),
           ),
           padding: const EdgeInsets.all(20),
-          child: Wrap(
+          child: const Wrap(
             runSpacing: 10,
             children: [
-              const Column(
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // ~:Page Title:~
                   Text(
-                    'Informasi Briefing',
+                    'Informasi Sales',
                     style: TextThemes.subtitle,
                   ),
 
                   // ~:Page Description:~
                   Text(
-                    'Masukkan data untuk membuat laporan pagi.',
+                    'Masukkan data diri sales untuk pembuatan laporan harian.',
                     style: TextThemes.normal,
                   ),
                 ],
-              ),
-
-              // ~:Location Textfield:~
-              CustomTextFormField(
-                'your location',
-                'Location',
-                const Icon(Icons.location_pin),
-                locationController,
-                inputFormatters: [Formatter.normalFormatter],
               ),
             ],
           ),

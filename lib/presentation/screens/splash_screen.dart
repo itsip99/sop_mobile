@@ -8,6 +8,9 @@ import 'package:sop_mobile/core/constant/colors.dart';
 import 'package:sop_mobile/presentation/state/login/login_bloc.dart';
 import 'package:sop_mobile/presentation/state/login/login_event.dart';
 import 'package:sop_mobile/presentation/state/login/login_state.dart';
+import 'package:sop_mobile/presentation/state/route/route_bloc.dart';
+import 'package:sop_mobile/presentation/state/route/route_event.dart';
+import 'package:sop_mobile/routes.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -30,6 +33,11 @@ class _SplashScreenState extends State<SplashScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // Dispatch LoadUserData after the first frame
       context.read<LoginBloc>().add(LoginButtonPressed());
+      if (LoginState is LoginSuccess) {
+        context.read<RouteBloc>().add(RoutePush(ConstantRoutes.home));
+      } else {
+        context.read<RouteBloc>().add(RoutePush(ConstantRoutes.welcome));
+      }
     });
   }
 
@@ -46,10 +54,10 @@ class _SplashScreenState extends State<SplashScreen> {
         listener: (context, state) {
           if (state is LoginSuccess) {
             log('Data available');
-            Navigator.pushReplacementNamed(context, '/home');
+            Navigator.pushReplacementNamed(context, ConstantRoutes.home);
           } else if (state is LoginFailure) {
             log('No data available');
-            Navigator.pushReplacementNamed(context, '/welcome');
+            Navigator.pushReplacementNamed(context, ConstantRoutes.welcome);
           }
         },
         child: Container(

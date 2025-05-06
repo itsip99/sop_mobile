@@ -6,15 +6,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:sop_mobile/presentation/screens/briefing_screen.dart';
 import 'package:sop_mobile/presentation/screens/home_screen.dart';
+import 'package:sop_mobile/presentation/screens/location_screen.dart';
+import 'package:sop_mobile/presentation/screens/login_screen.dart';
+import 'package:sop_mobile/presentation/screens/report_screen.dart';
+import 'package:sop_mobile/presentation/screens/salesman_screen.dart';
+import 'package:sop_mobile/presentation/screens/signup_screen.dart';
+import 'package:sop_mobile/presentation/screens/splash_screen.dart';
+import 'package:sop_mobile/presentation/screens/welcome_screen.dart';
 import 'package:sop_mobile/presentation/state/carousel/carousel_bloc.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_bloc.dart';
 import 'package:sop_mobile/presentation/state/login/login_bloc.dart';
 import 'package:sop_mobile/presentation/state/provider.dart';
-import 'package:sop_mobile/presentation/screens/location_screen.dart';
-import 'package:sop_mobile/presentation/screens/login_screen.dart';
-import 'package:sop_mobile/presentation/screens/signup_screen.dart';
-import 'package:sop_mobile/presentation/screens/splash_screen.dart';
-import 'package:sop_mobile/presentation/screens/welcome_screen.dart';
+import 'package:sop_mobile/presentation/state/route/route_bloc.dart';
+import 'package:sop_mobile/routes.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -50,6 +54,9 @@ class MyApp extends StatelessWidget {
       ),
       child: MultiBlocProvider(
         providers: [
+          BlocProvider<RouteBloc>(
+            create: (context) => RouteBloc(),
+          ),
           BlocProvider<CarouselBloc>(
             create: (context) => CarouselBloc(),
           ),
@@ -65,14 +72,17 @@ class MyApp extends StatelessWidget {
           scrollBehavior: MyCustomScrollBehavior(),
           debugShowCheckedModeBanner: false,
           navigatorKey: navigatorKey,
-          home: const SplashScreen(),
+          initialRoute: ConstantRoutes.init,
           routes: {
-            '/welcome': (context) => const WelcomeScreen(),
-            '/login': (context) => const LoginScreen(),
-            '/register': (context) => const SignupScreen(),
-            '/location': (context) => const LocationScreen(),
-            '/home': (context) => const HomeScreen(),
-            '/brief': (context) => const BriefingScreen(),
+            ConstantRoutes.init: (context) => const SplashScreen(),
+            ConstantRoutes.welcome: (context) => const WelcomeScreen(),
+            ConstantRoutes.login: (context) => const LoginScreen(),
+            ConstantRoutes.register: (context) => const SignupScreen(),
+            ConstantRoutes.location: (context) => const LocationScreen(),
+            ConstantRoutes.home: (context) => const HomeScreen(),
+            ConstantRoutes.brief: (context) => const BriefingScreen(),
+            ConstantRoutes.report: (context) => const ReportScreen(),
+            ConstantRoutes.sales: (context) => const SalesmanScreen(),
           },
         ),
       ),

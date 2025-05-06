@@ -10,15 +10,17 @@ import 'package:sop_mobile/presentation/themes/styles.dart';
 import 'package:sop_mobile/presentation/widgets/textformfield.dart';
 import 'package:sop_mobile/routes.dart';
 
-class BriefingScreen extends StatefulWidget {
-  const BriefingScreen({super.key});
+class ReportScreen extends StatefulWidget {
+  const ReportScreen({super.key});
 
   @override
-  State<BriefingScreen> createState() => _BriefingScreenState();
+  State<ReportScreen> createState() => _ReportScreenState();
 }
 
-class _BriefingScreenState extends State<BriefingScreen> {
-  final TextEditingController locationController = TextEditingController();
+class _ReportScreenState extends State<ReportScreen> {
+  final TextEditingController dealerController = TextEditingController();
+  final TextEditingController areaController = TextEditingController();
+  final TextEditingController personController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +33,7 @@ class _BriefingScreenState extends State<BriefingScreen> {
         automaticallyImplyLeading: true,
         backgroundColor: ConstantColors.primaryColor1,
         title: const Text(
-          'Morning Briefing',
+          'Daily Report',
           style: TextThemes.subtitle,
         ),
         centerTitle: true,
@@ -86,25 +88,46 @@ class _BriefingScreenState extends State<BriefingScreen> {
                 children: [
                   // ~:Page Title:~
                   Text(
-                    'Informasi Briefing',
+                    'Informasi Laporan',
                     style: TextThemes.subtitle,
                   ),
 
                   // ~:Page Description:~
                   Text(
-                    'Masukkan data untuk membuat laporan pagi.',
+                    'Masukkan data untuk membuat laporan harian.',
                     style: TextThemes.normal,
                   ),
                 ],
               ),
+              Wrap(
+                children: [
+                  // ~:Dealer Textfield:~
+                  CustomTextFormField(
+                    'your dealer',
+                    'Dealer',
+                    const Icon(Icons.house_siding_rounded),
+                    dealerController,
+                    inputFormatters: [Formatter.normalFormatter],
+                  ),
 
-              // ~:Location Textfield:~
-              CustomTextFormField(
-                'your location',
-                'Location',
-                const Icon(Icons.location_pin),
-                locationController,
-                inputFormatters: [Formatter.normalFormatter],
+                  // ~:Dealer Textfield:~
+                  CustomTextFormField(
+                    'your area',
+                    'Area',
+                    const Icon(Icons.location_pin),
+                    areaController,
+                    inputFormatters: [Formatter.normalFormatter],
+                  ),
+
+                  // ~:Dealer Textfield:~
+                  CustomTextFormField(
+                    'your PIC name',
+                    'PIC',
+                    const Icon(Icons.person),
+                    personController,
+                    inputFormatters: [Formatter.normalFormatter],
+                  ),
+                ],
               ),
             ],
           ),

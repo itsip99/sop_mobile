@@ -2,15 +2,19 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_sliding_up_panel/flutter_sliding_up_panel.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:sop_mobile/core/constant/colors.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_bloc.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_state.dart';
 import 'package:sop_mobile/presentation/state/login/login_bloc.dart';
 import 'package:sop_mobile/presentation/state/login/login_event.dart';
 import 'package:sop_mobile/presentation/state/login/login_state.dart';
+import 'package:sop_mobile/presentation/state/route/route_bloc.dart';
+import 'package:sop_mobile/presentation/state/route/route_event.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
+import 'package:sop_mobile/presentation/widgets/buttons.dart';
 import 'package:sop_mobile/presentation/widgets/filter.dart';
+import 'package:sop_mobile/routes.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,7 +24,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final SlidingUpPanelController panelController = SlidingUpPanelController();
+  final PanelController panelController = PanelController();
   final ScrollController scrollController = ScrollController();
 
   @override
@@ -28,31 +32,128 @@ class _HomeScreenState extends State<HomeScreen> {
     log('Width: ${MediaQuery.of(context).size.width}');
     log('Height: ${MediaQuery.of(context).size.height}');
 
-    return Stack(
-      children: [
-        // ~:Main Body:~
-        Scaffold(
-          resizeToAvoidBottomInset: false,
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              panelController.anchor();
-            },
-            backgroundColor: ConstantColors.primaryColor1,
-            child: const Icon(
-              Icons.add,
-              color: ConstantColors.primaryColor3,
+    return SlidingUpPanel(
+      controller: panelController,
+      renderPanelSheet: false,
+      minHeight: 0,
+      maxHeight: 200,
+      isDraggable: false,
+      panelSnapping: false,
+      defaultPanelState: PanelState.CLOSED,
+      borderRadius: const BorderRadius.all(Radius.circular(20)),
+      margin: const EdgeInsets.all(15),
+      panel: DecoratedBox(
+        decoration: BoxDecoration(
+          color: Colors.grey[350],
+          borderRadius: const BorderRadius.all(Radius.circular(20)),
+        ),
+        child: Column(
+          children: <Widget>[
+            Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.only(left: 15.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  const DefaultTextStyle(
+                    style: TextThemes.subtitle,
+                    child: Text(
+                      'Buat Laporan / Tambah Data',
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => panelController.close(),
+                    icon: const Icon(
+                      Icons.close_rounded,
+                      size: 20,
+                    ),
+                  ),
+                ],
+              ),
             ),
+            Expanded(
+              child: Column(
+                children: [
+                  // ~:Morning Briefing:~
+                  DefaultTextStyle(
+                    style: TextThemes.normalTextButton,
+                    child: CustomButton.normalButton(
+                      context: context,
+                      text: 'Morning Briefing',
+                      func: () {
+                        context
+                            .read<RouteBloc>()
+                            .add(RoutePush(ConstantRoutes.brief));
+                        Navigator.pushNamed(context, ConstantRoutes.brief);
+                        panelController.close();
+                      },
+                      bgColor: Colors.transparent,
+                    ),
+                  ),
+                  const Divider(
+                    height: 0.5,
+                  ),
+                  DefaultTextStyle(
+                    style: TextThemes.normalTextButton,
+                    child: CustomButton.normalButton(
+                      context: context,
+                      text: 'Daily Report',
+                      func: () {
+                        context
+                            .read<RouteBloc>()
+                            .add(RoutePush(ConstantRoutes.report));
+                        Navigator.pushNamed(context, ConstantRoutes.report);
+                        panelController.close();
+                      },
+                      bgColor: Colors.transparent,
+                    ),
+                  ),
+                  const Divider(
+                    height: 0.5,
+                  ),
+                  DefaultTextStyle(
+                    style: TextThemes.normalTextButton,
+                    child: CustomButton.normalButton(
+                      context: context,
+                      text: 'Salesman',
+                      func: () {
+                        context
+                            .read<RouteBloc>()
+                            .add(RoutePush(ConstantRoutes.sales));
+                        Navigator.pushNamed(context, ConstantRoutes.sales);
+                        panelController.close();
+                      },
+                      bgColor: Colors.transparent,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+      body: Scaffold(
+        resizeToAvoidBottomInset: false,
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => panelController.open(),
+          backgroundColor: ConstantColors.primaryColor1,
+          child: const Icon(
+            Icons.add,
+            color: ConstantColors.primaryColor3,
           ),
-          // ~:Profile Section:~
-          appBar: AppBar(
-            toolbarHeight: 100,
-            elevation: 0.0,
-            scrolledUnderElevation: 0.0,
-            automaticallyImplyLeading: false,
-            backgroundColor: ConstantColors.primaryColor1,
-            actionsPadding: const EdgeInsets.symmetric(horizontal: 10),
-            title: Wrap(
-              spacing: 10,
+        ),
+        // ~:Profile Section:~
+        appBar: AppBar(
+          toolbarHeight: 100,
+          elevation: 0.0,
+          scrolledUnderElevation: 0.0,
+          automaticallyImplyLeading: false,
+          backgroundColor: ConstantColors.primaryColor1,
+          // actionsPadding: const EdgeInsets.symmetric(horizontal: 10),
+          title: Padding(
+            padding: const EdgeInsets.only(left: 8),
+            child: Wrap(
+              spacing: 15,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 // ~:Profile Image:~
@@ -102,10 +203,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
-            // ~:Utility Section:~
-            actions: [
-              // ~:Logout Button:~
-              BlocListener<LoginBloc, LoginState>(
+          ),
+          // ~:Utility Section:~
+          actions: [
+            // ~:Logout Button:~
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: BlocListener<LoginBloc, LoginState>(
                 listener: (context, state) {
                   if (state is LogoutSuccess) {
                     Navigator.pushReplacementNamed(context, '/welcome');
@@ -128,172 +232,56 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-            ],
-          ),
-          body: DecoratedBox(
-            decoration: const BoxDecoration(
-              color: ConstantColors.primaryColor1,
             ),
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              decoration: BoxDecoration(
-                color: ConstantColors.primaryColor2,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(
-                    (MediaQuery.of(context).size.width < 800) ? 25 : 45,
-                  ),
-                  topRight: Radius.circular(
-                    (MediaQuery.of(context).size.width < 800) ? 25 : 45,
-                  ),
-                ),
-              ),
-              padding: EdgeInsets.symmetric(
-                horizontal: (MediaQuery.of(context).size.width < 800) ? 15 : 45,
-                vertical: (MediaQuery.of(context).size.height < 800) ? 10 : 30,
-              ),
-              child: Column(
-                children: [
-                  // ~:Filter Section:~
-                  Filter.type1(context),
-
-                  // ~:Acts Section:~
-                  Expanded(
-                    child: BlocBuilder<FilterBloc, FilterState>(
-                      builder: (context, state) {
-                        return Container(
-                          width: MediaQuery.of(context).size.width,
-                          alignment: Alignment.center,
-                          child: Text(state.activeFilter.toString()),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+          ],
         ),
-
-        // ~:Sliding Up Panel:~
-        SlidingUpPanelWidget(
-          controlHeight: 50.0,
-          anchor: 0.4,
-          panelController: panelController,
-          panelStatus: SlidingUpPanelStatus.hidden,
-          onTap: () {
-            ///Customize the processing logic
-            if (SlidingUpPanelStatus.anchored == panelController.status) {
-              panelController.hide();
-            } else {
-              panelController.anchor();
-            }
-          },
-          //Pass a onTap callback to customize the processing logic when user click control bar.
-          enableOnTap: true, //Enable the onTap callback for control bar.
-          dragDown: (details) {
-            log('dragDown');
-          },
-          dragStart: (details) {
-            log('dragStart');
-          },
-          dragCancel: () {
-            log('dragCancel');
-          },
-          dragUpdate: (details) {
-            log('dragUpdate,${panelController.status == SlidingUpPanelStatus.dragging ? 'dragging' : ''}');
-          },
-          dragEnd: (details) {
-            log('dragEnd');
-          },
+        body: DecoratedBox(
+          decoration: const BoxDecoration(
+            color: ConstantColors.primaryColor1,
+          ),
           child: Container(
-            // margin: const EdgeInsets.symmetric(horizontal: 15.0),
-            decoration: const ShapeDecoration(
-              color: Colors.white,
-              shadows: [
-                BoxShadow(
-                  blurRadius: 5.0,
-                  spreadRadius: 2.0,
-                  color: Color(0x11000000),
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            decoration: BoxDecoration(
+              color: ConstantColors.primaryColor2,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(
+                  (MediaQuery.of(context).size.width < 800) ? 25 : 45,
                 ),
-              ],
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(10.0),
-                  topRight: Radius.circular(10.0),
+                topRight: Radius.circular(
+                  (MediaQuery.of(context).size.width < 800) ? 25 : 45,
                 ),
               ),
+            ),
+            padding: EdgeInsets.symmetric(
+              horizontal: (MediaQuery.of(context).size.width < 800) ? 15 : 45,
+              vertical: (MediaQuery.of(context).size.height < 800) ? 10 : 30,
             ),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Container(
-                  color: Colors.white,
-                  alignment: Alignment.center,
-                  height: 50.0,
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Icon(
-                        Icons.menu,
-                        size: 30,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: 8.0,
-                        ),
-                      ),
-                      Text(
-                        'click or drag',
-                      )
-                    ],
-                  ),
-                ),
-                Divider(
-                  height: 0.5,
-                  color: Colors.grey[300],
-                ),
-                Flexible(
-                  child: Container(
-                    color: Colors.white,
-                    child: ListView.separated(
-                      controller: scrollController,
-                      physics: const ClampingScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        if (index == 0) {
-                          return GestureDetector(
-                            onTap: () {
-                              // Navigate to the Briefing Screen
-                              Navigator.pushNamed(context, '/brief');
+              children: [
+                // ~:Filter Section:~
+                Filter.type1(context),
 
-                              // Hide sliding panel when navigating to another screen
-                              panelController.hide();
-                            },
-                            child: const ListTile(
-                              title: Text('Go to Briefing Screen'),
-                            ),
-                          );
-                        } else {
-                          return ListTile(
-                            title: Text('list item $index'),
-                          );
-                        }
-                      },
-                      separatorBuilder: (context, index) {
-                        return const Divider(
-                          height: 0.5,
-                        );
-                      },
-                      shrinkWrap: true,
-                      itemCount: 20,
-                    ),
+                // ~:Acts Section:~
+                Expanded(
+                  child: BlocBuilder<FilterBloc, FilterState>(
+                    builder: (context, state) {
+                      return Container(
+                        width: MediaQuery.of(context).size.width,
+                        alignment: Alignment.center,
+                        child: Text(
+                          state.activeFilter.toString(),
+                          textAlign: TextAlign.center,
+                        ),
+                      );
+                    },
                   ),
                 ),
               ],
             ),
           ),
         ),
-      ],
+      ),
     );
   }
 }

@@ -5,6 +5,32 @@ import 'package:flutter/material.dart';
 import 'package:sop_mobile/core/constant/colors.dart';
 
 class CustomButton {
+  static Widget normalButton({
+    required BuildContext context,
+    required String text,
+    required Function func,
+    required Color bgColor,
+    TextStyle? textStyle,
+    double height = 50,
+  }) {
+    return GestureDetector(
+      onTap: () => func(),
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        height: height,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Text(
+          text,
+          style: textStyle,
+        ),
+      ),
+    );
+  }
+
   static Widget primaryButton1({
     required BuildContext context,
     required String text,

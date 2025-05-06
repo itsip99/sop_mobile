@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sop_mobile/core/constant/colors.dart';
 import 'package:sop_mobile/presentation/state/carousel/carousel_bloc.dart';
 import 'package:sop_mobile/presentation/state/carousel/carousel_event.dart';
 import 'package:sop_mobile/presentation/state/carousel/carousel_state.dart';
@@ -104,28 +105,57 @@ class CustomCarousel {
         ),
 
         // ~:Carousel Indicator:~
-        BlocBuilder<CarouselBloc, CarouselState>(
-          builder: (context, state) {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(4, (index) {
-                return AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  width: state.currentIndex == index ? 24.0 : 12.0,
-                  height: 4.0,
-                  margin: const EdgeInsets.symmetric(
-                    vertical: 10,
-                    horizontal: 2,
-                  ),
-                  decoration: BoxDecoration(
-                    color:
-                        state.currentIndex == index ? Colors.blue : Colors.grey,
-                    borderRadius: BorderRadius.circular(2.0),
-                  ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // ~:Left Arrow:~
+            const SizedBox(
+              width: 20,
+              height: 20,
+              child: Icon(
+                Icons.arrow_back_ios_new_rounded,
+                size: 16,
+                color: ConstantColors.primaryColor1,
+              ),
+            ),
+
+            // ~:Indicators:~
+            BlocBuilder<CarouselBloc, CarouselState>(
+              builder: (context, state) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(4, (index) {
+                    return AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      width: state.currentIndex == index ? 24.0 : 12.0,
+                      height: 4.0,
+                      margin: const EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: state.currentIndex == index
+                            ? Colors.blue
+                            : Colors.grey,
+                        borderRadius: BorderRadius.circular(2.0),
+                      ),
+                    );
+                  }),
                 );
-              }),
-            );
-          },
+              },
+            ),
+
+            // ~:Left Arrow:~
+            const SizedBox(
+              width: 20,
+              height: 20,
+              child: Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: 16,
+                color: ConstantColors.primaryColor1,
+              ),
+            ),
+          ],
         ),
       ],
     );
