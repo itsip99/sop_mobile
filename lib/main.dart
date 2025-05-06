@@ -14,6 +14,7 @@ import 'package:sop_mobile/presentation/screens/signup_screen.dart';
 import 'package:sop_mobile/presentation/screens/splash_screen.dart';
 import 'package:sop_mobile/presentation/screens/welcome_screen.dart';
 import 'package:sop_mobile/presentation/state/carousel/carousel_bloc.dart';
+import 'package:sop_mobile/presentation/state/counter/counter_cubit.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_bloc.dart';
 import 'package:sop_mobile/presentation/state/login/login_bloc.dart';
 import 'package:sop_mobile/presentation/state/provider.dart';
@@ -65,6 +66,9 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider<FilterBloc>(
             create: (context) => FilterBloc(),
+          ),
+          BlocProvider<CounterCubit>(
+            create: (context) => CounterCubit(),
           ),
         ],
         child: MaterialApp(

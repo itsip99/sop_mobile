@@ -29,7 +29,7 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
         automaticallyImplyLeading: true,
         backgroundColor: ConstantColors.primaryColor1,
         title: const Text(
-          'Morning Briefing',
+          'Salesman',
           style: TextThemes.subtitle,
         ),
         centerTitle: true,

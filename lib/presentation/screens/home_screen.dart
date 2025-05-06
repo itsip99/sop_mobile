@@ -41,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
       panelSnapping: false,
       defaultPanelState: PanelState.CLOSED,
       borderRadius: const BorderRadius.all(Radius.circular(20)),
-      margin: const EdgeInsets.all(15),
+      margin: const EdgeInsets.all(12),
       panel: DecoratedBox(
         decoration: BoxDecoration(
           color: Colors.grey[350],
