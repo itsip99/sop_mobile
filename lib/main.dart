@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
+import 'package:sop_mobile/core/constant/state_manager.dart';
 import 'package:sop_mobile/presentation/screens/briefing_screen.dart';
 import 'package:sop_mobile/presentation/screens/home_screen.dart';
 import 'package:sop_mobile/presentation/screens/location_screen.dart';
@@ -13,12 +13,6 @@ import 'package:sop_mobile/presentation/screens/salesman_screen.dart';
 import 'package:sop_mobile/presentation/screens/signup_screen.dart';
 import 'package:sop_mobile/presentation/screens/splash_screen.dart';
 import 'package:sop_mobile/presentation/screens/welcome_screen.dart';
-import 'package:sop_mobile/presentation/state/carousel/carousel_bloc.dart';
-import 'package:sop_mobile/presentation/state/counter/counter_cubit.dart';
-import 'package:sop_mobile/presentation/state/filter/filter_bloc.dart';
-import 'package:sop_mobile/presentation/state/login/login_bloc.dart';
-import 'package:sop_mobile/presentation/state/provider.dart';
-import 'package:sop_mobile/presentation/state/route/route_bloc.dart';
 import 'package:sop_mobile/routes.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
@@ -31,12 +25,13 @@ void main() async {
     statusBarBrightness: Brightness.light,
   ));
 
-  runApp(
-    ChangeNotifierProvider(
-      create: (context) => StateManager(),
-      child: const MyApp(),
-    ),
-  );
+  // runApp(
+  //   ChangeNotifierProvider(
+  //     create: (context) => StateManager(),
+  //     child: const MyApp(),
+  //   ),
+  // );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -54,23 +49,7 @@ class MyApp extends StatelessWidget {
         textScaler: const TextScaler.linear(1.0),
       ),
       child: MultiBlocProvider(
-        providers: [
-          BlocProvider<RouteBloc>(
-            create: (context) => RouteBloc(),
-          ),
-          BlocProvider<CarouselBloc>(
-            create: (context) => CarouselBloc(),
-          ),
-          BlocProvider<LoginBloc>(
-            create: (context) => LoginBloc(),
-          ),
-          BlocProvider<FilterBloc>(
-            create: (context) => FilterBloc(),
-          ),
-          BlocProvider<CounterCubit>(
-            create: (context) => CounterCubit(),
-          ),
-        ],
+        providers: StateManager.getBlocProviders(),
         child: MaterialApp(
           title: 'SOP Mobile',
           scrollBehavior: MyCustomScrollBehavior(),

@@ -1,9 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class CounterCubit extends Cubit<int> {
-  CounterCubit() : super(1);
+class CounterCubit extends Cubit<Map<String, int>> {
+  CounterCubit() : super({});
 
-  void increment(int count) => emit(count + 1.clamp(0, 100));
-  void decrement(int count) => emit(count - 1.clamp(0, 100));
-  void setCount(int newCount) => emit(newCount.clamp(0, 100));
+  void increment(String type) => emit({...state, type: (state[type] ?? 1) + 1});
+  void decrement(String type) => emit({...state, type: (state[type] ?? 1) - 1});
+  // void setCount(int newCount) => emit(newCount.clamp(0, 100));
+
+  Map<String, int> getCount() => state;
 }

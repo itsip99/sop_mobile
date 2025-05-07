@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -8,8 +9,10 @@ import 'package:sop_mobile/presentation/state/counter/counter_cubit.dart';
 import 'package:sop_mobile/presentation/state/route/route_bloc.dart';
 import 'package:sop_mobile/presentation/state/route/route_event.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
+import 'package:sop_mobile/presentation/widgets/counter.dart';
 import 'package:sop_mobile/presentation/widgets/textformfield.dart';
 import 'package:sop_mobile/routes.dart';
+import 'package:dotted_border/dotted_border.dart';
 
 class BriefingScreen extends StatefulWidget {
   const BriefingScreen({super.key});
@@ -20,13 +23,12 @@ class BriefingScreen extends StatefulWidget {
 
 class _BriefingScreenState extends State<BriefingScreen> {
   final TextEditingController locationController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        // toolbarHeight: 100,
         elevation: 0.0,
         scrolledUnderElevation: 0.0,
         automaticallyImplyLeading: true,
@@ -78,128 +80,157 @@ class _BriefingScreenState extends State<BriefingScreen> {
               topRight: Radius.circular(20),
             ),
           ),
-          padding: const EdgeInsets.all(20),
-          child: Wrap(
-            runSpacing: 10,
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
+          child: Column(
             children: [
-              const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // ~:Page Title:~
-                  Text(
-                    'Informasi Briefing',
-                    style: TextThemes.subtitle,
-                  ),
+              // ~:Body Section:~
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: ListView(
+                    physics: const ClampingScrollPhysics(),
+                    children: [
+                      const Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // ~:Page Title:~
+                          Text(
+                            'Informasi Briefing',
+                            style: TextThemes.subtitle,
+                          ),
 
-                  // ~:Page Description:~
-                  Text(
-                    'Masukkan data untuk membuat laporan pagi.',
-                    style: TextThemes.normal,
-                  ),
-                ],
-              ),
+                          // ~:Page Description:~
+                          Text(
+                            'Masukkan data untuk membuat laporan pagi.',
+                            style: TextThemes.normal,
+                          ),
+                        ],
+                      ),
 
-              // ~:Location Textfield:~
-              CustomTextFormField(
-                'your location',
-                'Location',
-                const Icon(Icons.location_pin),
-                locationController,
-                inputFormatters: [Formatter.normalFormatter],
-              ),
+                      // ~:Location Textfield:~
+                      CustomTextFormField(
+                        'your location',
+                        'Location',
+                        const Icon(Icons.location_pin),
+                        locationController,
+                        inputFormatters: [Formatter.normalFormatter],
+                      ),
 
-              // ~:Counter Section:~
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Jumlah Peserta',
-                    style: TextThemes.subtitle,
-                  ),
-                  BlocBuilder<CounterCubit, int>(
-                    builder: (context, count) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: ConstantColors.primaryColor1,
-                          borderRadius: BorderRadius.circular(10),
+                      // ~:Counter Section:~
+                      Wrap(
+                        runSpacing: 10,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          // ~:Total Person:~
+                          Counter.person(context, 'total', 'Jumlah Peserta'),
+
+                          // ~:Number of Shop Manager:~
+                          Counter.person(
+                              context, 'shop_manager', 'Shop Manager'),
+
+                          // ~:Number of Sales Counter:~
+                          Counter.person(
+                              context, 'sales_counter', 'Sales Counter'),
+
+                          // ~:Number of Salesman:~
+                          Counter.person(context, 'salesman', 'Salesman'),
+
+                          // ~:Number of Others:~
+                          Counter.person(context, 'others', 'Other'),
+                        ],
+                      ),
+
+                      // ~:Description Section:~
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: TextField(
+                          controller: descriptionController,
+                          maxLines: 8,
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: ConstantColors.primaryColor2,
+                            hintText: 'Enter your description',
+                            border: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Colors.black,
+                                width: 2.0,
+                              ),
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            hintStyle: TextThemes.textfieldPlaceholder,
+                            labelText: 'Description',
+                            labelStyle: TextThemes.textfieldPlaceholder,
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                          ),
                         ),
-                        padding: const EdgeInsets.all(8),
-                        child: Wrap(
-                          spacing: 12,
-                          alignment: WrapAlignment.center,
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          children: [
-                            InkWell(
-                              onTap: () =>
-                                  context.read<CounterCubit>().decrement(count),
-                              borderRadius: BorderRadius.circular(16),
-                              child: Container(
-                                width: 32,
-                                height: 32,
-                                alignment: Alignment.center,
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  color: ConstantColors.primaryColor2,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: const Icon(
-                                  Icons.remove,
-                                  size: 16,
-                                ),
+                      ),
+
+                      // ~:Image Section:~
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: InkWell(
+                          onTap: () {},
+                          child: DottedBorder(
+                            color: ConstantColors.primaryColor3,
+                            strokeWidth: 2,
+                            dashPattern: const [4, 4],
+                            borderType: BorderType.RRect,
+                            radius: const Radius.circular(16),
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width,
+                              height: 80,
+                              child: const Wrap(
+                                spacing: 8,
+                                alignment: WrapAlignment.center,
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                runAlignment: WrapAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.camera_alt_rounded,
+                                    size: 20,
+                                  ),
+                                  Text(
+                                    'Upload Foto',
+                                    style: TextThemes.subtitle,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
                               ),
                             ),
-                            Text(
-                              '$count orang',
-                              style: TextThemes.normal,
-                            ),
-                            // TextFormField(
-                            //   controller: personController,
-                            //   keyboardType: TextInputType.number,
-                            //   decoration: const InputDecoration(
-                            //     border: OutlineInputBorder(),
-                            //     hintText: 'Enter a number',
-                            //   ),
-                            //   onChanged: (value) {
-                            //     // Dispatch event to update Cubit state
-                            //     final newCount = int.tryParse(value) ?? count;
-                            //     context.read<CounterCubit>().setCount(newCount);
-                            //   },
-                            //   validator: (value) {
-                            //     if (value == null || value.isEmpty) {
-                            //       return 'Please enter a number';
-                            //     }
-                            //     final parsedValue = int.tryParse(value);
-                            //     if (parsedValue == null) {
-                            //       return 'Invalid number';
-                            //     }
-                            //     return null;
-                            //   },
-                            // ),
-                            InkWell(
-                              onTap: () =>
-                                  context.read<CounterCubit>().increment(count),
-                              borderRadius: BorderRadius.circular(16),
-                              child: Container(
-                                width: 32,
-                                height: 32,
-                                alignment: Alignment.center,
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  color: ConstantColors.primaryColor2,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: const Icon(
-                                  Icons.add,
-                                  size: 16,
-                                ),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                      );
-                    },
+                      ),
+                    ],
                   ),
-                ],
+                ),
+              ),
+
+              // ~:Footer Section:~
+              ElevatedButton(
+                onPressed: () {
+                  log('');
+                  context.read<CounterCubit>().getCount().forEach((key, value) {
+                    log(value.toString());
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: ConstantColors.primaryColor1,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 10,
+                    horizontal: 20,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: const Text(
+                    'Buat',
+                    style: TextThemes.subtitle,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               ),
             ],
           ),

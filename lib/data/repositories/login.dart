@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:sop_mobile/core/constant/api.dart';
-import 'package:sop_mobile/data/models/login_model.dart';
+import 'package:sop_mobile/data/models/login.dart';
 import 'package:sop_mobile/domain/repositories/login.dart';
 import 'package:http/http.dart' as http;
 

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:sop_mobile/core/constant/colors.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_bloc.dart';
+import 'package:sop_mobile/presentation/state/filter/filter_event.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_state.dart';
 import 'package:sop_mobile/presentation/state/login/login_bloc.dart';
 import 'package:sop_mobile/presentation/state/login/login_event.dart';
@@ -266,13 +267,35 @@ class _HomeScreenState extends State<HomeScreen> {
                 Expanded(
                   child: BlocBuilder<FilterBloc, FilterState>(
                     builder: (context, state) {
-                      return Container(
-                        width: MediaQuery.of(context).size.width,
-                        alignment: Alignment.center,
-                        child: Text(
-                          state.activeFilter.toString(),
-                          textAlign: TextAlign.center,
-                        ),
+                      context
+                          .read<FilterBloc>()
+                          .add(LoadFilterData(state.activeFilter));
+
+                      if (state is FilterLoading) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (state is FilterSuccess) {
+                        return Container(
+                          width: MediaQuery.of(context).size.width,
+                          alignment: Alignment.center,
+                          child: BlocBuilder<FilterBloc, FilterState>(
+                            builder: (context, state) {
+                              return const Text(
+                                'Success',
+                                textAlign: TextAlign.center,
+                              );
+                            },
+                          ),
+                        );
+                      } else if (state is FilterError) {
+                        return Center(
+                          child: Text(state.errorMessage),
+                        );
+                      }
+
+                      return const Center(
+                        child: Text('Something went wrong!'),
                       );
                     },
                   ),

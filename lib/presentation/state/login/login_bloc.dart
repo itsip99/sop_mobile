@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sop_mobile/data/models/login_model.dart';
+import 'package:sop_mobile/data/models/login.dart';
 import 'package:sop_mobile/data/repositories/login.dart';
 import 'package:sop_mobile/data/repositories/storage.dart';
 import 'package:sop_mobile/presentation/state/login/login_event.dart';

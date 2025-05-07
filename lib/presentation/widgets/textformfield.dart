@@ -15,6 +15,7 @@ class CustomTextFormField extends StatefulWidget {
     this.validatorType = '',
     this.enableUpperCaseText = false,
     this.inputFormatters = const [],
+    this.isLabelFloat = false,
     super.key,
   });
 
@@ -28,6 +29,7 @@ class CustomTextFormField extends StatefulWidget {
   final String validatorType;
   final bool enableUpperCaseText;
   final List<TextInputFormatter> inputFormatters;
+  final bool isLabelFloat;
 
   @override
   State<CustomTextFormField> createState() => _CustomTextFormFieldState();
@@ -64,12 +66,15 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
             hintStyle: TextThemes.textfieldPlaceholder,
             hintText: 'Enter ${widget.hintText}',
             labelText: widget.labelText,
+            floatingLabelBehavior: widget.isLabelFloat
+                ? FloatingLabelBehavior.always
+                : FloatingLabelBehavior.auto,
             border: const OutlineInputBorder(
               borderSide: BorderSide(color: Colors.black, width: 2.0),
               borderRadius: BorderRadius.all(Radius.circular(10.0)),
             ),
             prefixIcon: widget.prefixIcon,
-            helperText: ' ',
+            helperText: widget.enableValidator ? ' ' : null,
             helperStyle: const TextStyle(height: 1),
             errorStyle: const TextStyle(height: 1),
           ),

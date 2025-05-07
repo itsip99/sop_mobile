@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:sop_mobile/data/models/login_model.dart';
+import 'package:sop_mobile/data/models/login.dart';
 import 'package:sop_mobile/presentation/state/base_state.dart';
 
 abstract class LoginState extends BaseState with EquatableMixin {
