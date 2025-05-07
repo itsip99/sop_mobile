@@ -1,15 +1,14 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:http/http.dart' as http;
 import 'package:sop_mobile/core/constant/api.dart';
 import 'package:sop_mobile/data/models/briefing.dart';
 import 'package:sop_mobile/domain/repositories/filter.dart';
 
 class FilterRepoImp extends FilterRepo {
-  get http => null;
-
   @override
-  Future<Map<String, dynamic>> fetchData(
+  Future<Map<String, dynamic>> fetchBriefingData(
     String username,
     String date,
   ) async {
@@ -37,45 +36,50 @@ class FilterRepoImp extends FilterRepo {
       final res = jsonDecode(response.body);
       log("${res['Msg']}, ${res['Code']}");
       if (res['Msg'] == 'Sukses' && res['Code'] == '100') {
-        log('Success');
+        log('Briefing fetch success');
+        final List<BriefingModel> data = (res['Data'] as List)
+            .map((e) => BriefingModel.fromJson(e))
+            .toList();
         return {
           'status': 'success',
-          'data': BriefingModel.fromJson(res['Data'][0]),
+          'data': data,
         };
       } else {
-        log('Fail');
+        log('Briefing fetch fail');
         return {
           'status': 'fail',
-          'data': BriefingModel(
-            date: '',
-            location: '',
-            participants: 0,
-            shopManager: 0,
-            salesCounter: 0,
-            salesman: 0,
-            others: 0,
-            topic: '',
-            pic: '',
-            picThumb: '',
-          ),
+          // 'data': BriefingModel(
+          //   date: '',
+          //   location: '',
+          //   participants: 0,
+          //   shopManager: 0,
+          //   salesCounter: 0,
+          //   salesman: 0,
+          //   others: 0,
+          //   topic: '',
+          //   pic: '',
+          //   picThumb: '',
+          // ),
+          'data': [],
         };
       }
     } else {
       log('Response: ${response.statusCode}');
       return {
         'status': 'fail',
-        'data': BriefingModel(
-          date: '',
-          location: '',
-          participants: 0,
-          shopManager: 0,
-          salesCounter: 0,
-          salesman: 0,
-          others: 0,
-          topic: '',
-          pic: '',
-          picThumb: '',
-        ),
+        // 'data': BriefingModel(
+        //   date: '',
+        //   location: '',
+        //   participants: 0,
+        //   shopManager: 0,
+        //   salesCounter: 0,
+        //   salesman: 0,
+        //   others: 0,
+        //   topic: '',
+        //   pic: '',
+        //   picThumb: '',
+        // ),
+        'data': [],
       };
     }
   }

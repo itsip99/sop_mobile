@@ -64,6 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
         height: MediaQuery.of(context).size.height,
         color: ConstantColors.primaryColor1,
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             // ~:Header:~
             SizedBox(
@@ -76,10 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 runAlignment: WrapAlignment.center,
                 children: [
                   // ~:Logo Section:~
-                  Logo.rounded1(
-                    context,
-                    'assets/images/figma.png',
-                  ),
+                  Logo.rounded1(context, 'assets/images/figma.png'),
 
                   // ~:Welcome Statement:~
                   Wrap(
@@ -97,9 +95,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
             ),
-
-            // ~:Divider:~
-            const SizedBox(height: 15),
 
             // ~:Body:~
             Expanded(
@@ -123,131 +118,133 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     // ~:Body Content:~
                     Expanded(
-                      child: Column(
-                        children: [
-                          // ~:Login Section:~
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width,
-                            child: Column(
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        child: Wrap(
+                          runSpacing: 10,
+                          children: [
+                            // ~:Login Section:~
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // ~:Login Title:~
+                                  CustomText.title(text: 'Login'),
+
+                                  // ~:Login Subtitle:~
+                                  CustomText.subtitle(
+                                    text: 'Please enter your credentials',
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            // ~:Login Form:~
+                            Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // ~:Login Title:~
-                                CustomText.title(text: 'Login'),
+                                // ~:Email TextField:~
+                                CustomTextFormField(
+                                  'your username',
+                                  'Username',
+                                  const Icon(Icons.person),
+                                  usernameController,
+                                  enableValidator: true,
+                                  validatorType: 'username',
+                                  enableUpperCaseText: true,
+                                  inputFormatters: [
+                                    CapitalFormatter(),
+                                    Formatter.capitalFormatter,
+                                  ],
+                                ),
 
-                                // ~:Login Subtitle:~
-                                CustomText.subtitle(
-                                  text: 'Please enter your credentials',
+                                // ~:Password TextField:~
+                                CustomTextFormField(
+                                  'your password',
+                                  'Password',
+                                  const Icon(Icons.lock),
+                                  passwordController,
+                                  isPassword: true,
+                                  enableValidator: true,
+                                  validatorType: 'password',
+                                  inputFormatters: [Formatter.normalFormatter],
                                 ),
                               ],
                             ),
-                          ),
 
-                          // ~:Divider:~
-                          const SizedBox(height: 10),
+                            // ~:Divider:~
+                            const SizedBox(height: 15),
 
-                          // ~:Login Form:~
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // ~:Email TextField:~
-                              CustomTextFormField(
-                                'your username',
-                                'Username',
-                                const Icon(Icons.person),
-                                usernameController,
-                                enableValidator: true,
-                                validatorType: 'username',
-                                enableUpperCaseText: true,
-                                inputFormatters: [
-                                  CapitalFormatter(),
-                                  Formatter.capitalFormatter,
-                                ],
-                              ),
-
-                              // ~:Password TextField:~
-                              CustomTextFormField(
-                                'your password',
-                                'Password',
-                                const Icon(Icons.lock),
-                                passwordController,
-                                isPassword: true,
-                                enableValidator: true,
-                                validatorType: 'password',
-                                inputFormatters: [Formatter.normalFormatter],
-                              ),
-                            ],
-                          ),
-
-                          // ~:Divider:~
-                          const SizedBox(height: 15),
-
-                          // ~:Button Section:~
-                          BlocConsumer<LoginBloc, LoginState>(
-                            listener: (context, state) {
-                              if (state is LoginSuccess) {
-                                log('Login Success.');
-                                // log(state.login);
-                                Navigator.pushReplacementNamed(
-                                  context,
-                                  '/home',
-                                );
-                              } else if (state is LoginFailure) {
-                                log('Login Failed: ${state.error}');
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(state.error),
-                                  ),
-                                );
-                                Navigator.pushReplacementNamed(
-                                  context,
-                                  '/login',
-                                );
-                              }
-                            },
-                            builder: (context, state) {
-                              if (state is LoginLoading) {
-                                return CustomButton.primaryButton2(
-                                  context: context,
-                                  text: 'Sign In',
-                                  func: () => context.read<LoginBloc>().add(
-                                        LoginButtonPressed(
-                                          username: usernameController.text,
-                                          password: passwordController.text,
+                            // ~:Button Section:~
+                            BlocConsumer<LoginBloc, LoginState>(
+                              listener: (context, state) {
+                                if (state is LoginSuccess) {
+                                  log('Login Success.');
+                                  // log(state.login);
+                                  Navigator.pushReplacementNamed(
+                                    context,
+                                    '/home',
+                                  );
+                                } else if (state is LoginFailure) {
+                                  log('Login Failed: ${state.error}');
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(state.error),
+                                    ),
+                                  );
+                                  Navigator.pushReplacementNamed(
+                                    context,
+                                    '/login',
+                                  );
+                                }
+                              },
+                              builder: (context, state) {
+                                if (state is LoginLoading) {
+                                  return CustomButton.primaryButton2(
+                                    context: context,
+                                    text: 'Sign In',
+                                    func: () => context.read<LoginBloc>().add(
+                                          LoginButtonPressed(
+                                            username: usernameController.text,
+                                            password: passwordController.text,
+                                          ),
                                         ),
-                                      ),
-                                  bgColor: ConstantColors.primaryColor1,
-                                  textStyle: TextThemes.subtitle,
-                                  shadowColor: ConstantColors.shadowColor,
-                                  height: 40,
-                                  isLoading: true,
-                                );
-                              } else {
-                                return CustomButton.primaryButton2(
-                                  context: context,
-                                  text: 'Sign In',
-                                  func: () => context.read<LoginBloc>().add(
-                                        LoginButtonPressed(
-                                          username: usernameController.text,
-                                          password: passwordController.text,
+                                    bgColor: ConstantColors.primaryColor1,
+                                    textStyle: TextThemes.subtitle,
+                                    shadowColor: ConstantColors.shadowColor,
+                                    height: 40,
+                                    isLoading: true,
+                                  );
+                                } else {
+                                  return CustomButton.primaryButton2(
+                                    context: context,
+                                    text: 'Sign In',
+                                    func: () => context.read<LoginBloc>().add(
+                                          LoginButtonPressed(
+                                            username: usernameController.text,
+                                            password: passwordController.text,
+                                          ),
                                         ),
-                                      ),
-                                  bgColor: ConstantColors.primaryColor1,
-                                  textStyle: TextThemes.subtitle,
-                                  shadowColor: ConstantColors.shadowColor,
-                                  height: 40,
-                                );
-                              }
-                            },
-                          ),
-                        ],
+                                    bgColor: ConstantColors.primaryColor1,
+                                    textStyle: TextThemes.subtitle,
+                                    shadowColor: ConstantColors.shadowColor,
+                                    height: 40,
+                                  );
+                                }
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     ),
 
                     // ~:Body Footer:~
                     SizedBox(
                       width: MediaQuery.of(context).size.width,
+                      height: 45,
                       child: Wrap(
                         direction: Axis.vertical,
                         alignment: WrapAlignment.center,

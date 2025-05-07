@@ -265,39 +265,76 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 // ~:Acts Section:~
                 Expanded(
-                  child: BlocBuilder<FilterBloc, FilterState>(
-                    builder: (context, state) {
-                      context
-                          .read<FilterBloc>()
-                          .add(LoadFilterData(state.activeFilter));
-
-                      if (state is FilterLoading) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      } else if (state is FilterSuccess) {
-                        return Container(
-                          width: MediaQuery.of(context).size.width,
-                          alignment: Alignment.center,
-                          child: BlocBuilder<FilterBloc, FilterState>(
-                            builder: (context, state) {
-                              return const Text(
-                                'Success',
-                                textAlign: TextAlign.center,
-                              );
-                            },
-                          ),
-                        );
-                      } else if (state is FilterError) {
-                        return Center(
-                          child: Text(state.errorMessage),
-                        );
+                  // child: BlocListener<FilterBloc, FilterState>(
+                  //   listener: (context, state) {
+                  //     log('Filter State: ${state.activeFilter}');
+                  //     context
+                  //         .read<FilterBloc>()
+                  //         .add(LoadFilterData(state.activeFilter));
+                  //   },
+                  //   listenWhen: (previous, current) =>
+                  //       current is FilterAdded ||
+                  //       current is FilterRemoved ||
+                  //       current is FilterInitial,
+                  //   child: const Text(''),
+                  // ),
+                  // child: BlocBuilder<FilterBloc, FilterState>(
+                  //   builder: (context, state) {
+                  //     return Container(
+                  //       width: MediaQuery.of(context).size.width,
+                  //       alignment: Alignment.center,
+                  //       child: Text(
+                  //         state.activeFilter.toString(),
+                  //         textAlign: TextAlign.center,
+                  //       ),
+                  //     );
+                  //   },
+                  // ),
+                  child: BlocListener<FilterBloc, FilterState>(
+                    listener: (context, state) {
+                      if (state is FilterSuccess || state is FilterError) {
+                        // No action needed here (data is already fetched)
+                      } else if (state is FilterLoading &&
+                          context
+                              .read<FilterBloc>()
+                              .state
+                              .activeFilter
+                              .isNotEmpty) {
+                        // Dispatch event to fetch data for the new filter
+                        context
+                            .read<FilterBloc>()
+                            .add(LoadFilterData(state.activeFilter));
                       }
-
-                      return const Center(
-                        child: Text('Something went wrong!'),
-                      );
                     },
+                    child: BlocBuilder<FilterBloc, FilterState>(
+                      builder: (context, state) {
+                        if (state is FilterLoading) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else if (state is FilterSuccess) {
+                          return Container(
+                            width: MediaQuery.of(context).size.width,
+                            alignment: Alignment.center,
+                            child: const Text(
+                              'Success',
+                              textAlign: TextAlign.center,
+                            ),
+                          );
+                        } else if (state is FilterError) {
+                          return Text("Error: ${state.errorMessage}");
+                        } else {
+                          return Container(
+                            width: MediaQuery.of(context).size.width,
+                            alignment: Alignment.center,
+                            child: Text(
+                              state.activeFilter.toString(),
+                              textAlign: TextAlign.center,
+                            ),
+                          );
+                        }
+                      },
+                    ),
                   ),
                 ),
               ],

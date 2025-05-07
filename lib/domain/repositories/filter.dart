@@ -1,3 +1,3 @@
 abstract class FilterRepo {
-  Future<Map<String, dynamic>> fetchData(String username, String date);
+  Future<Map<String, dynamic>> fetchBriefingData(String username, String date);
 }
