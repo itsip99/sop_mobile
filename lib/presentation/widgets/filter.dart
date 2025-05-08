@@ -21,6 +21,7 @@ class Filter {
       bloc.add(FilterRemoved(filterType));
     } else {
       bloc.add(FilterAdded(filterType));
+      // bloc.add(LoadFilterData(filterType)); -> error
     }
   }
 
@@ -48,42 +49,45 @@ class Filter {
                 children: [
                   // ~:Morning Briefing:~
                   BlocBuilder<FilterBloc, FilterState>(
-                      builder: (context, state) {
-                    final isActive =
-                        state.activeFilter.contains(FilterType.briefing);
+                    builder: (context, state) {
+                      final isActive =
+                          state.activeFilter.contains(FilterType.briefing);
 
-                    return FilterButton.textButton(
-                      () => filterButton(context, FilterType.briefing),
-                      'Morning Briefing',
-                      isActive,
-                    );
-                  }),
+                      return FilterButton.textButton(
+                        () => filterButton(context, FilterType.briefing),
+                        'Morning Briefing',
+                        isActive,
+                      );
+                    },
+                  ),
 
                   // ~:Daily Report:~
                   BlocBuilder<FilterBloc, FilterState>(
-                      builder: (context, state) {
-                    final isActive =
-                        state.activeFilter.contains(FilterType.report);
+                    builder: (context, state) {
+                      final isActive =
+                          state.activeFilter.contains(FilterType.report);
 
-                    return FilterButton.textButton(
-                      () => filterButton(context, FilterType.report),
-                      'Daily Report',
-                      isActive,
-                    );
-                  }),
+                      return FilterButton.textButton(
+                        () => filterButton(context, FilterType.report),
+                        'Daily Report',
+                        isActive,
+                      );
+                    },
+                  ),
 
                   // ~:Salesman:~
                   BlocBuilder<FilterBloc, FilterState>(
-                      builder: (context, state) {
-                    final isActive =
-                        state.activeFilter.contains(FilterType.salesman);
+                    builder: (context, state) {
+                      final isActive =
+                          state.activeFilter.contains(FilterType.salesman);
 
-                    return FilterButton.textButton(
-                      () => filterButton(context, FilterType.salesman),
-                      'Salesman',
-                      isActive,
-                    );
-                  }),
+                      return FilterButton.textButton(
+                        () => filterButton(context, FilterType.salesman),
+                        'Salesman',
+                        isActive,
+                      );
+                    },
+                  ),
 
                   // ~:Date:~
                   FilterButton.dateButton(() {}, '30-04-2025'),

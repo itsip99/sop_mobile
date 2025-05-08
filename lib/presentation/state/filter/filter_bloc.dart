@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sop_mobile/data/models/briefing.dart';
+import 'package:sop_mobile/data/models/user.dart';
 import 'package:sop_mobile/data/repositories/filter.dart';
 import 'package:sop_mobile/data/repositories/storage.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_event.dart';
@@ -19,10 +20,13 @@ class FilterBloc<BaseEvent, BaseState> extends Bloc<FilterEvent, FilterState> {
     Emitter<FilterState> emit,
   ) async {
     final currentFilter = state.activeFilter;
-    if (!currentFilter.contains(event.selectedFilter)) {
-      emit(FilterLoading());
-      emit(FilterState([...currentFilter, event.selectedFilter]));
-    }
+    emit(FilterLoading());
+    emit(FilterState([...currentFilter, event.selectedFilter]));
+    emit(AddFilter());
+    // if (!currentFilter.contains(event.selectedFilter)) {
+    //   emit(FilterLoading());
+    //   emit(FilterState([...currentFilter, event.selectedFilter]));
+    // }
   }
 
   Future<void> removeFilterHandler(
@@ -34,6 +38,7 @@ class FilterBloc<BaseEvent, BaseState> extends Bloc<FilterEvent, FilterState> {
     emit(FilterState(
       currentFilter.where((e) => e != event.unselectFilter).toList(),
     ));
+    emit(RemoveFilter());
   }
 
   Future<void> fetchDataHandler(
@@ -43,13 +48,13 @@ class FilterBloc<BaseEvent, BaseState> extends Bloc<FilterEvent, FilterState> {
     emit(FilterLoading());
     try {
       // Simulate a network call or data fetching
-      List<String> userCredentials =
+      UserCredsModel userCredentials =
           await StorageRepoImp().getUserCredentials();
 
-      if (userCredentials[0] != '') {
-        log('Username: ${userCredentials[0]}');
+      if (userCredentials.username != '') {
+        log('Username: ${userCredentials.username}');
         Map<String, dynamic> filterData = await FilterRepoImp()
-            .fetchBriefingData(userCredentials[0], '2025-05-05');
+            .fetchBriefingData(userCredentials.username, '2025-05-05');
 
         if (filterData['status'] == 'success') {
           log('Data fetched successfully');

@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sop_mobile/data/models/login.dart';
+import 'package:sop_mobile/data/models/user.dart';
 import 'package:sop_mobile/data/repositories/login.dart';
 import 'package:sop_mobile/data/repositories/storage.dart';
 import 'package:sop_mobile/presentation/state/login/login_event.dart';
@@ -18,13 +19,15 @@ class LoginBloc<BaseEvent, BaseState> extends Bloc<LoginEvent, LoginState> {
   ) async {
     emit(LoginLoading());
     try {
-      List<String> userCredentials =
+      UserCredsModel userCredentials =
           await StorageRepoImp().getUserCredentials();
 
-      if (userCredentials[0] != '' && userCredentials[1] != '') {
+      if (userCredentials.username != '' && userCredentials.password != '') {
         // Simulate a network call
-        Map<String, dynamic> user =
-            await LoginRepoImp().login(userCredentials[0], userCredentials[1]);
+        Map<String, dynamic> user = await LoginRepoImp().login(
+          userCredentials.username,
+          userCredentials.password,
+        );
 
         if (user['status'] == 'success') {
           // Emit success state with user data

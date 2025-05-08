@@ -1,4 +1,5 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:sop_mobile/data/models/user.dart';
 import 'package:sop_mobile/domain/repositories/storage.dart';
 
 class StorageRepoImp implements StorageRepo {
@@ -14,11 +15,11 @@ class StorageRepoImp implements StorageRepo {
   }
 
   @override
-  Future<List<String>> getUserCredentials() async {
+  Future<UserCredsModel> getUserCredentials() async {
     String username = await storage.read(key: 'username') ?? '';
     String password = await storage.read(key: 'password') ?? '';
 
-    return [username, password];
+    return UserCredsModel(username: username, password: password);
   }
 
   @override

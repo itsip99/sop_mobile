@@ -1,14 +1,4 @@
 class BriefingModel {
-  // "TransDate": "2025-05-05",
-  //     "Lokasi": "SHOWROOM",
-  //     "Peserta": 10,
-  //     "SM": 1,
-  //     "SC": 1,
-  //     "Salesman": 9,
-  //     "Other": 0,
-  //     "Topic": "Test Data",
-  //     "Pic1": "XXXXXX",
-  //     "PicThumb": "XXXXX"
   final String date;
   final String location;
   final int participants;

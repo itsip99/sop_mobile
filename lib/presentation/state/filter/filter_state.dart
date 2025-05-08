@@ -18,18 +18,26 @@ class FilterInitial extends FilterState {
   // FilterType get getFilterInitial => activeFilter;
 }
 
+class AddFilter extends FilterState {
+  AddFilter() : super([]);
+}
+
+class RemoveFilter extends FilterState {
+  RemoveFilter() : super([]);
+}
+
 // ~:NEW::~
 class FilterLoading extends FilterState {
   FilterLoading() : super([FilterType.briefing]);
 }
 
 class FilterSuccess extends FilterState {
-  final List<BriefingModel> data;
+  final List<BriefingModel> briefingData;
 
-  FilterSuccess(this.data) : super([FilterType.briefing]);
+  FilterSuccess(this.briefingData) : super([FilterType.briefing]);
 
   @override
-  List<BriefingModel> get props => data;
+  List<BriefingModel> get props => briefingData;
 }
 
 class FilterError extends FilterState {

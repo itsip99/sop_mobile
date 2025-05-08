@@ -1,11 +1,11 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:sop_mobile/core/constant/colors.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_bloc.dart';
-import 'package:sop_mobile/presentation/state/filter/filter_event.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_state.dart';
 import 'package:sop_mobile/presentation/state/login/login_bloc.dart';
 import 'package:sop_mobile/presentation/state/login/login_event.dart';
@@ -14,7 +14,9 @@ import 'package:sop_mobile/presentation/state/route/route_bloc.dart';
 import 'package:sop_mobile/presentation/state/route/route_event.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
 import 'package:sop_mobile/presentation/widgets/buttons.dart';
+import 'package:sop_mobile/presentation/widgets/card.dart';
 import 'package:sop_mobile/presentation/widgets/filter.dart';
+import 'package:sop_mobile/presentation/widgets/loading.dart';
 import 'package:sop_mobile/routes.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -267,76 +269,141 @@ class _HomeScreenState extends State<HomeScreen> {
                 Expanded(
                   // child: BlocListener<FilterBloc, FilterState>(
                   //   listener: (context, state) {
-                  //     log('Filter State: ${state.activeFilter}');
-                  //     context
-                  //         .read<FilterBloc>()
-                  //         .add(LoadFilterData(state.activeFilter));
+                  //     if (state is FilterLoading &&
+                  //         context
+                  //             .read<FilterBloc>()
+                  //             .state
+                  //             .activeFilter
+                  //             .isNotEmpty) {
+                  //       context.read<FilterBloc>().add(LoadFilterData());
+                  //     }
                   //   },
-                  //   listenWhen: (previous, current) =>
-                  //       current is FilterAdded ||
-                  //       current is FilterRemoved ||
-                  //       current is FilterInitial,
-                  //   child: const Text(''),
-                  // ),
-                  // child: BlocBuilder<FilterBloc, FilterState>(
-                  //   builder: (context, state) {
-                  //     return Container(
-                  //       width: MediaQuery.of(context).size.width,
-                  //       alignment: Alignment.center,
-                  //       child: Text(
-                  //         state.activeFilter.toString(),
-                  //         textAlign: TextAlign.center,
-                  //       ),
-                  //     );
-                  //   },
-                  // ),
-                  child: BlocListener<FilterBloc, FilterState>(
-                    listener: (context, state) {
-                      if (state is FilterSuccess || state is FilterError) {
-                        // No action needed here (data is already fetched)
-                      } else if (state is FilterLoading &&
-                          context
-                              .read<FilterBloc>()
-                              .state
-                              .activeFilter
-                              .isNotEmpty) {
-                        // Dispatch event to fetch data for the new filter
-                        context
-                            .read<FilterBloc>()
-                            .add(LoadFilterData(state.activeFilter));
+                  child: BlocBuilder<FilterBloc, FilterState>(
+                    builder: (context, state) {
+                      if (state is FilterLoading) {
+                        return Builder(
+                          builder: (context) {
+                            if (Platform.isIOS) {
+                              return Loading.ios(
+                                radiusConfig: 13,
+                                circleColor: ConstantColors.primaryColor3,
+                              );
+                            } else {
+                              return Loading.android(
+                                widthConfig: 28,
+                                heightConfig: 28,
+                                strokeConfig: 3.5,
+                                circleColor: ConstantColors.primaryColor3,
+                              );
+                            }
+                          },
+                        );
+                      } else if (state is FilterSuccess) {
+                        return ListView.builder(
+                          controller: scrollController,
+                          itemCount: state.briefingData.length,
+                          itemBuilder: (context, index) {
+                            final briefing = state.briefingData[index];
+
+                            return CustomCard.card(
+                              context,
+                              MediaQuery.of(context).size.width,
+                              Alignment.center,
+                              ConstantColors.primaryColor3,
+                              ConstantColors.primaryColor2,
+                              ConstantColors.shadowColor,
+                              const ClampingScrollPhysics(),
+                              borderWidth: 1.5,
+                              marginConfig: 20,
+                              [
+                                CustomCard.brief(
+                                  context,
+                                  'Lokasi',
+                                  briefing.location,
+                                  padHorizontal: 8,
+                                ),
+
+                                CustomCard.brief(
+                                  context,
+                                  'Peserta',
+                                  '${briefing.participants} orang',
+                                  padHorizontal: 8,
+                                ),
+
+                                CustomCard.brief(
+                                  context,
+                                  'Shop Manager',
+                                  '${briefing.shopManager} orang',
+                                  padHorizontal: 8,
+                                ),
+
+                                CustomCard.brief(
+                                  context,
+                                  'Sales Counter',
+                                  '${briefing.salesCounter} orang',
+                                  padHorizontal: 8,
+                                ),
+
+                                CustomCard.brief(
+                                  context,
+                                  'Salesman',
+                                  '${briefing.salesman} orang',
+                                  padHorizontal: 8,
+                                ),
+
+                                CustomCard.brief(
+                                  context,
+                                  'Others',
+                                  '${briefing.others} orang',
+                                  padHorizontal: 8,
+                                ),
+
+                                CustomCard.brief(
+                                  context,
+                                  'Description',
+                                  briefing.topic,
+                                  isHorizontal: false,
+                                  padHorizontal: 8,
+                                ),
+
+                                // ~:Image:~
+                                CustomCard.button(
+                                  context,
+                                  () {},
+                                  MediaQuery.of(context).size.width,
+                                  30,
+                                  Alignment.center,
+                                  'Lihat Gambar',
+                                  TextThemes.normal,
+                                  ConstantColors.primaryColor1,
+                                  8,
+                                  8,
+                                  20,
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      } else if (state is FilterError) {
+                        return Text(
+                          "Error: ${state.errorMessage}",
+                          style: TextThemes.normal,
+                        );
+                      } else {
+                        return Container(
+                          width: MediaQuery.of(context).size.width,
+                          alignment: Alignment.center,
+                          child: const Text(
+                            'No Filter Selected',
+                            style: TextThemes.normal,
+                            textAlign: TextAlign.center,
+                          ),
+                        );
                       }
                     },
-                    child: BlocBuilder<FilterBloc, FilterState>(
-                      builder: (context, state) {
-                        if (state is FilterLoading) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        } else if (state is FilterSuccess) {
-                          return Container(
-                            width: MediaQuery.of(context).size.width,
-                            alignment: Alignment.center,
-                            child: const Text(
-                              'Success',
-                              textAlign: TextAlign.center,
-                            ),
-                          );
-                        } else if (state is FilterError) {
-                          return Text("Error: ${state.errorMessage}");
-                        } else {
-                          return Container(
-                            width: MediaQuery.of(context).size.width,
-                            alignment: Alignment.center,
-                            child: Text(
-                              state.activeFilter.toString(),
-                              textAlign: TextAlign.center,
-                            ),
-                          );
-                        }
-                      },
-                    ),
                   ),
                 ),
+                // ),
               ],
             ),
           ),
