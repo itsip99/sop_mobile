@@ -28,25 +28,26 @@ class RemoveFilter extends FilterState {
 
 // ~:NEW::~
 class FilterLoading extends FilterState {
-  FilterLoading() : super([FilterType.briefing]);
+  FilterLoading(super.activeFilter); // retain active filter
 }
 
 class FilterSuccess extends FilterState {
   final List<BriefingModel> briefingData;
+  final List reportData;
+  final List salesData;
 
-  FilterSuccess(this.briefingData) : super([FilterType.briefing]);
-
-  @override
-  List<BriefingModel> get props => briefingData;
+  FilterSuccess(
+    super.activeFilter,
+    this.briefingData,
+    this.reportData,
+    this.salesData,
+  );
 }
 
 class FilterError extends FilterState {
   final String errorMessage;
 
-  FilterError(this.errorMessage) : super([FilterType.briefing]);
-
-  @override
-  List<String> get props => [errorMessage];
+  FilterError(super.activeFilter, this.errorMessage);
 }
 // ~:NEW::~
 

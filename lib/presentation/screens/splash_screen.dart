@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sop_mobile/core/constant/colors.dart';
+import 'package:sop_mobile/core/constant/enum.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_bloc.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_event.dart';
 import 'package:sop_mobile/presentation/state/login/login_bloc.dart';
@@ -56,9 +57,7 @@ class _SplashScreenState extends State<SplashScreen> {
         listener: (context, state) {
           if (state is LoginSuccess) {
             log('Data available');
-            context
-                .read<FilterBloc>()
-                .add(LoadFilterData(/*[FilterType.briefing]*/));
+            context.read<FilterBloc>().add(FilterAdded(FilterType.briefing));
             Navigator.pushReplacementNamed(context, ConstantRoutes.home);
           } else if (state is LoginFailure) {
             log('No data available');

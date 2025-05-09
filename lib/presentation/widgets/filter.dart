@@ -9,10 +9,10 @@ import 'package:sop_mobile/presentation/state/filter/filter_state.dart';
 import 'package:sop_mobile/presentation/widgets/filter_button.dart';
 
 class Filter {
-  static filterButton(
+  static Future<void> filterButton(
     BuildContext context,
     FilterType filterType,
-  ) {
+  ) async {
     final bloc = context.read<FilterBloc>();
     final blocState = bloc.state;
 
@@ -21,9 +21,24 @@ class Filter {
       bloc.add(FilterRemoved(filterType));
     } else {
       bloc.add(FilterAdded(filterType));
-      // bloc.add(LoadFilterData(filterType)); -> error
     }
   }
+
+  // static Future<void> fetchBriefData(
+  //   BuildContext context,
+  // ) async {
+  //   final bloc = context.read<FilterBloc>();
+  //
+  //   bloc.add(LoadBriefData());
+  // }
+  //
+  // static Future<void> fetchReportData(
+  //   BuildContext context,
+  // ) async {
+  //   final bloc = context.read<FilterBloc>();
+  //
+  //   bloc.add(LoadReportData());
+  // }
 
   static Widget type1(BuildContext context) {
     return SizedBox(
@@ -53,6 +68,9 @@ class Filter {
                       final isActive =
                           state.activeFilter.contains(FilterType.briefing);
 
+                      log('Active Filter: ${state.activeFilter}');
+
+                      // context.read<FilterBloc>().add(LoadFilterData());
                       return FilterButton.textButton(
                         () => filterButton(context, FilterType.briefing),
                         'Morning Briefing',
@@ -67,6 +85,8 @@ class Filter {
                       final isActive =
                           state.activeFilter.contains(FilterType.report);
 
+                      log('Active Filter: ${state.activeFilter}');
+
                       return FilterButton.textButton(
                         () => filterButton(context, FilterType.report),
                         'Daily Report',
@@ -80,6 +100,8 @@ class Filter {
                     builder: (context, state) {
                       final isActive =
                           state.activeFilter.contains(FilterType.salesman);
+
+                      log('Active Filter: ${state.activeFilter}');
 
                       return FilterButton.textButton(
                         () => filterButton(context, FilterType.salesman),

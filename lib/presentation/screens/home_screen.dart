@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:sop_mobile/core/constant/colors.dart';
+import 'package:sop_mobile/data/models/home.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_bloc.dart';
+import 'package:sop_mobile/presentation/state/filter/filter_event.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_state.dart';
 import 'package:sop_mobile/presentation/state/login/login_bloc.dart';
 import 'package:sop_mobile/presentation/state/login/login_event.dart';
@@ -267,43 +269,34 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 // ~:Acts Section:~
                 Expanded(
-                  // child: BlocListener<FilterBloc, FilterState>(
-                  //   listener: (context, state) {
-                  //     if (state is FilterLoading &&
-                  //         context
-                  //             .read<FilterBloc>()
-                  //             .state
-                  //             .activeFilter
-                  //             .isNotEmpty) {
-                  //       context.read<FilterBloc>().add(LoadFilterData());
-                  //     }
-                  //   },
                   child: BlocBuilder<FilterBloc, FilterState>(
                     builder: (context, state) {
                       if (state is FilterLoading) {
-                        return Builder(
-                          builder: (context) {
-                            if (Platform.isIOS) {
-                              return Loading.ios(
-                                radiusConfig: 13,
-                                circleColor: ConstantColors.primaryColor3,
-                              );
-                            } else {
-                              return Loading.android(
-                                widthConfig: 28,
-                                heightConfig: 28,
-                                strokeConfig: 3.5,
-                                circleColor: ConstantColors.primaryColor3,
-                              );
-                            }
-                          },
-                        );
+                        if (Platform.isIOS) {
+                          return Loading.ios(
+                            radiusConfig: 13,
+                            circleColor: ConstantColors.primaryColor3,
+                          );
+                        } else {
+                          return Loading.android(
+                            widthConfig: 28,
+                            heightConfig: 28,
+                            strokeConfig: 3.5,
+                            circleColor: ConstantColors.primaryColor3,
+                          );
+                        }
                       } else if (state is FilterSuccess) {
+                        final data = HomeModel(
+                          briefingData: state.briefingData,
+                          reportData: state.reportData,
+                          salesData: state.salesData,
+                        );
+
                         return ListView.builder(
                           controller: scrollController,
                           itemCount: state.briefingData.length,
                           itemBuilder: (context, index) {
-                            final briefing = state.briefingData[index];
+                            final briefing = data.briefingData[index];
 
                             return CustomCard.card(
                               context,
@@ -389,19 +382,171 @@ class _HomeScreenState extends State<HomeScreen> {
                           "Error: ${state.errorMessage}",
                           style: TextThemes.normal,
                         );
-                      } else {
-                        return Container(
-                          width: MediaQuery.of(context).size.width,
-                          alignment: Alignment.center,
-                          child: const Text(
-                            'No Filter Selected',
-                            style: TextThemes.normal,
-                            textAlign: TextAlign.center,
-                          ),
-                        );
                       }
+
+                      return Container(
+                        width: MediaQuery.of(context).size.width,
+                        alignment: Alignment.center,
+                        child: Text(
+                          state.activeFilter.toString(),
+                          style: TextThemes.normal,
+                          textAlign: TextAlign.center,
+                        ),
+                      );
                     },
                   ),
+                  // child: BlocListener<FilterBloc, FilterState>(
+                  //   listener: (context, state) {
+                  //     if (state is FilterLoading &&
+                  //         context
+                  //             .read<FilterBloc>()
+                  //             .state
+                  //             .activeFilter
+                  //             .isNotEmpty) {
+                  //       context.read<FilterBloc>().add(LoadFilterData());
+                  //     }
+                  //   },
+                  // child: BlocConsumer<FilterBloc, FilterState>(
+                  //   listener: (context, state) {
+                  //     log('Listening!');
+                  //     context.read<FilterBloc>().add(LoadFilterData());
+                  //     log('Fetched Data!');
+                  //   },
+                  //   listenWhen: (previous, current) {
+                  //     return previous.activeFilter != current.activeFilter;
+                  //   },
+                  //   buildWhen: (previous, current) {
+                  //     return current is FilterSuccess || current is FilterError;
+                  //   },
+                  //   builder: (context, state) {
+                  //     log('Fetch Latest Data with current filter: ${state.activeFilter}');
+                  //     return Container(
+                  //       width: MediaQuery.of(context).size.width,
+                  //       alignment: Alignment.center,
+                  //       child: Text(
+                  //         state.activeFilter.toString(),
+                  //         style: TextThemes.normal,
+                  //         textAlign: TextAlign.center,
+                  //       ),
+                  //     );
+                  //     // if (state is FilterLoading) {
+                  //     //   if (Platform.isIOS) {
+                  //     //     return Loading.ios(
+                  //     //       radiusConfig: 13,
+                  //     //       circleColor: ConstantColors.primaryColor3,
+                  //     //     );
+                  //     //   } else {
+                  //     //     return Loading.android(
+                  //     //       widthConfig: 28,
+                  //     //       heightConfig: 28,
+                  //     //       strokeConfig: 3.5,
+                  //     //       circleColor: ConstantColors.primaryColor3,
+                  //     //     );
+                  //     //   }
+                  //     // } else if (state is FilterSuccess) {
+                  //     //   return ListView.builder(
+                  //     //     controller: scrollController,
+                  //     //     itemCount: state.briefingData.length,
+                  //     //     itemBuilder: (context, index) {
+                  //     //       final briefing = state.briefingData[index];
+
+                  //     //       return CustomCard.card(
+                  //     //         context,
+                  //     //         MediaQuery.of(context).size.width,
+                  //     //         Alignment.center,
+                  //     //         ConstantColors.primaryColor3,
+                  //     //         ConstantColors.primaryColor2,
+                  //     //         ConstantColors.shadowColor,
+                  //     //         const ClampingScrollPhysics(),
+                  //     //         borderWidth: 1.5,
+                  //     //         marginConfig: 20,
+                  //     //         [
+                  //     //           CustomCard.brief(
+                  //     //             context,
+                  //     //             'Lokasi',
+                  //     //             briefing.location,
+                  //     //             padHorizontal: 8,
+                  //     //           ),
+
+                  //     //           CustomCard.brief(
+                  //     //             context,
+                  //     //             'Peserta',
+                  //     //             '${briefing.participants} orang',
+                  //     //             padHorizontal: 8,
+                  //     //           ),
+
+                  //     //           CustomCard.brief(
+                  //     //             context,
+                  //     //             'Shop Manager',
+                  //     //             '${briefing.shopManager} orang',
+                  //     //             padHorizontal: 8,
+                  //     //           ),
+
+                  //     //           CustomCard.brief(
+                  //     //             context,
+                  //     //             'Sales Counter',
+                  //     //             '${briefing.salesCounter} orang',
+                  //     //             padHorizontal: 8,
+                  //     //           ),
+
+                  //     //           CustomCard.brief(
+                  //     //             context,
+                  //     //             'Salesman',
+                  //     //             '${briefing.salesman} orang',
+                  //     //             padHorizontal: 8,
+                  //     //           ),
+
+                  //     //           CustomCard.brief(
+                  //     //             context,
+                  //     //             'Others',
+                  //     //             '${briefing.others} orang',
+                  //     //             padHorizontal: 8,
+                  //     //           ),
+
+                  //     //           CustomCard.brief(
+                  //     //             context,
+                  //     //             'Description',
+                  //     //             briefing.topic,
+                  //     //             isHorizontal: false,
+                  //     //             padHorizontal: 8,
+                  //     //           ),
+
+                  //     //           // ~:Image:~
+                  //     //           CustomCard.button(
+                  //     //             context,
+                  //     //             () {},
+                  //     //             MediaQuery.of(context).size.width,
+                  //     //             30,
+                  //     //             Alignment.center,
+                  //     //             'Lihat Gambar',
+                  //     //             TextThemes.normal,
+                  //     //             ConstantColors.primaryColor1,
+                  //     //             8,
+                  //     //             8,
+                  //     //             20,
+                  //     //           ),
+                  //     //         ],
+                  //     //       );
+                  //     //     },
+                  //     //   );
+                  //     // } else if (state is FilterError) {
+                  //     //   return Text(
+                  //     //     "Error: ${state.errorMessage}",
+                  //     //     style: TextThemes.normal,
+                  //     //   );
+                  //     // } else {
+                  //     //   return Container(
+                  //     //     width: MediaQuery.of(context).size.width,
+                  //     //     alignment: Alignment.center,
+                  //     //     child: const Text(
+                  //     //       'No Filter Selected',
+                  //     //       style: TextThemes.normal,
+                  //     //       textAlign: TextAlign.center,
+                  //     //     ),
+                  //     //   );
+                  //     // }
+                  //   },
+                  // ),
                 ),
                 // ),
               ],

@@ -15,8 +15,14 @@ class FilterRemoved extends FilterEvent {
   FilterRemoved(this.unselectFilter);
 }
 
-class LoadFilterData extends FilterEvent {
-  // final List<FilterType> selectedFilter;
+// class LoadBriefData extends FilterEvent {
+//   // final List<FilterType> selectedFilter;
 
-  LoadFilterData(/*this.selectedFilter*/);
-}
+//   LoadBriefData(/*this.selectedFilter*/);
+// }
+
+// class LoadReportData extends FilterEvent {
+//   // final List<FilterType> selectedFilter;
+
+//   LoadReportData(/*this.selectedFilter*/);
+// }
