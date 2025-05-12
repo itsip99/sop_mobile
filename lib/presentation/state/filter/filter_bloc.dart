@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sop_mobile/core/constant/enum.dart';
-import 'package:sop_mobile/data/models/briefing.dart';
 import 'package:sop_mobile/data/models/home.dart';
 import 'package:sop_mobile/data/repositories/filter.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_event.dart';
@@ -12,6 +11,7 @@ class FilterBloc<BaseEvent, BaseState> extends Bloc<FilterEvent, FilterState> {
   FilterBloc() : super(FilterInitial()) {
     on<FilterAdded>(addFilterHandler);
     on<FilterRemoved>(removeFilterHandler);
+    on<FilterModified>(modifyFilterHandler);
   }
 
   Future<void> addFilterHandler(
@@ -19,29 +19,37 @@ class FilterBloc<BaseEvent, BaseState> extends Bloc<FilterEvent, FilterState> {
     Emitter<FilterState> emit,
   ) async {
     log('Handling ${event.selectedFilter}');
-    emit(FilterState([...state.activeFilter, event.selectedFilter]));
+    if (!state.activeFilter.contains(event.selectedFilter)) {
+      emit(FilterState([...state.activeFilter, event.selectedFilter]));
+    }
 
-    List<BriefingModel> briefRes = [];
-    List reportRes = [];
-    List salesRes = [];
     try {
       emit(FilterLoading(state.activeFilter));
+      log('Data retrieval started');
       HomeModel res = await FilterRepoImp().dataPreprocessing(
         state.activeFilter.contains(FilterType.briefing),
         state.activeFilter.contains(FilterType.report),
         state.activeFilter.contains(FilterType.salesman),
+        event.date,
       );
-      briefRes = res.briefingData;
-      reportRes = res.reportData;
-      salesRes = res.salesData;
-    } catch (e) {
-      emit(FilterError(state.activeFilter, e.toString()));
-    }
 
-    if (briefRes.isNotEmpty || reportRes.isNotEmpty || salesRes.isNotEmpty) {
-      emit(FilterSuccess(state.activeFilter, briefRes, reportRes, salesRes));
-    } else {
-      emit(FilterError(state.activeFilter, 'No data available'));
+      if (res.briefingData.isNotEmpty ||
+          res.reportData.isNotEmpty ||
+          res.salesData.isNotEmpty) {
+        log('Data retrieval completed');
+        emit(FilterSuccess(
+          state.activeFilter,
+          res.briefingData,
+          res.reportData,
+          res.salesData,
+        ));
+      } else {
+        log('No data available');
+        emit(FilterError(state.activeFilter, 'No data available'));
+      }
+    } catch (e) {
+      log('Error occurred: $e');
+      emit(FilterError(state.activeFilter, e.toString()));
     }
   }
 
@@ -53,9 +61,6 @@ class FilterBloc<BaseEvent, BaseState> extends Bloc<FilterEvent, FilterState> {
       state.activeFilter.where((e) => e != event.unselectFilter).toList(),
     ));
 
-    List<BriefingModel> briefRes = [];
-    List reportRes = [];
-    List salesRes = [];
     try {
       log('Deactivate Filter: ${state.activeFilter}');
       emit(FilterLoading(state.activeFilter));
@@ -63,18 +68,54 @@ class FilterBloc<BaseEvent, BaseState> extends Bloc<FilterEvent, FilterState> {
         state.activeFilter.contains(FilterType.briefing),
         state.activeFilter.contains(FilterType.report),
         state.activeFilter.contains(FilterType.salesman),
+        event.date,
       );
-      briefRes = res.briefingData;
-      reportRes = res.reportData;
-      salesRes = res.salesData;
+
+      if (res.briefingData.isNotEmpty ||
+          res.reportData.isNotEmpty ||
+          res.salesData.isNotEmpty) {
+        emit(FilterSuccess(
+          state.activeFilter,
+          res.briefingData,
+          res.reportData,
+          res.salesData,
+        ));
+      } else {
+        emit(FilterError(state.activeFilter, 'No data available'));
+      }
     } catch (e) {
       emit(FilterError(state.activeFilter, e.toString()));
     }
+  }
 
-    if (briefRes.isNotEmpty || reportRes.isNotEmpty || salesRes.isNotEmpty) {
-      emit(FilterSuccess(state.activeFilter, briefRes, reportRes, salesRes));
-    } else {
-      emit(FilterError(state.activeFilter, 'No data available'));
+  // ~:Modified Date Filter Handler:~
+  Future<void> modifyFilterHandler(
+    FilterModified event,
+    Emitter<FilterState> emit,
+  ) async {
+    try {
+      emit(FilterLoading(state.activeFilter));
+      HomeModel res = await FilterRepoImp().dataPreprocessing(
+        state.activeFilter.contains(FilterType.briefing),
+        state.activeFilter.contains(FilterType.report),
+        state.activeFilter.contains(FilterType.salesman),
+        event.date,
+      );
+
+      if (res.briefingData.isNotEmpty ||
+          res.reportData.isNotEmpty ||
+          res.salesData.isNotEmpty) {
+        emit(FilterSuccess(
+          state.activeFilter,
+          res.briefingData,
+          res.reportData,
+          res.salesData,
+        ));
+      } else {
+        emit(FilterError(state.activeFilter, 'No data available'));
+      }
+    } catch (e) {
+      emit(FilterError(state.activeFilter, e.toString()));
     }
   }
 

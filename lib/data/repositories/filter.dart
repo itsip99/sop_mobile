@@ -3,8 +3,11 @@ import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 import 'package:sop_mobile/core/constant/api.dart';
+import 'package:sop_mobile/core/helpers/formatter.dart';
 import 'package:sop_mobile/data/models/briefing.dart';
 import 'package:sop_mobile/data/models/home.dart';
+import 'package:sop_mobile/data/models/report.dart';
+import 'package:sop_mobile/data/models/sales.dart';
 import 'package:sop_mobile/data/models/user.dart';
 import 'package:sop_mobile/data/repositories/storage.dart';
 import 'package:sop_mobile/domain/repositories/filter.dart';
@@ -15,7 +18,14 @@ class FilterRepoImp extends FilterRepo {
     bool isBriefAvailable,
     bool isReportAvailable,
     bool isSalesAvailable,
+    String date,
   ) async {
+    if (date == '') {
+      date = Formatter.dateFormatter(
+        Formatter.dateCircleBracketFormatter(DateTime.now().toString()),
+      );
+    }
+
     UserCredsModel userCredentials =
         await StorageRepoImp().getUserCredentials();
 
@@ -25,31 +35,33 @@ class FilterRepoImp extends FilterRepo {
       // ~:Simulate briefing data fetching:~
       Map<String, dynamic> defaultValue = {'status': 'fail', 'data': []};
 
+      log('isBriefAvailable: $isBriefAvailable');
       Map<String, dynamic> briefData = isBriefAvailable
-          ? await FilterRepoImp().fetchBriefingData(
-              userCredentials.username,
-              '2025-05-05',
-            )
+          ? await fetchBriefingData(userCredentials.username, date)
           : defaultValue;
 
       // ~:Simulate report data fetching:~
       // change from Success Map to data retrieval for report
-      Map<String, dynamic> reportData =
-          isReportAvailable ? {'status': 'success', 'data': []} : defaultValue;
+      log('isReportAvailable: $isReportAvailable');
+      Map<String, dynamic> reportData = isReportAvailable
+          ? await fetchReportData(userCredentials.username, date)
+          : defaultValue;
 
-      // ~:Simulate sales data fetching:`
+      // ~:Simulate sales data fetching:~
       // change from Success Map to data retrieval for sales
-      Map<String, dynamic> salesData =
-          isReportAvailable ? {'status': 'success', 'data': []} : defaultValue;
+      log('isSalesAvailable: $isSalesAvailable');
+      Map<String, dynamic> salesData = isSalesAvailable
+          ? await fetchSalesData(userCredentials.username, date)
+          : defaultValue;
 
       if (briefData['status'] == 'success' ||
           reportData['status'] == 'success' ||
           salesData['status'] == 'success') {
         log('Data fetched successfully');
         return HomeModel(
-          briefingData: briefData['data'] as List<BriefingModel>,
-          reportData: reportData['data'] as List,
-          salesData: salesData['data'] as List,
+          briefingData: briefData['data'],
+          reportData: reportData['data'],
+          salesData: salesData['data'],
         );
       } else {
         log('Data fetch failed');
@@ -110,5 +122,29 @@ class FilterRepoImp extends FilterRepo {
         'data': [],
       };
     }
+  }
+
+  @override
+  Future<Map<String, dynamic>> fetchReportData(
+    String username,
+    String date,
+  ) async {
+    List<ReportModel> data = [];
+    return {
+      'status': 'success',
+      'data': data,
+    };
+  }
+
+  @override
+  Future<Map<String, dynamic>> fetchSalesData(
+    String username,
+    String date,
+  ) async {
+    List<SalesModel> data = [];
+    return {
+      'status': 'success',
+      'data': data,
+    };
   }
 }

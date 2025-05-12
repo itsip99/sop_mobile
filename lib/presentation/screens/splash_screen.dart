@@ -57,7 +57,8 @@ class _SplashScreenState extends State<SplashScreen> {
         listener: (context, state) {
           if (state is LoginSuccess) {
             log('Data available');
-            context.read<FilterBloc>().add(FilterAdded(FilterType.briefing));
+            context.read<FilterBloc>().add(FilterAdded(
+                FilterType.briefing, DateTime.now().toString().split(' ')[0]));
             Navigator.pushReplacementNamed(context, ConstantRoutes.home);
           } else if (state is LoginFailure) {
             log('No data available');

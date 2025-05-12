@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:sop_mobile/core/constant/colors.dart';
+import 'package:sop_mobile/core/helpers/formatter.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
 
 class FilterButton {
-  static Widget iconOnly() {
+  static Widget iconOnly(
+    IconData icon, {
+    double width = 36,
+    double height = 36,
+  }) {
     return Container(
-      width: 36,
-      height: 36,
+      width: width,
+      height: height,
       decoration: BoxDecoration(
         color: ConstantColors.shadowColor,
         borderRadius: BorderRadius.circular(12),
       ),
-      child: const Icon(
-        Icons.filter_list_alt,
+      child: Icon(
+        icon,
         color: ConstantColors.primaryColor3,
       ),
     );
@@ -70,7 +75,7 @@ class FilterButton {
         onTap: () => func(),
         borderRadius: BorderRadius.circular(12),
         child: Text(
-          text,
+          Formatter.reformatDate(text),
           style: TextThemes.normalTextButton,
         ),
       ),

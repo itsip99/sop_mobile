@@ -3,25 +3,37 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sop_mobile/core/constant/enum.dart';
+import 'package:sop_mobile/presentation/state/date/date_cubit.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_bloc.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_event.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_state.dart';
 import 'package:sop_mobile/presentation/widgets/filter_button.dart';
 
 class Filter {
-  static Future<void> filterButton(
+  static Future<void> onActPressed(
     BuildContext context,
     FilterType filterType,
   ) async {
     final bloc = context.read<FilterBloc>();
     final blocState = bloc.state;
+    final cubit = context.read<DateCubit>();
 
     log('Filter button pressed: $filterType');
     if (blocState.activeFilter.contains(filterType)) {
-      bloc.add(FilterRemoved(filterType));
+      bloc.add(FilterRemoved(filterType, cubit.getDate()));
     } else {
-      bloc.add(FilterAdded(filterType));
+      bloc.add(FilterAdded(filterType, cubit.getDate()));
     }
+  }
+
+  static Future<void> onDatePressed(
+    BuildContext context,
+  ) async {
+    final bloc = context.read<FilterBloc>();
+    final cubit = context.read<DateCubit>();
+
+    log('Date changed: ${cubit.getDate()}');
+    bloc.add(FilterModified(cubit.getDate()));
   }
 
   // static Future<void> fetchBriefData(
@@ -47,7 +59,7 @@ class Filter {
       child: Row(
         children: [
           // ~:Filter Icon:~
-          FilterButton.iconOnly(),
+          FilterButton.iconOnly(Icons.filter_list_alt),
 
           // ~:Divider:~
           const SizedBox(width: 8),
@@ -72,7 +84,7 @@ class Filter {
 
                       // context.read<FilterBloc>().add(LoadFilterData());
                       return FilterButton.textButton(
-                        () => filterButton(context, FilterType.briefing),
+                        () => onActPressed(context, FilterType.briefing),
                         'Morning Briefing',
                         isActive,
                       );
@@ -88,7 +100,7 @@ class Filter {
                       log('Active Filter: ${state.activeFilter}');
 
                       return FilterButton.textButton(
-                        () => filterButton(context, FilterType.report),
+                        () => onActPressed(context, FilterType.report),
                         'Daily Report',
                         isActive,
                       );
@@ -104,7 +116,7 @@ class Filter {
                       log('Active Filter: ${state.activeFilter}');
 
                       return FilterButton.textButton(
-                        () => filterButton(context, FilterType.salesman),
+                        () => onActPressed(context, FilterType.salesman),
                         'Salesman',
                         isActive,
                       );
@@ -112,7 +124,16 @@ class Filter {
                   ),
 
                   // ~:Date:~
-                  FilterButton.dateButton(() {}, '30-04-2025'),
+                  BlocBuilder<DateCubit, String>(
+                    builder: (context, state) {
+                      final cubit = context.read<DateCubit>();
+
+                      return FilterButton.dateButton(
+                        () => cubit.setDate(context, state),
+                        cubit.getDate(),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),

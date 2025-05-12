@@ -1,6 +1,22 @@
 import 'package:flutter/services.dart';
 
 class Formatter {
+  static String reformatDate(String date) {
+    final parts = date.split('-');
+    if (parts.length == 3) {
+      return '${parts[2]}-${parts[1]}-${parts[0]}';
+    }
+    return date; // Return the original date if the format is incorrect
+  }
+
+  static dateCircleBracketFormatter(String text) {
+    return text.replaceAll('(', '').replaceAll(')', '');
+  }
+
+  static dateFormatter(String text) {
+    return text.split(' ')[0];
+  }
+
   static TextInputFormatter get normalFormatter {
     return FilteringTextInputFormatter.allow(RegExp(r'^[a-zA-Z 0-9./@]*$'));
   }

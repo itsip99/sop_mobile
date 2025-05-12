@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:sop_mobile/core/constant/enum.dart';
 import 'package:sop_mobile/data/models/briefing.dart';
+import 'package:sop_mobile/data/models/report.dart';
+import 'package:sop_mobile/data/models/sales.dart';
 import 'package:sop_mobile/presentation/state/base_state.dart';
 
 class FilterState extends BaseState with EquatableMixin {
@@ -33,8 +35,8 @@ class FilterLoading extends FilterState {
 
 class FilterSuccess extends FilterState {
   final List<BriefingModel> briefingData;
-  final List reportData;
-  final List salesData;
+  final List<ReportModel> reportData;
+  final List<SalesModel> salesData;
 
   FilterSuccess(
     super.activeFilter,
