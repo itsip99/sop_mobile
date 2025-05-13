@@ -32,27 +32,30 @@ class FilterRepoImp extends FilterRepo {
     if (userCredentials.username != '') {
       log('Username: ${userCredentials.username}');
 
-      // ~:Simulate briefing data fetching:~
-      Map<String, dynamic> defaultValue = {'status': 'fail', 'data': []};
-
       log('isBriefAvailable: $isBriefAvailable');
       Map<String, dynamic> briefData = isBriefAvailable
           ? await fetchBriefingData(userCredentials.username, date)
-          : defaultValue;
+          : {'status': 'fail', 'data': <BriefingModel>[]};
+      log('Briefing data: ${briefData['data']}');
+      log('Briefing data type: ${briefData['data'].runtimeType}');
 
       // ~:Simulate report data fetching:~
       // change from Success Map to data retrieval for report
       log('isReportAvailable: $isReportAvailable');
       Map<String, dynamic> reportData = isReportAvailable
           ? await fetchReportData(userCredentials.username, date)
-          : defaultValue;
+          : {'status': 'fail', 'data': <ReportModel>[]};
+      log('Report data: ${reportData['data']}');
+      log('Report data type: ${reportData['data'].runtimeType}');
 
       // ~:Simulate sales data fetching:~
       // change from Success Map to data retrieval for sales
       log('isSalesAvailable: $isSalesAvailable');
       Map<String, dynamic> salesData = isSalesAvailable
           ? await fetchSalesData(userCredentials.username, date)
-          : defaultValue;
+          : {'status': 'fail', 'data': <SalesModel>[]};
+      log('Sales data: ${salesData['data']}');
+      log('Sales data type: ${salesData['data'].runtimeType}');
 
       if (briefData['status'] == 'success' ||
           reportData['status'] == 'success' ||

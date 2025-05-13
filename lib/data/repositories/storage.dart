@@ -2,7 +2,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:sop_mobile/data/models/user.dart';
 import 'package:sop_mobile/domain/repositories/storage.dart';
 
-class StorageRepoImp implements StorageRepo {
+class StorageRepoImp extends StorageRepo {
   final FlutterSecureStorage storage = const FlutterSecureStorage();
 
   @override

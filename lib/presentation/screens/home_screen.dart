@@ -46,10 +46,12 @@ class _HomeScreenState extends State<HomeScreen> {
       defaultPanelState: PanelState.CLOSED,
       borderRadius: const BorderRadius.all(Radius.circular(20)),
       margin: const EdgeInsets.all(12),
+      backdropEnabled: true,
+      backdropColor: ConstantColors.primaryColor3.withOpacity(0.5),
       panel: DecoratedBox(
-        decoration: BoxDecoration(
-          color: Colors.grey[350],
-          borderRadius: const BorderRadius.all(Radius.circular(20)),
+        decoration: const BoxDecoration(
+          color: ConstantColors.primaryColor2,
+          borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
         child: Column(
           children: <Widget>[
@@ -263,9 +265,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 vertical: (MediaQuery.of(context).size.height < 800) ? 10 : 30,
               ),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   // ~:Filter Section:~
                   Filter.type1(context),
+
+                  // ~:Divider:~
+                  const SizedBox(height: 12),
 
                   // ~:Acts Section:~
                   Expanded(
@@ -287,133 +294,143 @@ class _HomeScreenState extends State<HomeScreen> {
                             salesData: state.salesData,
                           );
 
-                          return Wrap(
-                            direction: Axis.vertical,
-                            crossAxisAlignment: WrapCrossAlignment.center,
-                            runAlignment: WrapAlignment.center,
-                            runSpacing: 10,
-                            children: [
-                              // ~:Briefing Section:~
-                              Builder(builder: (context) {
-                                if (data.briefingData.isNotEmpty) {
-                                  return ListView.builder(
-                                    controller: scrollController,
-                                    itemCount: data.briefingData.length,
-                                    itemBuilder: (context, index) {
-                                      final briefing = data.briefingData[index];
+                          return SingleChildScrollView(
+                            physics: const ClampingScrollPhysics(),
+                            child: Wrap(
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              runAlignment: WrapAlignment.center,
+                              runSpacing: 10,
+                              children: [
+                                // ~:Briefing Section:~
+                                Builder(builder: (context) {
+                                  if (data.briefingData.isNotEmpty) {
+                                    return SizedBox(
+                                      width: MediaQuery.of(context).size.width,
+                                      height:
+                                          MediaQuery.of(context).size.height,
+                                      child: ListView.builder(
+                                        controller: scrollController,
+                                        itemCount: data.briefingData.length,
+                                        itemBuilder: (context, index) {
+                                          final briefing =
+                                              data.briefingData[index];
 
-                                      return CustomCard.card(
-                                        context,
-                                        MediaQuery.of(context).size.width,
-                                        Alignment.center,
-                                        ConstantColors.primaryColor3,
-                                        ConstantColors.primaryColor2,
-                                        ConstantColors.shadowColor,
-                                        const ClampingScrollPhysics(),
-                                        borderWidth: 1.5,
-                                        marginConfig: 20,
-                                        [
-                                          CustomCard.brief(
+                                          return CustomCard.card(
                                             context,
-                                            'Lokasi',
-                                            briefing.location,
-                                            padHorizontal: 8,
-                                          ),
-
-                                          CustomCard.brief(
-                                            context,
-                                            'Peserta',
-                                            '${briefing.participants} orang',
-                                            padHorizontal: 8,
-                                          ),
-
-                                          CustomCard.brief(
-                                            context,
-                                            'Shop Manager',
-                                            '${briefing.shopManager} orang',
-                                            padHorizontal: 8,
-                                          ),
-
-                                          CustomCard.brief(
-                                            context,
-                                            'Sales Counter',
-                                            '${briefing.salesCounter} orang',
-                                            padHorizontal: 8,
-                                          ),
-
-                                          CustomCard.brief(
-                                            context,
-                                            'Salesman',
-                                            '${briefing.salesman} orang',
-                                            padHorizontal: 8,
-                                          ),
-
-                                          CustomCard.brief(
-                                            context,
-                                            'Others',
-                                            '${briefing.others} orang',
-                                            padHorizontal: 8,
-                                          ),
-
-                                          CustomCard.brief(
-                                            context,
-                                            'Description',
-                                            briefing.topic,
-                                            isHorizontal: false,
-                                            padHorizontal: 8,
-                                          ),
-
-                                          // ~:Image:~
-                                          CustomCard.button(
-                                            context,
-                                            () {},
                                             MediaQuery.of(context).size.width,
-                                            30,
                                             Alignment.center,
-                                            'Lihat Gambar',
-                                            TextThemes.normal,
-                                            ConstantColors.primaryColor1,
-                                            8,
-                                            8,
-                                            20,
-                                          ),
-                                        ],
-                                      );
-                                    },
+                                            ConstantColors.primaryColor3,
+                                            ConstantColors.primaryColor2,
+                                            ConstantColors.shadowColor,
+                                            const ClampingScrollPhysics(),
+                                            borderWidth: 1.5,
+                                            marginConfig: 0,
+                                            [
+                                              CustomCard.brief(
+                                                context,
+                                                'Lokasi',
+                                                briefing.location,
+                                                padHorizontal: 8,
+                                              ),
+
+                                              CustomCard.brief(
+                                                context,
+                                                'Peserta',
+                                                '${briefing.participants} orang',
+                                                padHorizontal: 8,
+                                              ),
+
+                                              CustomCard.brief(
+                                                context,
+                                                'Shop Manager',
+                                                '${briefing.shopManager} orang',
+                                                padHorizontal: 8,
+                                              ),
+
+                                              CustomCard.brief(
+                                                context,
+                                                'Sales Counter',
+                                                '${briefing.salesCounter} orang',
+                                                padHorizontal: 8,
+                                              ),
+
+                                              CustomCard.brief(
+                                                context,
+                                                'Salesman',
+                                                '${briefing.salesman} orang',
+                                                padHorizontal: 8,
+                                              ),
+
+                                              CustomCard.brief(
+                                                context,
+                                                'Others',
+                                                '${briefing.others} orang',
+                                                padHorizontal: 8,
+                                              ),
+
+                                              CustomCard.brief(
+                                                context,
+                                                'Description',
+                                                briefing.topic,
+                                                isHorizontal: false,
+                                                padHorizontal: 8,
+                                              ),
+
+                                              // ~:Image:~
+                                              CustomCard.button(
+                                                context,
+                                                () {},
+                                                MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                                30,
+                                                Alignment.center,
+                                                'Lihat Gambar',
+                                                TextThemes.normal,
+                                                ConstantColors.primaryColor1,
+                                                8,
+                                                8,
+                                                20,
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  }
+
+                                  return const Center(
+                                    child: Text('Briefing Data'),
                                   );
-                                }
+                                }),
 
-                                return const Center(
-                                  child: Text('Briefing Data'),
-                                );
-                              }),
+                                // ~:Report Section:~
+                                Builder(builder: (context) {
+                                  if (data.reportData.isNotEmpty) {
+                                    return const Center(
+                                      child: Text('Report Data'),
+                                    );
+                                  }
 
-                              // ~:Report Section:~
-                              Builder(builder: (context) {
-                                if (data.reportData.isNotEmpty) {
                                   return const Center(
                                     child: Text('Report Data'),
                                   );
-                                }
+                                }),
 
-                                return const Center(
-                                  child: Text('Report Data'),
-                                );
-                              }),
+                                // ~:Salesman Section:~
+                                Builder(builder: (context) {
+                                  if (data.salesData.isNotEmpty) {
+                                    return const Center(
+                                      child: Text('Sales Data'),
+                                    );
+                                  }
 
-                              // ~:Salesman Section:~
-                              Builder(builder: (context) {
-                                if (data.salesData.isNotEmpty) {
                                   return const Center(
                                     child: Text('Sales Data'),
                                   );
-                                }
-
-                                return const Center(
-                                  child: Text('Sales Data'),
-                                );
-                              }),
-                            ],
+                                }),
+                              ],
+                            ),
                           );
                         } else if (state is FilterError) {
                           return Center(

@@ -27,12 +27,18 @@ class DateCubit extends Cubit<String> {
       ),
     ).toString();
 
-    if (pickedDate != null) {
+    log('Picked Date: $pickedDate');
+    if (pickedDate != '(null)') {
       pickedDate = Formatter.dateCircleBracketFormatter(pickedDate);
       pickedDate = Formatter.dateFormatter(pickedDate);
-      log('Picked date: $pickedDate');
+      log('Formatted Date changed: $pickedDate');
       emit(pickedDate);
       if (context.mounted) Filter.onDatePressed(context);
+    } else {
+      pickedDate = Formatter.dateCircleBracketFormatter(date);
+      pickedDate = Formatter.dateFormatter(pickedDate);
+      log('Formatted Date not changed: $pickedDate');
+      emit(pickedDate);
     }
   }
 
