@@ -6,7 +6,7 @@ import 'package:sop_mobile/data/models/login.dart';
 import 'package:sop_mobile/domain/repositories/login.dart';
 import 'package:http/http.dart' as http;
 
-class LoginRepoImp extends LoginRepo {
+class LoginRepoImp implements LoginRepo {
   @override
   Future<Map<String, dynamic>> login(
     String username,

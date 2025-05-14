@@ -4,14 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sop_mobile/core/constant/enum.dart';
 import 'package:sop_mobile/data/models/home.dart';
 import 'package:sop_mobile/data/repositories/filter.dart';
-import 'package:sop_mobile/domain/repositories/filter.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_event.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_state.dart';
 
 class FilterBloc<BaseEvent, BaseState> extends Bloc<FilterEvent, FilterState> {
-  final FilterRepo repo;
-
-  FilterBloc(this.repo) : super(FilterInitial()) {
+  FilterBloc() : super(FilterInitial()) {
     on<FilterAdded>(addFilterHandler);
     on<FilterRemoved>(removeFilterHandler);
     on<FilterModified>(modifyFilterHandler);

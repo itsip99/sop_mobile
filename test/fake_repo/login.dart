@@ -1,37 +1,36 @@
-import 'package:mockito/mockito.dart';
 import 'package:sop_mobile/data/models/login.dart';
-import 'package:sop_mobile/data/models/user.dart';
 import 'package:sop_mobile/domain/repositories/login.dart';
 
-import 'storage_test.dart';
+class FakeLoginRepo implements LoginRepo {
+  bool isLoggedIn = true;
 
-class MockLoginRepository extends Mock implements LoginRepo {
-  final MockStorageRepository storageRepo = MockStorageRepository();
+  void setIsLoggedIn(bool value) {
+    isLoggedIn = value;
+  }
 
   @override
   Future<Map<String, dynamic>> login(String username, String password) async {
-    // TODO: implement login
-    UserCredsModel userCreds = await storageRepo.getUserCredentials();
-
-    if (userCreds.username == 'JOHN007' && userCreds.password == '123456') {
+    // Simulate a successful login
+    if (isLoggedIn) {
       return {
         'status': 'success',
         'data': LoginModel(
-          id: 'JOHN007',
+          id: '',
           name: '',
-          memo: '',
+          memo: 'Login successful',
           branch: '',
           shop: '',
           data: [],
         ),
       };
     } else {
+      // memo: 'Invalid credentials'
       return {
-        'status': 'failed',
+        'status': 'fail',
         'data': LoginModel(
           id: '',
           name: '',
-          memo: '',
+          memo: 'Invalid credentials',
           branch: '',
           shop: '',
           data: [],
@@ -42,13 +41,12 @@ class MockLoginRepository extends Mock implements LoginRepo {
 
   @override
   Future<Map<String, dynamic>> logout() async {
-    // TODO: implement logout
     return {
       'status': 'success',
       'data': LoginModel(
         id: '',
         name: '',
-        memo: '',
+        memo: 'Logout successful',
         branch: '',
         shop: '',
         data: [],

@@ -1,16 +1,25 @@
+import 'dart:developer';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sop_mobile/data/models/login.dart';
 import 'package:sop_mobile/data/models/user.dart';
 import 'package:sop_mobile/data/repositories/login.dart';
 import 'package:sop_mobile/data/repositories/storage.dart';
+import 'package:sop_mobile/domain/repositories/login.dart';
+import 'package:sop_mobile/domain/repositories/storage.dart';
 import 'package:sop_mobile/presentation/state/login/login_event.dart';
 import 'package:sop_mobile/presentation/state/login/login_state.dart';
 
 class LoginBloc<BaseEvent, BaseState> extends Bloc<LoginEvent, LoginState> {
-  LoginBloc() : super(LoginInitial()) {
+  LoginRepo loginRepo;
+  StorageRepo storageRepo;
+
+  LoginBloc({
+    required this.loginRepo,
+    required this.storageRepo,
+  }) : super(LoginInitial()) {
     on<LoginButtonPressed>(loginHandler);
     on<LogoutButtonPressed>(logoutHandler);
-    // on<LoadUserData>(readUserCredentials);
   }
 
   Future<void> loginHandler(
@@ -45,7 +54,19 @@ class LoginBloc<BaseEvent, BaseState> extends Bloc<LoginEvent, LoginState> {
           emit(LoginFailure("Username or password cannot be empty"));
           return;
         } else {
-          if (user['status'] == 'success') {
+          final isLoginSuccess =
+              (await loginRepo.login('John Doe', '123456') as LoginModel)
+                      .memo ==
+                  'Login successful';
+          log('isLoginSuccess: $isLoginSuccess');
+          final isUserValid = await storageRepo.getUserCredentials() ==
+              UserCredsModel(
+                username: 'John Doe',
+                password: '123456',
+              );
+          log('isUserValid: $isUserValid');
+          if (user['status'] ==
+              'success' /*&& isLoginSuccess && isUserValid*/) {
             // Save user credentials to secure storage
             await StorageRepoImp().saveUserCredentials(
               event.username,
@@ -80,34 +101,4 @@ class LoginBloc<BaseEvent, BaseState> extends Bloc<LoginEvent, LoginState> {
       emit(LogoutFailure(e.toString()));
     }
   }
-
-  // Future<void> readUserCredentials(
-  //   LoadUserData event,
-  //   Emitter<LoginState> emit,
-  // ) async {
-  //   emit(LoginLoading());
-  //   try {
-  //     List<String> userCredentials =
-  //         await StorageRepoImp().getUserCredentials();
-  //
-  //     if (userCredentials[0] != '' && userCredentials[1] != '') {
-  //       // Simulate a network call
-  //       Map<String, dynamic> user =
-  //           await LoginRepoImp().login(userCredentials[0], userCredentials[1]);
-  //
-  //       if (user['status'] == 'success') {
-  //         // Emit success state with user data
-  //         emit(LoginSuccess(user['data'] as LoginModel));
-  //       } else {
-  //         // Emit failure state with an error message
-  //         emit(LoginFailure((user['data'] as LoginModel).memo));
-  //       }
-  //     } else {
-  //       emit(LoginInitial());
-  //     }
-  //   } catch (e) {
-  //     // Emit failure state with an error message
-  //     emit(LoginFailure(e.toString()));
-  //   }
-  // }
 }

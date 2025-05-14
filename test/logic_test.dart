@@ -1,23 +1,95 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
+import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sop_mobile/presentation/state/counter/counter_cubit.dart';
+import 'package:sop_mobile/presentation/state/login/login_bloc.dart';
+import 'package:sop_mobile/presentation/state/login/login_event.dart';
+import 'package:sop_mobile/presentation/state/login/login_state.dart';
 
-import 'logic/login_test.dart';
-import 'logic/secure_storage_test.dart';
-import 'logic/storage_test.dart';
+import 'fake_repo/login.dart';
+import 'fake_repo/storage.dart';
 
 void main() {
-  MockSecureStorage mockSecureStorage;
-  MockStorageRepository mockStorage;
-  MockLoginRepository mockLogin;
+  // Run the counter cubit tests
+  group('CounterCubit', () {
+    late CounterCubit counterCubit;
 
-  setUp(() {
-    mockStorage = MockStorageRepository();
-    mockLogin = MockLoginRepository();
+    setUp(() {
+      counterCubit = CounterCubit();
+    });
+
+    tearDown(() {
+      counterCubit.close();
+    });
+
+    test('initial state is an empty map', () {
+      expect(counterCubit.state, isEmpty);
+    });
+
+    blocTest(
+      'emits updated state when increment is called',
+      build: () => counterCubit,
+      act: (bloc) => bloc.increment('counter'),
+      expect: () => [
+        isA<Map<String, int>>()
+            .having((state) => state['counter'], 'counter count', 2)
+      ],
+    );
+
+    blocTest(
+      'emits updated state when decrement is called',
+      build: () => counterCubit,
+      act: (bloc) => bloc.decrement('counter'),
+      expect: () => [
+        isA<Map<String, int>>()
+            .having((state) => state['counter'], 'counter count', 0)
+      ],
+    );
+
+    blocTest(
+      'getCount returns the current state',
+      build: () => counterCubit,
+      act: (bloc) => bloc.getCount()['counter'],
+      expect: () => [],
+    );
+  });
+
+  // Run the login bloc tests
+  group('LoginBloc', () {
+    late FakeStorageRepo fakeStorage;
+    late FakeLoginRepo fakeLogin;
+    late LoginBloc loginBloc;
+
+    setUp(() {
+      fakeStorage = FakeStorageRepo();
+      fakeLogin = FakeLoginRepo();
+      loginBloc = LoginBloc(loginRepo: fakeLogin, storageRepo: fakeStorage);
+    });
+
+    tearDown(() {
+      loginBloc.close();
+    });
+
+    test('initial state is an empty map', () {
+      expect(loginBloc.state, LoginInitial());
+    });
+
+    blocTest(
+      'emits [LoginLoading, LoginSuccess] when login is successful',
+      build: () => loginBloc,
+      act: (bloc) {
+        // Arrange
+        fakeLogin.setIsLoggedIn(true);
+
+        // Act
+        fakeLogin.login('John Doe', '123456');
+        bloc.add(
+          LoginButtonPressed(username: 'John Doe', password: '123456'),
+        );
+      },
+      expect: () => [
+        isA<LoginLoading>(),
+        isA<LoginSuccess>(),
+      ],
+    );
   });
 }
