@@ -1,7 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/single_child_widget.dart';
-import 'package:sop_mobile/domain/repositories/login.dart';
-import 'package:sop_mobile/domain/repositories/storage.dart';
 import 'package:sop_mobile/presentation/state/carousel/carousel_bloc.dart';
 import 'package:sop_mobile/presentation/state/counter/counter_cubit.dart';
 import 'package:sop_mobile/presentation/state/date/date_cubit.dart';
@@ -19,10 +17,7 @@ class StateManager {
         create: (context) => CarouselBloc(),
       ),
       BlocProvider<LoginBloc>(
-        create: (context) => LoginBloc(
-          loginRepo: context.read<LoginRepo>(),
-          storageRepo: context.read<StorageRepo>(),
-        ),
+        create: (context) => LoginBloc(),
       ),
       BlocProvider<CounterCubit>(
         create: (context) => CounterCubit(),

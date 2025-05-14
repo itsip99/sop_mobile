@@ -76,20 +76,16 @@ void main() {
     blocTest(
       'emits [LoginLoading, LoginSuccess] when login is successful',
       build: () => loginBloc,
-      act: (bloc) {
+      act: (bloc) async {
         // Arrange
         fakeLogin.setIsLoggedIn(true);
 
         // Act
-        fakeLogin.login('John Doe', '123456');
         bloc.add(
           LoginButtonPressed(username: 'John Doe', password: '123456'),
         );
       },
-      expect: () => [
-        isA<LoginLoading>(),
-        isA<LoginSuccess>(),
-      ],
+      expect: () => [isA<LoginLoading>(), isA<LoginSuccess>()],
     );
   });
 }

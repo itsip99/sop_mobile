@@ -447,7 +447,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           alignment: Alignment.center,
                           child: const Text(
                             // state.activeFilter.toString(),
-                            'Something went wrong',
+                            'No data available',
                             style: TextThemes.normal,
                             textAlign: TextAlign.center,
                           ),

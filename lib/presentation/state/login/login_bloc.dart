@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sop_mobile/data/models/login.dart';
 import 'package:sop_mobile/data/models/user.dart';
@@ -11,12 +9,12 @@ import 'package:sop_mobile/presentation/state/login/login_event.dart';
 import 'package:sop_mobile/presentation/state/login/login_state.dart';
 
 class LoginBloc<BaseEvent, BaseState> extends Bloc<LoginEvent, LoginState> {
-  LoginRepo loginRepo;
-  StorageRepo storageRepo;
+  LoginRepo? loginRepo;
+  StorageRepo? storageRepo;
 
   LoginBloc({
-    required this.loginRepo,
-    required this.storageRepo,
+    this.loginRepo,
+    this.storageRepo,
   }) : super(LoginInitial()) {
     on<LoginButtonPressed>(loginHandler);
     on<LogoutButtonPressed>(logoutHandler);
@@ -28,15 +26,21 @@ class LoginBloc<BaseEvent, BaseState> extends Bloc<LoginEvent, LoginState> {
   ) async {
     emit(LoginLoading());
     try {
+      // ~:Secure Storage Simulation:~
       UserCredsModel userCredentials =
           await StorageRepoImp().getUserCredentials();
 
+      // ~:Unit Test Passed:~
+      // UserCredsModel userCredentials = await storageRepo.getUserCredentials();
+
       if (userCredentials.username != '' && userCredentials.password != '') {
-        // Simulate a network call
-        Map<String, dynamic> user = await LoginRepoImp().login(
-          userCredentials.username,
-          userCredentials.password,
-        );
+        // ~:Network Call Simulation:~
+        Map<String, dynamic> user = await LoginRepoImp()
+            .login(userCredentials.username, userCredentials.password);
+
+        // ~:Unit Test Passed:~
+        // Map<String, dynamic> user = await loginRepo.login(
+        //     userCredentials.username, userCredentials.password);
 
         if (user['status'] == 'success') {
           // Emit success state with user data
@@ -46,32 +50,26 @@ class LoginBloc<BaseEvent, BaseState> extends Bloc<LoginEvent, LoginState> {
           emit(LoginFailure((user['data'] as LoginModel).memo));
         }
       } else {
-        // Simulate a network call
+        // ~:Network Call Simulation:~
         Map<String, dynamic> user =
             await LoginRepoImp().login(event.username, event.password);
+
+        // ~:Unit Test Passed:~
+        // Map<String, dynamic> user =
+        //     await loginRepo.login(event.username, event.password);
 
         if (event.username.isEmpty || event.password.isEmpty) {
           emit(LoginFailure("Username or password cannot be empty"));
           return;
         } else {
-          final isLoginSuccess =
-              (await loginRepo.login('John Doe', '123456') as LoginModel)
-                      .memo ==
-                  'Login successful';
-          log('isLoginSuccess: $isLoginSuccess');
-          final isUserValid = await storageRepo.getUserCredentials() ==
-              UserCredsModel(
-                username: 'John Doe',
-                password: '123456',
-              );
-          log('isUserValid: $isUserValid');
-          if (user['status'] ==
-              'success' /*&& isLoginSuccess && isUserValid*/) {
-            // Save user credentials to secure storage
-            await StorageRepoImp().saveUserCredentials(
-              event.username,
-              event.password,
-            );
+          if (user['status'] == 'success') {
+            // ~:Save user credentials:~
+            await StorageRepoImp()
+                .saveUserCredentials(event.username, event.password);
+
+            // ~:Unit Test Passed:~
+            // await storageRepo.saveUserCredentials(
+            //     event.username, event.password);
             // Emit success state with user data
             emit(LoginSuccess(user['data'] as LoginModel));
           } else {
