@@ -31,7 +31,7 @@ class LoginBloc<BaseEvent, BaseState> extends Bloc<LoginEvent, LoginState> {
           await StorageRepoImp().getUserCredentials();
 
       // ~:Unit Test Passed:~
-      // UserCredsModel userCredentials = await storageRepo.getUserCredentials();
+      // UserCredsModel userCredentials = await storageRepo!.getUserCredentials();
 
       if (userCredentials.username != '' && userCredentials.password != '') {
         // ~:Network Call Simulation:~
@@ -39,14 +39,14 @@ class LoginBloc<BaseEvent, BaseState> extends Bloc<LoginEvent, LoginState> {
             .login(userCredentials.username, userCredentials.password);
 
         // ~:Unit Test Passed:~
-        // Map<String, dynamic> user = await loginRepo.login(
-        //     userCredentials.username, userCredentials.password);
+        // Map<String, dynamic> user = await loginRepo!
+        //     .login(userCredentials.username, userCredentials.password);
 
         if (user['status'] == 'success') {
-          // Emit success state with user data
+          // ~:Emit success state with user data:~
           emit(LoginSuccess(user['data'] as LoginModel));
         } else {
-          // Emit failure state with an error message
+          // ~:Emit failure state with an error message:~
           emit(LoginFailure((user['data'] as LoginModel).memo));
         }
       } else {
@@ -56,7 +56,7 @@ class LoginBloc<BaseEvent, BaseState> extends Bloc<LoginEvent, LoginState> {
 
         // ~:Unit Test Passed:~
         // Map<String, dynamic> user =
-        //     await loginRepo.login(event.username, event.password);
+        //     await loginRepo!.login(event.username, event.password);
 
         if (event.username.isEmpty || event.password.isEmpty) {
           emit(LoginFailure("Username or password cannot be empty"));
@@ -68,18 +68,19 @@ class LoginBloc<BaseEvent, BaseState> extends Bloc<LoginEvent, LoginState> {
                 .saveUserCredentials(event.username, event.password);
 
             // ~:Unit Test Passed:~
-            // await storageRepo.saveUserCredentials(
-            //     event.username, event.password);
-            // Emit success state with user data
+            // await storageRepo!
+            //     .saveUserCredentials(event.username, event.password);
+
+            // ~:Emit success state with user data:~
             emit(LoginSuccess(user['data'] as LoginModel));
           } else {
-            // Emit failure state with an error message
+            // ~:Emit failure state with an error message:~
             emit(LoginFailure((user['data'] as LoginModel).memo));
           }
         }
       }
     } catch (e) {
-      // Emit failure state with an error message
+      // ~:Emit failure state with an error message:~
       emit(LoginFailure(e.toString()));
     }
   }
@@ -89,14 +90,15 @@ class LoginBloc<BaseEvent, BaseState> extends Bloc<LoginEvent, LoginState> {
     Emitter<LoginState> emit,
   ) async {
     emit(LoginLoading());
-    try {
-      // Emit success state with a dummy token
-      emit(LoginInitial());
-      await StorageRepoImp().deleteUserCredentials();
-      emit(LogoutSuccess());
-    } catch (e) {
-      // Emit failure state with an error message
-      emit(LogoutFailure(e.toString()));
-    }
+    // ~:Emit success state with a dummy token:~
+    emit(LoginInitial());
+
+    // ~:Network Call Simulation:~
+    await StorageRepoImp().deleteUserCredentials();
+
+    // ~:Unit Test Passed:~
+    // await storageRepo!.deleteUserCredentials();
+
+    emit(LogoutSuccess());
   }
 }

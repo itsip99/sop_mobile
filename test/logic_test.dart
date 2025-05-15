@@ -87,5 +87,37 @@ void main() {
       },
       expect: () => [isA<LoginLoading>(), isA<LoginSuccess>()],
     );
+
+    blocTest(
+      'emits [LoginLoading, LoginFailure] when login is failed',
+      build: () => loginBloc,
+      act: (bloc) async {
+        // Arrange
+        fakeLogin.setIsLoggedIn(false);
+
+        // Act
+        bloc.add(
+          LoginButtonPressed(username: 'John Doe', password: 'wrongpass'),
+        );
+      },
+      expect: () => [isA<LoginLoading>(), isA<LoginFailure>()],
+    );
+
+    blocTest(
+      'emits [LoginLoading, LogoutSuccess] when logout is successful',
+      build: () => loginBloc,
+      act: (bloc) async {
+        // Arrange
+        fakeLogin.setIsLoggedIn(false);
+
+        // Act
+        bloc.add(LogoutButtonPressed());
+      },
+      expect: () => [
+        isA<LoginLoading>(),
+        isA<LoginInitial>(),
+        isA<LogoutSuccess>(),
+      ],
+    );
   });
 }

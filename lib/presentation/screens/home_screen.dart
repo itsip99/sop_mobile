@@ -1,11 +1,10 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:sop_mobile/core/constant/colors.dart';
 import 'package:sop_mobile/core/constant/state_manager.dart';
 import 'package:sop_mobile/data/models/home.dart';
+import 'package:sop_mobile/presentation/state/counter/counter_cubit.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_bloc.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_state.dart';
 import 'package:sop_mobile/presentation/state/login/login_bloc.dart';
@@ -33,8 +32,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    log('Width: ${MediaQuery.of(context).size.width}');
-    log('Height: ${MediaQuery.of(context).size.height}');
+    final routeBloc = context.read<RouteBloc>();
+    final loginBloc = context.read<LoginBloc>();
+    final counterCubit = context.read<CounterCubit>();
+    // log('Width: ${MediaQuery.of(context).size.width}');
+    // log('Height: ${MediaQuery.of(context).size.height}');
 
     return SlidingUpPanel(
       controller: panelController,
@@ -87,9 +89,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       context: context,
                       text: 'Morning Briefing',
                       func: () {
-                        context
-                            .read<RouteBloc>()
-                            .add(RoutePush(ConstantRoutes.brief));
+                        counterCubit.setInitial('total', 1);
+                        counterCubit.setInitial('shop_manager', 1);
+                        counterCubit.setInitial('sales_counter', 1);
+                        counterCubit.setInitial('salesman', 1);
+                        counterCubit.setInitial('others', 1);
+
+                        routeBloc.add(RoutePush(ConstantRoutes.brief));
                         Navigator.pushNamed(context, ConstantRoutes.brief);
                         panelController.close();
                       },
@@ -105,9 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       context: context,
                       text: 'Daily Report',
                       func: () {
-                        context
-                            .read<RouteBloc>()
-                            .add(RoutePush(ConstantRoutes.report));
+                        routeBloc.add(RoutePush(ConstantRoutes.report));
                         Navigator.pushNamed(context, ConstantRoutes.report);
                         panelController.close();
                       },
@@ -123,9 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       context: context,
                       text: 'Salesman',
                       func: () {
-                        context
-                            .read<RouteBloc>()
-                            .add(RoutePush(ConstantRoutes.sales));
+                        routeBloc.add(RoutePush(ConstantRoutes.sales));
                         Navigator.pushNamed(context, ConstantRoutes.sales);
                         panelController.close();
                       },
@@ -231,7 +233,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                   child: IconButton(
                     onPressed: () {
-                      context.read<LoginBloc>().add(LogoutButtonPressed());
+                      loginBloc.add(LogoutButtonPressed());
                     },
                     icon: const Icon(
                       Icons.logout,
