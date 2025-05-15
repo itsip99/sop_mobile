@@ -20,7 +20,7 @@ class LoginSuccess extends LoginState {
 
   LoginSuccess(this.login);
 
-  LoginModel get getLoginSuccess => login;
+  LoginModel get getUserCreds => login;
 }
 
 class LoginFailure extends LoginState {

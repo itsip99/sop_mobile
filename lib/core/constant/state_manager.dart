@@ -27,6 +27,9 @@ class StateManager {
       BlocProvider<FilterBloc>(
         create: (context) => FilterBloc(),
       ),
+      BlocProvider<BriefBloc>(
+        create: (context) => BriefBloc(),
+      ),
       BlocProvider<PhotoBloc>(
         create: (context) => PhotoBloc(),
       ),
@@ -42,10 +45,6 @@ class StateManager {
   }
 
   static List<SingleChildWidget> getBriefBlocProviders() {
-    return [
-      BlocProvider<BriefBloc>(
-        create: (context) => BriefBloc(),
-      ),
-    ];
+    return [];
   }
 }

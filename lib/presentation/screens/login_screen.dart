@@ -69,12 +69,11 @@ class _LoginScreenState extends State<LoginScreen> {
             // ~:Header:~
             SizedBox(
               width: MediaQuery.of(context).size.width,
-              height: 125,
+              height: 100,
               child: Wrap(
                 spacing: 15,
                 alignment: WrapAlignment.center,
                 crossAxisAlignment: WrapCrossAlignment.center,
-                runAlignment: WrapAlignment.center,
                 children: [
                   // ~:Logo Section:~
                   Logo.rounded1(context, 'assets/images/figma.png'),

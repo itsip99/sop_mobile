@@ -15,18 +15,18 @@ class BriefLoading extends BriefState {
   List<BriefingModel> get getBriefLoading => [];
 }
 
-class BriefLoadSuccess extends BriefState {
-  final List<BriefingModel> briefData;
+class BriefCreationSuccess extends BriefState {
+  final String resultMessage;
 
-  BriefLoadSuccess(this.briefData);
+  BriefCreationSuccess(this.resultMessage);
 
-  List<BriefingModel> get getBriefLoaded => briefData;
+  String get getBriefLoaded => resultMessage;
 }
 
-class BriefLoadFail extends BriefState {
+class BriefCreationFail extends BriefState {
   final String error;
 
-  BriefLoadFail(this.error);
+  BriefCreationFail(this.error);
 
   String get getBriefLoadFail => error;
 }

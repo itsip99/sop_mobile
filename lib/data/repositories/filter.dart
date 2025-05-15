@@ -83,7 +83,8 @@ class FilterRepoImp extends FilterRepo {
   ) async {
     // Simulate a network call or data fetching
     // Simulate a network call
-    Uri uri = Uri.https(APIConstants.baseUrl, APIConstants.fetchDataEndpoint);
+    Uri uri =
+        Uri.https(APIConstants.baseUrl, APIConstants.fetchBriefDataEndpoint);
 
     Map body = {
       "CustomerID": username,
