@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -10,6 +12,8 @@ import 'package:sop_mobile/presentation/state/filter/filter_state.dart';
 import 'package:sop_mobile/presentation/state/login/login_bloc.dart';
 import 'package:sop_mobile/presentation/state/login/login_event.dart';
 import 'package:sop_mobile/presentation/state/login/login_state.dart';
+import 'package:sop_mobile/presentation/state/photo/photo_bloc.dart';
+import 'package:sop_mobile/presentation/state/photo/photo_event.dart';
 import 'package:sop_mobile/presentation/state/route/route_bloc.dart';
 import 'package:sop_mobile/presentation/state/route/route_event.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
@@ -35,6 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final routeBloc = context.read<RouteBloc>();
     final loginBloc = context.read<LoginBloc>();
     final counterCubit = context.read<CounterCubit>();
+    final photoBloc = context.read<PhotoBloc>();
     // log('Width: ${MediaQuery.of(context).size.width}');
     // log('Height: ${MediaQuery.of(context).size.height}');
 
@@ -89,6 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       context: context,
                       text: 'Morning Briefing',
                       func: () {
+                        photoBloc.add(RemovePhotoEvent());
                         counterCubit.setInitial('total', 1);
                         counterCubit.setInitial('shop_manager', 1);
                         counterCubit.setInitial('sales_counter', 1);
@@ -381,7 +387,29 @@ class _HomeScreenState extends State<HomeScreen> {
                                               // ~:Image:~
                                               CustomCard.button(
                                                 context,
-                                                () {},
+                                                () {
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return Dialog(
+                                                        backgroundColor:
+                                                            ConstantColors
+                                                                .primaryColor2,
+                                                        child: ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(16),
+                                                          child: Image.memory(
+                                                            base64Decode(
+                                                              briefing.pic,
+                                                            ),
+                                                            fit: BoxFit.contain,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                  );
+                                                },
                                                 MediaQuery.of(context)
                                                     .size
                                                     .width,

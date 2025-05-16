@@ -11,6 +11,24 @@ class PhotoBloc<BaseEvent, BaseState> extends Bloc<PhotoEvent, PhotoState> {
   PhotoBloc() : super(PhotoInitial()) {
     on<UploadPhotoEvent>(uploadPhotoHandler);
     on<DeletePhotoEvent>(deletePhotoHandler);
+    on<RemovePhotoEvent>(removePhotoHandler);
+  }
+
+  Future<void> removePhotoHandler(
+    RemovePhotoEvent event,
+    Emitter<PhotoState> emit,
+  ) async {
+    emit(PhotoLoading());
+    try {
+      // ~:Network Call Simulation:~
+      emit(PhotoInitial());
+      emit(PhotoDeleteSuccess());
+
+      // ~:Unit Test not passed yet:~
+      // source code...
+    } catch (e) {
+      emit(PhotoDeleteFail(e.toString()));
+    }
   }
 
   Future<void> uploadPhotoHandler(

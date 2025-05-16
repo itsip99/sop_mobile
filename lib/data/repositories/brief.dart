@@ -34,8 +34,8 @@ class BriefRepoImp extends BriefRepo {
         "CustomerID": username,
         "TransDate": date,
         "Branch": branch,
-        "Shop": shop, // static
-        "Lokasi": "SHOWROOM",
+        "Shop": shop,
+        "Lokasi": location,
         "Peserta": participants,
         "SM": manager,
         "SC": counter,
@@ -46,14 +46,14 @@ class BriefRepoImp extends BriefRepo {
         "PicThumb": '',
       }
     };
-    log('Map Body: $body');
+    // log('Map Body: $body');
 
     final response = await http.post(
       uri,
       headers: {"Content-Type": "application/json"},
       body: jsonEncode(body),
     );
-    log('Response: $response');
+    // log('Response: $response');
 
     if (response.statusCode <= 200) {
       log('Response: ${response.statusCode}');
@@ -69,14 +69,14 @@ class BriefRepoImp extends BriefRepo {
         log('Fail');
         return {
           'status': 'fail',
-          'data': '',
+          'data': res['Data'][0]['ResultMessage'],
         };
       }
     } else {
       log('Response: ${response.statusCode}');
       return {
         'status': 'fail',
-        'data': '',
+        'data': response.statusCode,
       };
     }
   }

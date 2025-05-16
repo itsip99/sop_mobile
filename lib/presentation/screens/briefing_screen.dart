@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:sop_mobile/core/constant/colors.dart';
 import 'package:sop_mobile/core/helpers/formatter.dart';
 import 'package:sop_mobile/data/models/login.dart';
@@ -13,6 +14,10 @@ import 'package:sop_mobile/presentation/state/brief/brief_state.dart';
 import 'package:sop_mobile/presentation/state/counter/counter_cubit.dart';
 import 'package:sop_mobile/presentation/state/login/login_bloc.dart';
 import 'package:sop_mobile/presentation/state/login/login_state.dart';
+import 'package:sop_mobile/presentation/state/permission/camera_cubit.dart';
+import 'package:sop_mobile/presentation/state/permission/permission_bloc.dart';
+import 'package:sop_mobile/presentation/state/permission/permission_event.dart';
+import 'package:sop_mobile/presentation/state/permission/permission_state.dart';
 import 'package:sop_mobile/presentation/state/photo/photo_bloc.dart';
 import 'package:sop_mobile/presentation/state/photo/photo_event.dart';
 import 'package:sop_mobile/presentation/state/photo/photo_state.dart';
@@ -41,6 +46,9 @@ class _BriefingScreenState extends State<BriefingScreen> {
   Widget build(BuildContext context) {
     final loginBloc = context.read<LoginBloc>();
     final counterCubit = context.read<CounterCubit>();
+    final permissionBloc = context.read<PermissionBloc>();
+    final permissionState = permissionBloc.state;
+    final cameraCubit = context.read<CameraCubit>();
     final photoBloc = context.read<PhotoBloc>();
 
     return Scaffold(
@@ -185,162 +193,218 @@ class _BriefingScreenState extends State<BriefingScreen> {
                       // ~:Image Section:~
                       Padding(
                         padding: const EdgeInsets.only(top: 16),
-                        child: InkWell(
-                          onTap: () => photoBloc.add(UploadPhotoEvent()),
-                          child: DottedBorder(
-                            color: ConstantColors.primaryColor3,
-                            strokeWidth: 2,
-                            dashPattern: const [4, 4],
-                            borderType: BorderType.RRect,
-                            radius: const Radius.circular(16),
-                            child: SizedBox(
-                              height: 80,
-                              child: BlocConsumer<PhotoBloc, PhotoState>(
-                                listener: (context, state) {
-                                  if (state is PhotoUploadFail) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      CustomSnackbar.type1(
-                                        12,
-                                        SnackBarBehavior.floating,
-                                        16,
-                                        state.error,
-                                        ConstantColors.shadowColor.shade300,
+                        child: DottedBorder(
+                          color: ConstantColors.primaryColor3,
+                          strokeWidth: 2,
+                          dashPattern: const [4, 4],
+                          borderType: BorderType.RRect,
+                          radius: const Radius.circular(16),
+                          child: SizedBox(
+                            height: 80,
+                            child: BlocConsumer<PhotoBloc, PhotoState>(
+                              listener: (context, state) {
+                                if (state is PhotoUploadFail) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    CustomSnackbar.type1(
+                                      12,
+                                      SnackBarBehavior.floating,
+                                      16,
+                                      state.error,
+                                      ConstantColors.shadowColor.shade300,
+                                      ConstantColors.primaryColor3,
+                                      true,
+                                    ),
+                                  );
+                                } else if (state is PhotoDeleteSuccess) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    CustomSnackbar.type1(
+                                      12,
+                                      SnackBarBehavior.floating,
+                                      16,
+                                      'Photo deleted successfully',
+                                      ConstantColors.shadowColor.shade300,
+                                      ConstantColors.primaryColor3,
+                                      true,
+                                    ),
+                                  );
+                                } else if (state is PhotoDeleteFail) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    CustomSnackbar.type1(
+                                      12,
+                                      SnackBarBehavior.floating,
+                                      16,
+                                      state.error,
+                                      ConstantColors.shadowColor.shade300,
+                                      ConstantColors.primaryColor3,
+                                      true,
+                                    ),
+                                  );
+                                }
+                              },
+                              builder: (context, state) {
+                                if (state is PhotoLoading) {
+                                  return Loading.platformIndicator(
+                                    iosRadius: 13,
+                                    iosCircleColor:
                                         ConstantColors.primaryColor3,
-                                        true,
-                                      ),
-                                    );
-                                  } else if (state is PhotoDeleteSuccess) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      CustomSnackbar.type1(
-                                        12,
-                                        SnackBarBehavior.floating,
-                                        16,
-                                        'Photo deleted successfully',
-                                        ConstantColors.shadowColor.shade300,
+                                    androidWidth: 28,
+                                    androidHeight: 28,
+                                    androidStrokeWidth: 3.5,
+                                    androidCircleColor:
                                         ConstantColors.primaryColor3,
-                                        true,
-                                      ),
-                                    );
-                                  } else if (state is PhotoDeleteFail) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      CustomSnackbar.type1(
-                                        12,
-                                        SnackBarBehavior.floating,
-                                        16,
-                                        state.error,
-                                        ConstantColors.shadowColor.shade300,
-                                        ConstantColors.primaryColor3,
-                                        true,
-                                      ),
-                                    );
-                                  }
-                                },
-                                builder: (context, state) {
-                                  if (state is PhotoLoading) {
-                                    return Loading.platformIndicator(
-                                      iosRadius: 13,
-                                      iosCircleColor:
-                                          ConstantColors.primaryColor3,
-                                      androidWidth: 28,
-                                      androidHeight: 28,
-                                      androidStrokeWidth: 3.5,
-                                      androidCircleColor:
-                                          ConstantColors.primaryColor3,
-                                    );
-                                  } else if (state is PhotoUploadSuccess) {
-                                    return Padding(
-                                      padding: const EdgeInsets.all(2.0),
-                                      child: Stack(
-                                        children: [
-                                          InkWell(
-                                            onTap: () {
-                                              showDialog(
-                                                context: context,
-                                                builder: (context) {
-                                                  return Dialog(
-                                                    backgroundColor:
-                                                        ConstantColors
-                                                            .primaryColor2,
-                                                    child: ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              16),
-                                                      child: Image.memory(
-                                                        base64Decode(
-                                                          state.photoUrl,
-                                                        ),
-                                                        fit: BoxFit.contain,
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                              );
-                                            },
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(16),
-                                              child: Image.memory(
-                                                base64Decode(state.photoUrl),
-                                                width: 80,
-                                                height: 80,
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                          ),
-                                          Positioned(
-                                            right: 4,
-                                            top: 4,
-                                            child: InkWell(
-                                              onTap: () => photoBloc.add(
-                                                DeletePhotoEvent(
-                                                  state.photoUrl,
-                                                ),
-                                              ),
-                                              child: Container(
-                                                decoration: const BoxDecoration(
-                                                  color: ConstantColors
-                                                      .primaryColor2,
-                                                  shape: BoxShape.circle,
-                                                ),
-                                                padding:
-                                                    const EdgeInsets.all(4),
-                                                child: const Icon(
-                                                  Icons.close_rounded,
-                                                  size: 16,
-                                                  color: ConstantColors
-                                                      .primaryColor3,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  }
-
-                                  return SizedBox(
-                                    width: MediaQuery.of(context).size.width,
-                                    child: const Wrap(
-                                      spacing: 8,
-                                      alignment: WrapAlignment.center,
-                                      crossAxisAlignment:
-                                          WrapCrossAlignment.center,
-                                      runAlignment: WrapAlignment.center,
+                                  );
+                                } else if (state is PhotoUploadSuccess) {
+                                  return Padding(
+                                    padding: const EdgeInsets.all(2.0),
+                                    child: Stack(
                                       children: [
-                                        Icon(
-                                          Icons.camera_alt_rounded,
-                                          size: 20,
+                                        InkWell(
+                                          onTap: () {
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return Dialog(
+                                                  backgroundColor:
+                                                      ConstantColors
+                                                          .primaryColor2,
+                                                  child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            16),
+                                                    child: Image.memory(
+                                                      base64Decode(
+                                                        state.photoUrl,
+                                                      ),
+                                                      fit: BoxFit.contain,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            );
+                                          },
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(16),
+                                            child: Image.memory(
+                                              base64Decode(state.photoUrl),
+                                              width: 80,
+                                              height: 80,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
                                         ),
-                                        Text(
-                                          'Upload Foto',
-                                          style: TextThemes.subtitle,
-                                          textAlign: TextAlign.center,
+                                        Positioned(
+                                          right: 4,
+                                          top: 4,
+                                          child: InkWell(
+                                            onTap: () => photoBloc.add(
+                                              DeletePhotoEvent(
+                                                state.photoUrl,
+                                              ),
+                                            ),
+                                            child: Container(
+                                              decoration: const BoxDecoration(
+                                                color: ConstantColors
+                                                    .primaryColor2,
+                                                shape: BoxShape.circle,
+                                              ),
+                                              padding: const EdgeInsets.all(4),
+                                              child: const Icon(
+                                                Icons.close_rounded,
+                                                size: 16,
+                                                color: ConstantColors
+                                                    .primaryColor3,
+                                              ),
+                                            ),
+                                          ),
                                         ),
                                       ],
                                     ),
                                   );
-                                },
-                              ),
+                                }
+
+                                return BlocListener<CameraCubit,
+                                    PermissionStatus>(
+                                  listener: (context, state) {
+                                    log('Camera permission state: $state');
+                                    if (state == PermissionStatus.granted ||
+                                        state == PermissionStatus.limited) {
+                                      log('Camera Permission granted');
+                                      photoBloc.add(UploadPhotoEvent());
+                                      // ScaffoldMessenger.of(context)
+                                      //     .showSnackBar(
+                                      //   CustomSnackbar.type1(
+                                      //     12,
+                                      //     SnackBarBehavior.floating,
+                                      //     16,
+                                      //     'Please allow camera permission',
+                                      //     ConstantColors.shadowColor.shade300,
+                                      //     ConstantColors.primaryColor3,
+                                      //     true,
+                                      //   ),
+                                      // );
+                                    } else {
+                                      log('Camera Permission denied');
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        CustomSnackbar.type1(
+                                          12,
+                                          SnackBarBehavior.floating,
+                                          16,
+                                          'Please allow camera permission',
+                                          ConstantColors.shadowColor.shade300,
+                                          ConstantColors.primaryColor3,
+                                          true,
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  child: InkWell(
+                                    onTap: () async {
+                                      // debugPrint(
+                                      //   (permissionState as PermissionInitial)
+                                      //           .cameraPermission
+                                      //       ? 'Camera Permission granted'
+                                      //       : 'Camera Permission denied',
+                                      // );
+                                      // permissionBloc.add(AskCameraPermit());
+                                      // if (permissionState.cameraPermission) {
+                                      //   log('Camera Permission granted');
+                                      //   photoBloc.add(UploadPhotoEvent());
+                                      // }
+                                      log('Camera permission: ${cameraCubit.state}');
+                                      await cameraCubit.checkCameraPermission();
+                                      if (cameraCubit.state ==
+                                              PermissionStatus.denied &&
+                                          cameraCubit.state != null) {
+                                        await cameraCubit
+                                            .requestCameraPermission();
+                                      }
+                                    },
+                                    child: SizedBox(
+                                      width: MediaQuery.of(context).size.width,
+                                      child: const Wrap(
+                                        spacing: 8,
+                                        alignment: WrapAlignment.center,
+                                        crossAxisAlignment:
+                                            WrapCrossAlignment.center,
+                                        runAlignment: WrapAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.camera_alt_rounded,
+                                            size: 20,
+                                          ),
+                                          Text(
+                                            'Upload Foto',
+                                            style: TextThemes.subtitle,
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         ),
@@ -386,6 +450,18 @@ class _BriefingScreenState extends State<BriefingScreen> {
                           (photoBloc.state as PhotoUploadSuccess).photoUrl,
                         ),
                       );
+
+                  // ScaffoldMessenger.of(context).showSnackBar(
+                  //   CustomSnackbar.type1(
+                  //     12,
+                  //     SnackBarBehavior.floating,
+                  //     16,
+                  //     'Briefing report created successfully',
+                  //     ConstantColors.shadowColor.shade300,
+                  //     ConstantColors.primaryColor3,
+                  //     true,
+                  //   ),
+                  // );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: ConstantColors.primaryColor1,
@@ -413,6 +489,7 @@ class _BriefingScreenState extends State<BriefingScreen> {
                             true,
                           ),
                         );
+                        Navigator.pop(context);
                       } else if (state is BriefCreationFail) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           CustomSnackbar.type1(

@@ -6,6 +6,12 @@ abstract class PhotoEvent extends BaseEvent with EquatableMixin {
   List<Object?> get props => [];
 }
 
+class RemovePhotoEvent extends PhotoEvent {
+  // final String photoUrl;
+
+  RemovePhotoEvent();
+}
+
 class UploadPhotoEvent extends PhotoEvent {
   UploadPhotoEvent();
 }
