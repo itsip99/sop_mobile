@@ -16,8 +16,6 @@ import 'package:sop_mobile/presentation/state/login/login_bloc.dart';
 import 'package:sop_mobile/presentation/state/login/login_state.dart';
 import 'package:sop_mobile/presentation/state/permission/camera_cubit.dart';
 import 'package:sop_mobile/presentation/state/permission/permission_bloc.dart';
-import 'package:sop_mobile/presentation/state/permission/permission_event.dart';
-import 'package:sop_mobile/presentation/state/permission/permission_state.dart';
 import 'package:sop_mobile/presentation/state/photo/photo_bloc.dart';
 import 'package:sop_mobile/presentation/state/photo/photo_event.dart';
 import 'package:sop_mobile/presentation/state/photo/photo_state.dart';
@@ -372,13 +370,20 @@ class _BriefingScreenState extends State<BriefingScreen> {
                                       //   log('Camera Permission granted');
                                       //   photoBloc.add(UploadPhotoEvent());
                                       // }
+
                                       log('Camera permission: ${cameraCubit.state}');
                                       await cameraCubit.checkCameraPermission();
                                       if (cameraCubit.state ==
-                                              PermissionStatus.denied &&
-                                          cameraCubit.state != null) {
+                                          PermissionStatus.denied) {
                                         await cameraCubit
                                             .requestCameraPermission();
+                                      }
+
+                                      if (cameraCubit.state ==
+                                              PermissionStatus.granted ||
+                                          cameraCubit.state ==
+                                              PermissionStatus.limited) {
+                                        photoBloc.add(UploadPhotoEvent());
                                       }
                                     },
                                     child: SizedBox(
@@ -423,12 +428,21 @@ class _BriefingScreenState extends State<BriefingScreen> {
                     log('$key - $value');
                   });
                   log('Description: ${descriptionController.text}');
-                  if ((photoBloc.state as PhotoUploadSuccess)
-                      .photoUrl
-                      .isNotEmpty) {
-                    log('Photo is available');
+
+                  String pic = '';
+                  if (photoBloc.state is! PhotoInitial) {
+                    if ((photoBloc.state as PhotoUploadSuccess)
+                        .photoUrl
+                        .isNotEmpty) {
+                      log('Photo is available');
+                      pic = (photoBloc.state as PhotoUploadSuccess).photoUrl;
+                    } else {
+                      log('No photo uploaded');
+                      pic = '';
+                    }
                   } else {
                     log('No photo uploaded');
+                    pic = '';
                   }
 
                   LoginModel user =
@@ -447,7 +461,7 @@ class _BriefingScreenState extends State<BriefingScreen> {
                           counterCubit.getCount()['salesman']!,
                           counterCubit.getCount()['others']!,
                           descriptionController.text,
-                          (photoBloc.state as PhotoUploadSuccess).photoUrl,
+                          pic,
                         ),
                       );
 

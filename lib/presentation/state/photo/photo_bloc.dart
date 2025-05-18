@@ -9,9 +9,18 @@ import 'package:sop_mobile/presentation/state/photo/photo_state.dart';
 
 class PhotoBloc<BaseEvent, BaseState> extends Bloc<PhotoEvent, PhotoState> {
   PhotoBloc() : super(PhotoInitial()) {
+    on<InitPhotoEvent>(initPhotoHandler);
     on<UploadPhotoEvent>(uploadPhotoHandler);
     on<DeletePhotoEvent>(deletePhotoHandler);
     on<RemovePhotoEvent>(removePhotoHandler);
+  }
+
+  Future<void> initPhotoHandler(
+    InitPhotoEvent event,
+    Emitter<PhotoState> emit,
+  ) async {
+    // ~:Network Call Simulation:~
+    emit(PhotoInitial());
   }
 
   Future<void> removePhotoHandler(
@@ -54,21 +63,18 @@ class PhotoBloc<BaseEvent, BaseState> extends Bloc<PhotoEvent, PhotoState> {
         imgBytes = await imgPicker.readAsBytes();
       } else {
         emit(PhotoUploadFail('Image not selected'));
-        return;
       }
 
       if (imgBytes != null) {
         image = decodeImage(imgBytes);
       } else {
         emit(PhotoUploadFail('Image decode failed'));
-        return;
       }
 
       if (image != null) {
         photoUrl = base64Encode(encodePng(image));
       } else {
         emit(PhotoUploadFail('Image encode failed'));
-        return;
       }
 
       if (photoUrl.isNotEmpty) {

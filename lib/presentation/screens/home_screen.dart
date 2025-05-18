@@ -94,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       context: context,
                       text: 'Morning Briefing',
                       func: () {
-                        photoBloc.add(RemovePhotoEvent());
+                        photoBloc.add(InitPhotoEvent());
                         counterCubit.setInitial('total', 1);
                         counterCubit.setInitial('shop_manager', 1);
                         counterCubit.setInitial('sales_counter', 1);
@@ -463,6 +463,18 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           );
                         } else if (state is FilterError) {
+                          if (state.errorMessage
+                              .toLowerCase()
+                              .contains('connection timed out')) {
+                            return const Center(
+                              child: Text(
+                                'Connection timed out',
+                                style: TextThemes.normal,
+                                textAlign: TextAlign.center,
+                              ),
+                            );
+                          }
+
                           return Center(
                             child: Text(
                               state.errorMessage,
