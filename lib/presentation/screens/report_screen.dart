@@ -83,17 +83,19 @@ class _ReportScreenState extends State<ReportScreen> {
           child: Wrap(
             runSpacing: 10,
             children: [
-              const Column(
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // ~:Page Title:~
                   Text(
                     'Informasi Laporan',
-                    style: TextThemes.subtitle,
+                    style: TextThemes.subtitle.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
 
                   // ~:Page Description:~
-                  Text(
+                  const Text(
                     'Masukkan data untuk membuat laporan harian.',
                     style: TextThemes.normal,
                   ),

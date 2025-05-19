@@ -6,6 +6,7 @@ import 'package:sop_mobile/core/constant/colors.dart';
 import 'package:sop_mobile/presentation/state/route/route_bloc.dart';
 import 'package:sop_mobile/presentation/state/route/route_event.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
+import 'package:sop_mobile/presentation/widgets/buttons.dart';
 import 'package:sop_mobile/routes.dart';
 
 class SalesmanScreen extends StatefulWidget {
@@ -76,22 +77,105 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
             ),
           ),
           padding: const EdgeInsets.all(20),
-          child: const Wrap(
-            runSpacing: 10,
+          child: Column(
             children: [
+              // ~:Page Header:~
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // ~:Page Title:~
                   Text(
                     'Informasi Sales',
-                    style: TextThemes.subtitle,
+                    style: TextThemes.subtitle.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
 
                   // ~:Page Description:~
-                  Text(
+                  const Text(
                     'Masukkan data diri sales untuk pembuatan laporan harian.',
                     style: TextThemes.normal,
+                  ),
+                ],
+              ),
+
+              // ~:Divider:~
+              const SizedBox(height: 10),
+
+              // ~:Page Body:~
+              Expanded(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black),
+                  ),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: ListView(
+                      physics: const ClampingScrollPhysics(),
+                    ),
+                  ),
+                ),
+              ),
+
+              // ~:Divider:~
+              const SizedBox(height: 10),
+
+              // ~:Page Footer:~
+              Row(
+                spacing: 8,
+                children: [
+                  // ~:Edit Button:~
+                  CustomButton.primaryButton2(
+                    context: context,
+                    width: 40,
+                    height: 40,
+                    enableIcon: true,
+                    icon: Icons.edit_rounded,
+                    func: () {
+                      context
+                          .read<RouteBloc>()
+                          .add(RoutePop(ConstantRoutes.home));
+                      Navigator.pop(context);
+                    },
+                    bgColor: ConstantColors.primaryColor2,
+                    textStyle: TextThemes.normal,
+                    shadowColor: ConstantColors.primaryColor1,
+                  ),
+
+                  // ~:Delete Button:~
+                  CustomButton.primaryButton2(
+                    context: context,
+                    width: 40,
+                    height: 40,
+                    enableIcon: true,
+                    icon: Icons.delete_rounded,
+                    func: () {
+                      context
+                          .read<RouteBloc>()
+                          .add(RoutePop(ConstantRoutes.home));
+                      Navigator.pop(context);
+                    },
+                    bgColor: ConstantColors.primaryColor2,
+                    textStyle: TextThemes.normal,
+                    shadowColor: ConstantColors.primaryColor1,
+                  ),
+
+                  // ~:Save Button:~
+                  Expanded(
+                    child: CustomButton.primaryButton2(
+                      context: context,
+                      height: 40,
+                      text: 'Simpan',
+                      func: () {
+                        context
+                            .read<RouteBloc>()
+                            .add(RoutePop(ConstantRoutes.home));
+                        Navigator.pop(context);
+                      },
+                      bgColor: ConstantColors.primaryColor1,
+                      textStyle: TextThemes.normal,
+                      shadowColor: ConstantColors.primaryColor1,
+                    ),
                   ),
                 ],
               ),

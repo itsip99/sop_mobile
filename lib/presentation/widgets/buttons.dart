@@ -60,19 +60,22 @@ class CustomButton {
 
   static Widget primaryButton2({
     required BuildContext context,
-    required String text,
+    String text = '',
     required Function func,
     required Color bgColor,
     required TextStyle textStyle,
     required Color shadowColor,
+    double? width,
     double height = 50,
     bool isLoading = false,
+    bool enableIcon = false,
+    IconData? icon,
   }) {
     return GestureDetector(
       onTap: () => func(),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
-        width: MediaQuery.of(context).size.width,
+        width: width ?? MediaQuery.of(context).size.width,
         height: height,
         alignment: Alignment.center,
         decoration: BoxDecoration(
@@ -105,10 +108,14 @@ class CustomButton {
                 );
               }
             } else {
-              return Text(
-                text,
-                style: textStyle,
-              );
+              if (enableIcon) {
+                return Icon(icon);
+              } else {
+                return Text(
+                  text,
+                  style: textStyle,
+                );
+              }
             }
           },
         ),

@@ -111,17 +111,19 @@ class _BriefingScreenState extends State<BriefingScreen> {
                   child: ListView(
                     physics: const ClampingScrollPhysics(),
                     children: [
-                      const Column(
+                      Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           // ~:Page Title:~
                           Text(
                             'Informasi Briefing',
-                            style: TextThemes.subtitle,
+                            style: TextThemes.subtitle.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
 
                           // ~:Page Description:~
-                          Text(
+                          const Text(
                             'Masukkan data untuk membuat laporan pagi.',
                             style: TextThemes.normal,
                           ),
