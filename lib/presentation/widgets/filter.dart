@@ -26,31 +26,16 @@ class Filter {
     }
   }
 
-  static Future<void> onDatePressed(
+  static Future<void> onRefreshOrDateChanged(
     BuildContext context,
   ) async {
+    log('Refreshed or Date changed');
     final bloc = context.read<FilterBloc>();
     final cubit = context.read<DateCubit>();
 
     log('Date changed: ${cubit.getDate()}');
     bloc.add(FilterModified(cubit.getDate()));
   }
-
-  // static Future<void> fetchBriefData(
-  //   BuildContext context,
-  // ) async {
-  //   final bloc = context.read<FilterBloc>();
-  //
-  //   bloc.add(LoadBriefData());
-  // }
-  //
-  // static Future<void> fetchReportData(
-  //   BuildContext context,
-  // ) async {
-  //   final bloc = context.read<FilterBloc>();
-  //
-  //   bloc.add(LoadReportData());
-  // }
 
   static Widget type1(BuildContext context) {
     return SizedBox(

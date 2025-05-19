@@ -1,7 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:sop_mobile/core/constant/colors.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
 
 class CustomSnackbar {
+  static void showSnackbar(
+    BuildContext context,
+    String message, {
+    double margin = 12.0,
+    SnackBarBehavior behavior = SnackBarBehavior.floating,
+    double radius = 16.0,
+    Color? backgroundColor,
+    Color iconColor = ConstantColors.primaryColor3,
+    bool showCloseIcon = true,
+  }) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      CustomSnackbar.type1(
+        margin,
+        behavior,
+        radius,
+        message,
+        backgroundColor ?? ConstantColors.shadowColor.shade300,
+        iconColor,
+        showCloseIcon,
+      ),
+    );
+  }
+
   static SnackBar type1(
     double margin,
     SnackBarBehavior behave,

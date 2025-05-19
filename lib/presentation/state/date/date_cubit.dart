@@ -33,7 +33,7 @@ class DateCubit extends Cubit<String> {
       pickedDate = Formatter.dateFormatter(pickedDate);
       log('Formatted Date changed: $pickedDate');
       emit(pickedDate);
-      if (context.mounted) Filter.onDatePressed(context);
+      if (context.mounted) Filter.onRefreshOrDateChanged(context);
     } else {
       pickedDate = Formatter.dateCircleBracketFormatter(date);
       pickedDate = Formatter.dateFormatter(pickedDate);

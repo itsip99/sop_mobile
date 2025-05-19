@@ -7,8 +7,8 @@ class BriefingModel {
   final int salesman;
   final int others;
   final String topic;
-  final String pic;
-  final String picThumb;
+  // final String pic;
+  // final String picThumb;
 
   BriefingModel({
     required this.date,
@@ -19,8 +19,8 @@ class BriefingModel {
     required this.salesman,
     required this.others,
     required this.topic,
-    required this.pic,
-    required this.picThumb,
+    // required this.pic,
+    // required this.picThumb,
   });
 
   factory BriefingModel.fromJson(Map<String, dynamic> json) {
@@ -33,8 +33,8 @@ class BriefingModel {
       salesman: json['Salesman'] as int,
       others: json['Other'] as int,
       topic: json['Topic'] as String,
-      pic: json['Pic1'] as String,
-      picThumb: json['PicThumb'] as String,
+      // pic: json['Pic1'] as String,
+      // picThumb: json['PicThumb'] as String,
     );
   }
 }

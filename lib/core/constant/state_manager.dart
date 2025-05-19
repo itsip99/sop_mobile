@@ -29,6 +29,9 @@ class StateManager {
       BlocProvider<FilterBloc>(
         create: (context) => FilterBloc(),
       ),
+      BlocProvider<DateCubit>(
+        create: (context) => DateCubit(),
+      ),
       BlocProvider<BriefBloc>(
         create: (context) => BriefBloc(),
       ),
@@ -42,17 +45,5 @@ class StateManager {
         create: (context) => PhotoBloc(),
       ),
     ];
-  }
-
-  static List<SingleChildWidget> getHomeBlocProviders() {
-    return [
-      BlocProvider<DateCubit>(
-        create: (context) => DateCubit(),
-      ),
-    ];
-  }
-
-  static List<SingleChildWidget> getBriefBlocProviders() {
-    return [];
   }
 }

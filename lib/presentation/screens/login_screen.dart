@@ -88,7 +88,18 @@ class _LoginScreenState extends State<LoginScreen> {
                       CustomText.subtitle(text: 'Welcome back to'),
 
                       // ~:Welcome Title:~
-                      CustomText.title(text: 'SOP Mobile'),
+                      Wrap(
+                        spacing: -8,
+                        direction: Axis.vertical,
+                        crossAxisAlignment: WrapCrossAlignment.start,
+                        children: [
+                          CustomText.title(text: 'SOP Mobile'),
+                          CustomText.subtitle(
+                            text: 'v1.0.0',
+                            themes: TextThemes.normal,
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ],
@@ -258,10 +269,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           // ~:Footer Button:~
                           CustomText.footerButton(
                             text: 'Sign Up',
-                            pressedFunc: () => Navigator.pushReplacementNamed(
-                              context,
-                              '/register',
-                            ),
+                            // pressedFunc: () => Navigator.pushReplacementNamed(
+                            //   context,
+                            //   '/register',
+                            // ),
+                            pressedFunc: () {},
                           ),
                         ],
                       ),

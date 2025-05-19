@@ -43,7 +43,7 @@ class BriefRepoImp extends BriefRepo {
         "Other": other,
         "Topic": desc,
         "Pic1": img,
-        "PicThumb": '',
+        "PicThumb": img,
       }
     };
     // log('Map Body: $body');

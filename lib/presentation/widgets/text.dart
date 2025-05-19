@@ -13,10 +13,11 @@ class CustomText {
 
   static Widget subtitle({
     required String text,
+    TextStyle themes = TextThemes.subtitle,
   }) {
     return Text(
       text,
-      style: TextThemes.subtitle,
+      style: themes,
     );
   }
 

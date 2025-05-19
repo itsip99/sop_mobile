@@ -41,7 +41,7 @@ class DatePicker {
     log('Set Cubit Date: $pickedDate');
     if (context.mounted) {
       cubit.setDate(context, pickedDate);
-      Filter.onDatePressed(context);
+      Filter.onRefreshOrDateChanged(context);
     }
   }
 }

@@ -15,7 +15,6 @@ import 'package:sop_mobile/presentation/state/counter/counter_cubit.dart';
 import 'package:sop_mobile/presentation/state/login/login_bloc.dart';
 import 'package:sop_mobile/presentation/state/login/login_state.dart';
 import 'package:sop_mobile/presentation/state/permission/camera_cubit.dart';
-import 'package:sop_mobile/presentation/state/permission/permission_bloc.dart';
 import 'package:sop_mobile/presentation/state/photo/photo_bloc.dart';
 import 'package:sop_mobile/presentation/state/photo/photo_event.dart';
 import 'package:sop_mobile/presentation/state/photo/photo_state.dart';
@@ -23,6 +22,7 @@ import 'package:sop_mobile/presentation/state/route/route_bloc.dart';
 import 'package:sop_mobile/presentation/state/route/route_event.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
 import 'package:sop_mobile/presentation/widgets/counter.dart';
+import 'package:sop_mobile/presentation/widgets/filter.dart';
 import 'package:sop_mobile/presentation/widgets/loading.dart';
 import 'package:sop_mobile/presentation/widgets/snackbar.dart';
 import 'package:sop_mobile/presentation/widgets/textformfield.dart';
@@ -44,8 +44,6 @@ class _BriefingScreenState extends State<BriefingScreen> {
   Widget build(BuildContext context) {
     final loginBloc = context.read<LoginBloc>();
     final counterCubit = context.read<CounterCubit>();
-    final permissionBloc = context.read<PermissionBloc>();
-    final permissionState = permissionBloc.state;
     final cameraCubit = context.read<CameraCubit>();
     final photoBloc = context.read<PhotoBloc>();
 
@@ -201,41 +199,36 @@ class _BriefingScreenState extends State<BriefingScreen> {
                             height: 80,
                             child: BlocConsumer<PhotoBloc, PhotoState>(
                               listener: (context, state) {
+                                log('Camera permission state: $state');
                                 if (state is PhotoUploadFail) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    CustomSnackbar.type1(
-                                      12,
-                                      SnackBarBehavior.floating,
-                                      16,
-                                      state.error,
-                                      ConstantColors.shadowColor.shade300,
-                                      ConstantColors.primaryColor3,
-                                      true,
-                                    ),
+                                  CustomSnackbar.showSnackbar(
+                                    context,
+                                    state.error,
                                   );
                                 } else if (state is PhotoDeleteSuccess) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    CustomSnackbar.type1(
-                                      12,
-                                      SnackBarBehavior.floating,
-                                      16,
-                                      'Photo deleted successfully',
-                                      ConstantColors.shadowColor.shade300,
-                                      ConstantColors.primaryColor3,
-                                      true,
-                                    ),
+                                  CustomSnackbar.showSnackbar(
+                                    context,
+                                    'Photo deleted successfully',
                                   );
                                 } else if (state is PhotoDeleteFail) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    CustomSnackbar.type1(
-                                      12,
-                                      SnackBarBehavior.floating,
-                                      16,
-                                      state.error,
-                                      ConstantColors.shadowColor.shade300,
-                                      ConstantColors.primaryColor3,
-                                      true,
-                                    ),
+                                  CustomSnackbar.showSnackbar(
+                                    context,
+                                    state.error,
+                                  );
+                                } else if (state is PhotoPermissionGranted) {
+                                  log('Camera Permission granted');
+                                  photoBloc.add(UploadPhotoEvent());
+                                } else if (state is PhotoPermissionDenied) {
+                                  log('Camera Permission denied');
+                                  CustomSnackbar.showSnackbar(
+                                    context,
+                                    'Camera permission denied',
+                                  );
+                                } else if (state is PhotoPermissionError) {
+                                  log('Camera Permission error: ${state.error}');
+                                  CustomSnackbar.showSnackbar(
+                                    context,
+                                    state.error,
                                   );
                                 }
                               },
@@ -321,91 +314,49 @@ class _BriefingScreenState extends State<BriefingScreen> {
                                   );
                                 }
 
-                                return BlocListener<CameraCubit,
-                                    PermissionStatus>(
-                                  listener: (context, state) {
-                                    log('Camera permission state: $state');
-                                    if (state == PermissionStatus.granted ||
-                                        state == PermissionStatus.limited) {
-                                      log('Camera Permission granted');
-                                      photoBloc.add(UploadPhotoEvent());
-                                      // ScaffoldMessenger.of(context)
-                                      //     .showSnackBar(
-                                      //   CustomSnackbar.type1(
-                                      //     12,
-                                      //     SnackBarBehavior.floating,
-                                      //     16,
-                                      //     'Please allow camera permission',
-                                      //     ConstantColors.shadowColor.shade300,
-                                      //     ConstantColors.primaryColor3,
-                                      //     true,
-                                      //   ),
-                                      // );
+                                return InkWell(
+                                  onTap: () async {
+                                    log('Camera permission: ${cameraCubit.state}');
+                                    await cameraCubit.checkCameraPermission();
+                                    if (cameraCubit.state ==
+                                            PermissionStatus.denied ||
+                                        cameraCubit.state ==
+                                            PermissionStatus
+                                                .permanentlyDenied) {
+                                      log('Requesting camera permission');
+                                      await cameraCubit
+                                          .requestCameraPermission()
+                                          .then((_) {
+                                        photoBloc.add(CheckCameraPermission(
+                                          cameraCubit.state,
+                                        ));
+                                      });
                                     } else {
-                                      log('Camera Permission denied');
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        CustomSnackbar.type1(
-                                          12,
-                                          SnackBarBehavior.floating,
-                                          16,
-                                          'Please allow camera permission',
-                                          ConstantColors.shadowColor.shade300,
-                                          ConstantColors.primaryColor3,
-                                          true,
-                                        ),
-                                      );
+                                      log('Camera permission: ${cameraCubit.state}');
+                                      photoBloc.add(CheckCameraPermission(
+                                        cameraCubit.state,
+                                      ));
                                     }
                                   },
-                                  child: InkWell(
-                                    onTap: () async {
-                                      // debugPrint(
-                                      //   (permissionState as PermissionInitial)
-                                      //           .cameraPermission
-                                      //       ? 'Camera Permission granted'
-                                      //       : 'Camera Permission denied',
-                                      // );
-                                      // permissionBloc.add(AskCameraPermit());
-                                      // if (permissionState.cameraPermission) {
-                                      //   log('Camera Permission granted');
-                                      //   photoBloc.add(UploadPhotoEvent());
-                                      // }
-
-                                      log('Camera permission: ${cameraCubit.state}');
-                                      await cameraCubit.checkCameraPermission();
-                                      if (cameraCubit.state ==
-                                          PermissionStatus.denied) {
-                                        await cameraCubit
-                                            .requestCameraPermission();
-                                      }
-
-                                      if (cameraCubit.state ==
-                                              PermissionStatus.granted ||
-                                          cameraCubit.state ==
-                                              PermissionStatus.limited) {
-                                        photoBloc.add(UploadPhotoEvent());
-                                      }
-                                    },
-                                    child: SizedBox(
-                                      width: MediaQuery.of(context).size.width,
-                                      child: const Wrap(
-                                        spacing: 8,
-                                        alignment: WrapAlignment.center,
-                                        crossAxisAlignment:
-                                            WrapCrossAlignment.center,
-                                        runAlignment: WrapAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.camera_alt_rounded,
-                                            size: 20,
-                                          ),
-                                          Text(
-                                            'Upload Foto',
-                                            style: TextThemes.subtitle,
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ],
-                                      ),
+                                  child: SizedBox(
+                                    width: MediaQuery.of(context).size.width,
+                                    child: const Wrap(
+                                      spacing: 8,
+                                      alignment: WrapAlignment.center,
+                                      crossAxisAlignment:
+                                          WrapCrossAlignment.center,
+                                      runAlignment: WrapAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.camera_alt_rounded,
+                                          size: 20,
+                                        ),
+                                        Text(
+                                          'Upload Foto',
+                                          style: TextThemes.subtitle,
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 );
@@ -422,27 +373,21 @@ class _BriefingScreenState extends State<BriefingScreen> {
               // ~:Footer Section:~
               ElevatedButton(
                 onPressed: () {
-                  log('Location: ${locationController.text}');
-                  log('Number of participants:');
-                  context.read<CounterCubit>().getCount().forEach((key, value) {
-                    log('$key - $value');
-                  });
-                  log('Description: ${descriptionController.text}');
+                  // log('Location: ${locationController.text}');
+                  // log('Number of participants:');
+                  // context.read<CounterCubit>().getCount().forEach((key, value) {
+                  //   log('$key - $value');
+                  // });
+                  // log('Description: ${descriptionController.text}');
 
                   String pic = '';
-                  if (photoBloc.state is! PhotoInitial) {
-                    if ((photoBloc.state as PhotoUploadSuccess)
-                        .photoUrl
-                        .isNotEmpty) {
-                      log('Photo is available');
-                      pic = (photoBloc.state as PhotoUploadSuccess).photoUrl;
-                    } else {
-                      log('No photo uploaded');
-                      pic = '';
-                    }
+                  if (photoBloc.state is! PhotoInitial &&
+                      (photoBloc.state as PhotoUploadSuccess)
+                          .photoUrl
+                          .isNotEmpty) {
+                    pic = (photoBloc.state as PhotoUploadSuccess).photoUrl;
                   } else {
-                    log('No photo uploaded');
-                    pic = '';
+                    // log('No photo uploaded');
                   }
 
                   LoginModel user =
@@ -464,18 +409,6 @@ class _BriefingScreenState extends State<BriefingScreen> {
                           pic,
                         ),
                       );
-
-                  // ScaffoldMessenger.of(context).showSnackBar(
-                  //   CustomSnackbar.type1(
-                  //     12,
-                  //     SnackBarBehavior.floating,
-                  //     16,
-                  //     'Briefing report created successfully',
-                  //     ConstantColors.shadowColor.shade300,
-                  //     ConstantColors.primaryColor3,
-                  //     true,
-                  //   ),
-                  // );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: ConstantColors.primaryColor1,
@@ -489,42 +422,36 @@ class _BriefingScreenState extends State<BriefingScreen> {
                 ),
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width,
+                  height: 24,
                   child: BlocConsumer<BriefBloc, BriefState>(
                     listener: (context, state) {
                       if (state is BriefCreationSuccess) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          CustomSnackbar.type1(
-                            12,
-                            SnackBarBehavior.floating,
-                            16,
-                            'Briefing report created successfully',
-                            ConstantColors.shadowColor.shade300,
-                            ConstantColors.primaryColor3,
-                            true,
-                          ),
+                        // ~:Inform the user:~
+                        CustomSnackbar.showSnackbar(
+                          context,
+                          'Briefing report created successfully',
                         );
+
+                        // ~:Get the latest data:~
+                        Filter.onRefreshOrDateChanged(context);
+
+                        // ~:Return to the home page:~
                         Navigator.pop(context);
                       } else if (state is BriefCreationFail) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          CustomSnackbar.type1(
-                            12,
-                            SnackBarBehavior.floating,
-                            16,
-                            state.error,
-                            ConstantColors.shadowColor.shade300,
-                            ConstantColors.primaryColor3,
-                            true,
-                          ),
+                        // ~:Inform the user:~
+                        CustomSnackbar.showSnackbar(
+                          context,
+                          state.error,
                         );
                       }
                     },
                     builder: (context, state) {
                       if (state is BriefLoading) {
                         return Loading.platformIndicator(
-                          iosRadius: 13,
+                          iosRadius: 10,
                           iosCircleColor: ConstantColors.primaryColor3,
-                          androidWidth: 28,
-                          androidHeight: 28,
+                          androidWidth: 20,
+                          androidHeight: 20,
                           androidStrokeWidth: 3.5,
                           androidCircleColor: ConstantColors.primaryColor3,
                         );

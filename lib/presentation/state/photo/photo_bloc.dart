@@ -4,12 +4,14 @@ import 'dart:typed_data';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image/image.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:sop_mobile/presentation/state/photo/photo_event.dart';
 import 'package:sop_mobile/presentation/state/photo/photo_state.dart';
 
 class PhotoBloc<BaseEvent, BaseState> extends Bloc<PhotoEvent, PhotoState> {
   PhotoBloc() : super(PhotoInitial()) {
     on<InitPhotoEvent>(initPhotoHandler);
+    on<CheckCameraPermission>(checkCameraPermission);
     on<UploadPhotoEvent>(uploadPhotoHandler);
     on<DeletePhotoEvent>(deletePhotoHandler);
     on<RemovePhotoEvent>(removePhotoHandler);
@@ -21,6 +23,23 @@ class PhotoBloc<BaseEvent, BaseState> extends Bloc<PhotoEvent, PhotoState> {
   ) async {
     // ~:Network Call Simulation:~
     emit(PhotoInitial());
+  }
+
+  Future<void> checkCameraPermission(
+    CheckCameraPermission event,
+    Emitter<PhotoState> emit,
+  ) async {
+    try {
+      // ~:Network Call Simulation:~
+      if (event.permissionStatus.isGranted ||
+          event.permissionStatus.isLimited) {
+        emit(PhotoPermissionGranted(event.permissionStatus));
+      } else {
+        emit(PhotoPermissionDenied(event.permissionStatus));
+      }
+    } catch (e) {
+      emit(PhotoPermissionError(e.toString()));
+    }
   }
 
   Future<void> removePhotoHandler(

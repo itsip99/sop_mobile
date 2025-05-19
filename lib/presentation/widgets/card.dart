@@ -5,6 +5,7 @@ class CustomCard {
   static Widget card(
     BuildContext context,
     double widthConfig,
+    double heightConfig,
     AlignmentGeometry alignmentConfig,
     Color borderColor,
     Color backgroundColor,
@@ -19,6 +20,7 @@ class CustomCard {
   }) {
     return Container(
       width: widthConfig,
+      height: heightConfig,
       alignment: alignmentConfig,
       decoration: BoxDecoration(
         border: Border.all(
