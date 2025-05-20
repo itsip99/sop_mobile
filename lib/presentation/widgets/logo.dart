@@ -5,6 +5,8 @@ class Logo {
   static Widget rounded1(
     BuildContext context,
     String imgPath,
+    double widthConfig,
+    double heightConfig,
   ) {
     return Container(
       decoration: BoxDecoration(
@@ -18,7 +20,8 @@ class Logo {
       child: Image.asset(
         imgPath,
         fit: BoxFit.cover,
-        scale: 1.75,
+        width: widthConfig,
+        height: heightConfig,
       ),
     );
   }

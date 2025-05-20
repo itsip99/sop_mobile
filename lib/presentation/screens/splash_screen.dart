@@ -69,18 +69,15 @@ class _SplashScreenState extends State<SplashScreen> {
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           color: ConstantColors.primaryColor1,
-          child: Wrap(
-            direction: Axis.vertical,
-            runSpacing: 10,
-            alignment: WrapAlignment.center,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            runAlignment: WrapAlignment.center,
+          child: Column(
+            spacing: 20,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(
-                'assets/images/figma.png',
+                'assets/images/logo 5.png',
                 scale: 0.8,
-                width: 200,
-                height: 200,
+                width: 150,
+                height: 150,
               ),
               Builder(
                 builder: (context) {
@@ -90,8 +87,8 @@ class _SplashScreenState extends State<SplashScreen> {
                     );
                   } else {
                     return const SizedBox(
-                      width: 20,
-                      height: 20,
+                      width: 24,
+                      height: 24,
                       child: CircularProgressIndicator(
                         strokeWidth: 3.5,
                         color: Colors.black,

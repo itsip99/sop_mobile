@@ -10,6 +10,7 @@ import 'package:sop_mobile/presentation/state/permission/camera_cubit.dart';
 import 'package:sop_mobile/presentation/state/permission/permission_bloc.dart';
 import 'package:sop_mobile/presentation/state/photo/photo_bloc.dart';
 import 'package:sop_mobile/presentation/state/route/route_bloc.dart';
+import 'package:sop_mobile/presentation/state/salesman/salesman_bloc.dart';
 
 class StateManager {
   static List<SingleChildWidget> getBlocProviders() {
@@ -34,6 +35,9 @@ class StateManager {
       ),
       BlocProvider<BriefBloc>(
         create: (context) => BriefBloc(),
+      ),
+      BlocProvider<SalesmanBloc>(
+        create: (context) => SalesmanBloc(),
       ),
       BlocProvider<PermissionBloc>(
         create: (context) => PermissionBloc(),

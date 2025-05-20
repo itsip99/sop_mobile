@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ConstantColors {
+  static const logoColor = Color.fromARGB(1, 26, 35, 64);
   static const primaryColor1 = Color.fromARGB(255, 112, 152, 255);
   static const primaryColor2 = Colors.white;
   static const primaryColor3 = Colors.black;

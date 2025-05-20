@@ -173,9 +173,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   backgroundColor: ConstantColors.primaryColor2,
                   radius: (MediaQuery.of(context).size.width < 800) ? 30 : 50,
                   child: Padding(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(8),
                     child: Image.asset(
-                      'assets/images/figma.png',
+                      'assets/images/logo 5.png',
                       fit: BoxFit.fill,
                     ),
                   ),

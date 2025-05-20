@@ -3,10 +3,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sop_mobile/core/constant/colors.dart';
+import 'package:sop_mobile/core/helpers/formatter.dart';
 import 'package:sop_mobile/presentation/state/route/route_bloc.dart';
 import 'package:sop_mobile/presentation/state/route/route_event.dart';
+import 'package:sop_mobile/presentation/state/salesman/salesman_bloc.dart';
+import 'package:sop_mobile/presentation/state/salesman/salesman_state.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
 import 'package:sop_mobile/presentation/widgets/buttons.dart';
+import 'package:sop_mobile/presentation/widgets/textformfield.dart';
 import 'package:sop_mobile/routes.dart';
 
 class SalesmanScreen extends StatefulWidget {
@@ -17,7 +21,9 @@ class SalesmanScreen extends StatefulWidget {
 }
 
 class _SalesmanScreenState extends State<SalesmanScreen> {
+  String selectedStatus = 'sales counter';
   final TextEditingController locationController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -104,16 +110,89 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
 
               // ~:Page Body:~
               Expanded(
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black),
-                  ),
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: ListView(
+                child: BlocBuilder<SalesmanBloc, SalesmanState>(
+                  builder: (context, state) {
+                    return ListView(
                       physics: const ClampingScrollPhysics(),
-                    ),
-                  ),
+                      children: [
+                        AnimatedContainer(
+                          duration: const Duration(seconds: 2),
+                          width: MediaQuery.of(context).size.width,
+                          child: Column(
+                            children: [
+                              // ~:Email TextField:~
+                              CustomTextFormField(
+                                'sales name',
+                                'Name',
+                                const Icon(Icons.person),
+                                nameController,
+                                enableValidator: true,
+                                validatorType: 'username',
+                                enableUpperCaseText: true,
+                                inputFormatters: [
+                                  CapitalFormatter(),
+                                  Formatter.capitalFormatter,
+                                ],
+                              ),
+
+                              // ~:Status Dropdown:~
+                              DropdownButtonFormField<String>(
+                                value: selectedStatus,
+                                items: const [
+                                  DropdownMenuItem(
+                                    value: "sales counter",
+                                    child: Text("Sales Counter"),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: "freelance",
+                                    child: Text("Freelance"),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: "gold",
+                                    child: Text("Gold"),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: "platinum",
+                                    child: Text("Platinum"),
+                                  ),
+                                ],
+                                onChanged: (value) {
+                                  if (value != null) {
+                                    selectedStatus = value;
+                                  }
+                                },
+                                decoration: const InputDecoration(
+                                  labelText: 'Status',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(20),
+                                    ),
+                                    borderSide: BorderSide(
+                                      color: ConstantColors.primaryColor3,
+                                    ),
+                                  ),
+                                ),
+                              ),
+
+                              // ~:Divider:~
+                              const SizedBox(height: 16),
+
+                              // ~:Add Button:~
+                              CustomButton.primaryButton2(
+                                context: context,
+                                text: 'Add Salesman',
+                                func: () {},
+                                bgColor: ConstantColors.primaryColor2,
+                                textStyle: TextThemes.subtitle,
+                                shadowColor: ConstantColors.primaryColor1,
+                                height: 40,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
 
@@ -131,12 +210,7 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                     height: 40,
                     enableIcon: true,
                     icon: Icons.edit_rounded,
-                    func: () {
-                      context
-                          .read<RouteBloc>()
-                          .add(RoutePop(ConstantRoutes.home));
-                      Navigator.pop(context);
-                    },
+                    func: () {},
                     bgColor: ConstantColors.primaryColor2,
                     textStyle: TextThemes.normal,
                     shadowColor: ConstantColors.primaryColor1,
@@ -149,12 +223,7 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                     height: 40,
                     enableIcon: true,
                     icon: Icons.delete_rounded,
-                    func: () {
-                      context
-                          .read<RouteBloc>()
-                          .add(RoutePop(ConstantRoutes.home));
-                      Navigator.pop(context);
-                    },
+                    func: () {},
                     bgColor: ConstantColors.primaryColor2,
                     textStyle: TextThemes.normal,
                     shadowColor: ConstantColors.primaryColor1,
@@ -165,15 +234,10 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                     child: CustomButton.primaryButton2(
                       context: context,
                       height: 40,
-                      text: 'Simpan',
-                      func: () {
-                        context
-                            .read<RouteBloc>()
-                            .add(RoutePop(ConstantRoutes.home));
-                        Navigator.pop(context);
-                      },
+                      text: 'Save',
+                      func: () {},
                       bgColor: ConstantColors.primaryColor1,
-                      textStyle: TextThemes.normal,
+                      textStyle: TextThemes.normalWhite,
                       shadowColor: ConstantColors.primaryColor1,
                     ),
                   ),

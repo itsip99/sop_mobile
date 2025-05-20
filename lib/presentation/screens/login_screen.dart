@@ -76,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   // ~:Logo Section:~
-                  Logo.rounded1(context, 'assets/images/figma.png'),
+                  Logo.rounded1(context, 'assets/images/logo 5.png', 40, 60),
 
                   // ~:Welcome Statement:~
                   Wrap(

@@ -63,6 +63,7 @@ class CustomButton {
     String text = '',
     required Function func,
     required Color bgColor,
+    double borderRadius = 20,
     required TextStyle textStyle,
     required Color shadowColor,
     double? width,

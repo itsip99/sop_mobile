@@ -47,6 +47,12 @@ class TextThemes {
     color: ConstantColors.primaryColor3,
   );
 
+  static const TextStyle normalWhite = TextStyle(
+    fontFamily: TextFontFamily.roboto,
+    fontSize: 14,
+    color: ConstantColors.primaryColor2,
+  );
+
   static const TextStyle styledTextButton = TextStyle(
     fontFamily: TextFontFamily.roboto,
     fontSize: 14,
