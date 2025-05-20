@@ -112,85 +112,100 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
               Expanded(
                 child: BlocBuilder<SalesmanBloc, SalesmanState>(
                   builder: (context, state) {
-                    return ListView(
+                    return SingleChildScrollView(
                       physics: const ClampingScrollPhysics(),
-                      children: [
-                        AnimatedContainer(
-                          duration: const Duration(seconds: 2),
-                          width: MediaQuery.of(context).size.width,
-                          child: Column(
-                            children: [
-                              // ~:Email TextField:~
-                              CustomTextFormField(
-                                'sales name',
-                                'Name',
-                                const Icon(Icons.person),
-                                nameController,
-                                enableValidator: true,
-                                validatorType: 'username',
-                                enableUpperCaseText: true,
-                                inputFormatters: [
-                                  CapitalFormatter(),
-                                  Formatter.capitalFormatter,
-                                ],
-                              ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          AnimatedContainer(
+                            duration: const Duration(seconds: 2),
+                            width: MediaQuery.of(context).size.width,
+                            child: Column(
+                              children: [
+                                // ~:Email TextField:~
+                                CustomTextFormField(
+                                  'sales name',
+                                  'Name',
+                                  const Icon(Icons.person),
+                                  borderRadius: 20,
+                                  nameController,
+                                  enableValidator: true,
+                                  validatorType: 'username',
+                                  enableUpperCaseText: true,
+                                  inputFormatters: [
+                                    CapitalFormatter(),
+                                    Formatter.capitalFormatter,
+                                  ],
+                                  isLabelFloat: true,
+                                ),
 
-                              // ~:Status Dropdown:~
-                              DropdownButtonFormField<String>(
-                                value: selectedStatus,
-                                items: const [
-                                  DropdownMenuItem(
-                                    value: "sales counter",
-                                    child: Text("Sales Counter"),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: "freelance",
-                                    child: Text("Freelance"),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: "gold",
-                                    child: Text("Gold"),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: "platinum",
-                                    child: Text("Platinum"),
-                                  ),
-                                ],
-                                onChanged: (value) {
-                                  if (value != null) {
-                                    selectedStatus = value;
-                                  }
-                                },
-                                decoration: const InputDecoration(
-                                  labelText: 'Status',
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(20),
+                                // ~:Status Dropdown:~
+                                DropdownButtonFormField<String>(
+                                  value: selectedStatus,
+                                  isExpanded: true,
+                                  isDense: true,
+                                  items: const [
+                                    DropdownMenuItem(
+                                      value: 'sales counter',
+                                      child: Text('Sales Counter'),
                                     ),
-                                    borderSide: BorderSide(
-                                      color: ConstantColors.primaryColor3,
+                                    DropdownMenuItem(
+                                      value: 'freelance',
+                                      child: Text('Freelance'),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: 'gold',
+                                      child: Text('Gold'),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: 'platinum',
+                                      child: Text('Platinum'),
+                                    ),
+                                  ],
+                                  onChanged: (value) {
+                                    if (value != null) {
+                                      selectedStatus = value;
+                                    }
+                                  },
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                  ),
+                                  icon: const Icon(
+                                    Icons.arrow_drop_down_rounded,
+                                    size: 32,
+                                    color: ConstantColors.shadowColor,
+                                  ),
+                                  decoration: const InputDecoration(
+                                    labelText: 'Status',
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
+                                      ),
+                                      borderSide: BorderSide(
+                                        color: ConstantColors.primaryColor3,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
 
-                              // ~:Divider:~
-                              const SizedBox(height: 16),
+                                // ~:Divider:~
+                                const SizedBox(height: 16),
 
-                              // ~:Add Button:~
-                              CustomButton.primaryButton2(
-                                context: context,
-                                text: 'Add Salesman',
-                                func: () {},
-                                bgColor: ConstantColors.primaryColor2,
-                                textStyle: TextThemes.subtitle,
-                                shadowColor: ConstantColors.primaryColor1,
-                                height: 40,
-                              ),
-                            ],
+                                // ~:Add Button:~
+                                CustomButton.primaryButton2(
+                                  context: context,
+                                  text: 'Add Salesman',
+                                  func: () {},
+                                  bgColor: ConstantColors.primaryColor2,
+                                  textStyle: TextThemes.subtitle,
+                                  shadowColor: ConstantColors.primaryColor1,
+                                  height: 40,
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     );
                   },
                 ),

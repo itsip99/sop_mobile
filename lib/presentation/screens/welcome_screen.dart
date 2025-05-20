@@ -42,8 +42,15 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               alignment: Alignment.centerLeft,
               child: Container(
                 decoration: BoxDecoration(
-                  color: ConstantColors.primaryColor1,
+                  color: ConstantColors.primaryColor2,
                   borderRadius: BorderRadius.circular(20),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: ConstantColors.shadowColor,
+                      blurRadius: 10,
+                      spreadRadius: 2,
+                    ),
+                  ],
                 ),
                 padding: EdgeInsets.symmetric(
                   horizontal:

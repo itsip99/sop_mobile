@@ -16,6 +16,7 @@ class CustomTextFormField extends StatefulWidget {
     this.enableUpperCaseText = false,
     this.inputFormatters = const [],
     this.isLabelFloat = false,
+    this.borderRadius = 10,
     super.key,
   });
 
@@ -30,6 +31,7 @@ class CustomTextFormField extends StatefulWidget {
   final bool enableUpperCaseText;
   final List<TextInputFormatter> inputFormatters;
   final bool isLabelFloat;
+  final double borderRadius;
 
   @override
   State<CustomTextFormField> createState() => _CustomTextFormFieldState();
@@ -69,14 +71,49 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
             floatingLabelBehavior: widget.isLabelFloat
                 ? FloatingLabelBehavior.always
                 : FloatingLabelBehavior.auto,
-            border: const OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.black, width: 2.0),
-              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+            border: OutlineInputBorder(
+              borderSide: const BorderSide(color: Colors.black, width: 2.0),
+              borderRadius: BorderRadius.all(
+                Radius.circular(widget.borderRadius),
+              ),
             ),
             prefixIcon: widget.prefixIcon,
             helperText: widget.enableValidator ? ' ' : null,
             helperStyle: const TextStyle(height: 1),
             errorStyle: const TextStyle(height: 1),
+            // suffixIcon: widget.validatorType == 'password'
+            //     ? IconButton(
+            //         icon: Icon(
+            //           widget.isPassword
+            //               ? Icons.visibility_off
+            //               : Icons.visibility,
+            //         ),
+            //         onPressed: () {
+            //           setState(() {
+            //             // Toggle the obscureText property by updating the parent widget
+            //             Navigator.of(context).push(
+            //               PageRouteBuilder(
+            //                 opaque: false,
+            //                 pageBuilder: (_, __, ___) => CustomTextFormField(
+            //                   widget.hintText,
+            //                   widget.labelText,
+            //                   widget.prefixIcon,
+            //                   widget.controller,
+            //                   isAutoFocusEnable: widget.isAutoFocusEnable,
+            //                   isPassword: !widget.isPassword,
+            //                   enableValidator: widget.enableValidator,
+            //                   validatorType: widget.validatorType,
+            //                   enableUpperCaseText: widget.enableUpperCaseText,
+            //                   inputFormatters: widget.inputFormatters,
+            //                   isLabelFloat: widget.isLabelFloat,
+            //                   borderRadius: widget.borderRadius,
+            //                 ),
+            //               ),
+            //             );
+            //           });
+            //         },
+            //       )
+            //     : null,
           ),
           autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: widget.enableValidator
