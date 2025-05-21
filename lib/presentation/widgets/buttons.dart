@@ -71,6 +71,7 @@ class CustomButton {
     bool isLoading = false,
     bool enableIcon = false,
     IconData? icon,
+    double spreadRadius = 1,
   }) {
     return GestureDetector(
       onTap: () => func(),
@@ -86,7 +87,7 @@ class CustomButton {
             BoxShadow(
               color: shadowColor,
               blurRadius: 5,
-              spreadRadius: 1,
+              spreadRadius: spreadRadius,
               blurStyle: BlurStyle.normal,
             ),
           ],

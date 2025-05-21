@@ -6,6 +6,11 @@ class SalesmanEvent extends BaseEvent with EquatableMixin {
   List<Object?> get props => [];
 }
 
+class ResetSalesman extends SalesmanEvent {
+  @override
+  List<Object?> get props => [];
+}
+
 class AddSalesman extends SalesmanEvent {
   final String name;
   final String tier;

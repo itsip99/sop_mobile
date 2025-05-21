@@ -164,7 +164,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   usernameController,
                                   enableValidator: true,
                                   validatorType: 'username',
-                                  enableUpperCaseText: true,
+                                  textCapitalization:
+                                      TextCapitalization.characters,
                                   inputFormatters: [
                                     CapitalFormatter(),
                                     Formatter.capitalFormatter,

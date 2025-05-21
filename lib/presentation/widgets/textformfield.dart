@@ -13,7 +13,7 @@ class CustomTextFormField extends StatefulWidget {
     this.isPassword = false,
     this.enableValidator = false,
     this.validatorType = '',
-    this.enableUpperCaseText = false,
+    this.textCapitalization = TextCapitalization.none,
     this.inputFormatters = const [],
     this.isLabelFloat = false,
     this.borderRadius = 10,
@@ -28,7 +28,7 @@ class CustomTextFormField extends StatefulWidget {
   final bool isPassword;
   final bool enableValidator;
   final String validatorType;
-  final bool enableUpperCaseText;
+  final TextCapitalization textCapitalization;
   final List<TextInputFormatter> inputFormatters;
   final bool isLabelFloat;
   final double borderRadius;
@@ -52,9 +52,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
           maxLines: 1,
           autofocus: widget.isAutoFocusEnable,
           inputFormatters: widget.inputFormatters,
-          textCapitalization: widget.enableUpperCaseText
-              ? TextCapitalization.characters
-              : TextCapitalization.none,
+          textCapitalization: widget.textCapitalization,
           controller: widget.controller,
           enabled: true,
           obscureText: widget.isPassword,
@@ -62,8 +60,9 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
           decoration: InputDecoration(
             filled: true,
             fillColor: Colors.white54,
-            contentPadding: EdgeInsets.only(
-              top: MediaQuery.of(context).size.height * 0.02,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 16,
             ),
             hintStyle: TextThemes.textfieldPlaceholder,
             hintText: 'Enter ${widget.hintText}',
@@ -121,6 +120,8 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                   switch (widget.validatorType) {
                     case 'email':
                       return Validator.emailValidation;
+                    case 'name':
+                      return Validator.nameValidator;
                     case 'username':
                       return Validator.usernameValidator;
                     case 'password':

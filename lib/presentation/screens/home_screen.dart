@@ -4,6 +4,7 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:sop_mobile/core/constant/colors.dart';
 import 'package:sop_mobile/data/models/home.dart';
 import 'package:sop_mobile/presentation/state/counter/counter_cubit.dart';
+import 'package:sop_mobile/presentation/state/cubit/sales.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_bloc.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_state.dart';
 import 'package:sop_mobile/presentation/state/login/login_bloc.dart';
@@ -13,6 +14,8 @@ import 'package:sop_mobile/presentation/state/photo/photo_bloc.dart';
 import 'package:sop_mobile/presentation/state/photo/photo_event.dart';
 import 'package:sop_mobile/presentation/state/route/route_bloc.dart';
 import 'package:sop_mobile/presentation/state/route/route_event.dart';
+import 'package:sop_mobile/presentation/state/salesman/salesman_bloc.dart';
+import 'package:sop_mobile/presentation/state/salesman/salesman_event.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
 import 'package:sop_mobile/presentation/widgets/buttons.dart';
 import 'package:sop_mobile/presentation/widgets/card.dart';
@@ -39,6 +42,8 @@ class _HomeScreenState extends State<HomeScreen> {
     final counterCubit = context.read<CounterCubit>();
     final filterBloc = context.read<FilterBloc>();
     final photoBloc = context.read<PhotoBloc>();
+    final salesProfileBloc = context.read<SalesmanBloc>();
+    final salesStatusCubit = context.read<SalesStatusCubit>();
     // log('Width: ${MediaQuery.of(context).size.width}');
     // log('Height: ${MediaQuery.of(context).size.height}');
 
@@ -53,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
       borderRadius: const BorderRadius.all(Radius.circular(20)),
       margin: const EdgeInsets.all(12),
       backdropEnabled: true,
-      backdropColor: ConstantColors.primaryColor3.withOpacity(0.5),
+      backdropColor: ConstantColors.backdropColor,
       panel: DecoratedBox(
         decoration: const BoxDecoration(
           color: ConstantColors.primaryColor2,
@@ -132,6 +137,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       context: context,
                       text: 'Salesman',
                       func: () {
+                        salesProfileBloc.add(ResetSalesman());
+                        salesStatusCubit.setSalesStatus('Sales Counter');
                         routeBloc.add(RoutePush(ConstantRoutes.sales));
                         Navigator.pushNamed(context, ConstantRoutes.sales);
                         panelController.close();

@@ -9,7 +9,17 @@ class Validator {
     return null; // No error
   }
 
-  // Function to validate password
+  // Function to validate name
+  static String? nameValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Name is required';
+    } else if (value.length < 6) {
+      return 'Name must be at least 6 characters long';
+    }
+    return null; // No error
+  }
+
+  // Function to validate username
   static String? usernameValidator(String? value) {
     if (value == null || value.isEmpty) {
       return 'Username is required';

@@ -3,6 +3,7 @@ import 'package:provider/single_child_widget.dart';
 import 'package:sop_mobile/presentation/state/brief/brief_bloc.dart';
 import 'package:sop_mobile/presentation/state/carousel/carousel_bloc.dart';
 import 'package:sop_mobile/presentation/state/counter/counter_cubit.dart';
+import 'package:sop_mobile/presentation/state/cubit/sales.dart';
 import 'package:sop_mobile/presentation/state/date/date_cubit.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_bloc.dart';
 import 'package:sop_mobile/presentation/state/login/login_bloc.dart';
@@ -47,6 +48,9 @@ class StateManager {
       ),
       BlocProvider<PhotoBloc>(
         create: (context) => PhotoBloc(),
+      ),
+      BlocProvider<SalesStatusCubit>(
+        create: (context) => SalesStatusCubit(),
       ),
     ];
   }

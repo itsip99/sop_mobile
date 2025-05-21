@@ -8,5 +8,6 @@ class ConstantColors {
   static const closeColor = Colors.red;
   static const shadowColor = Colors.grey;
   static final disabledColor = Colors.grey[400]!;
+  static final backdropColor = Colors.grey[800]!;
   static const textButtonCollor = Colors.blue;
 }
