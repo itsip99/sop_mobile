@@ -153,6 +153,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                             // ~:Login Form:~
                             Column(
+                              spacing: 8,
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -170,6 +171,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     CapitalFormatter(),
                                     Formatter.capitalFormatter,
                                   ],
+                                  borderRadius: 16,
                                 ),
 
                                 // ~:Password TextField:~
@@ -182,6 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   enableValidator: true,
                                   validatorType: 'password',
                                   inputFormatters: [Formatter.normalFormatter],
+                                  borderRadius: 16,
                                 ),
                               ],
                             ),

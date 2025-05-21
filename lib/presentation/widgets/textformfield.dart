@@ -51,6 +51,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         child: TextFormField(
           maxLines: 1,
           autofocus: widget.isAutoFocusEnable,
+          focusNode: FocusNode(canRequestFocus: false),
           inputFormatters: widget.inputFormatters,
           textCapitalization: widget.textCapitalization,
           controller: widget.controller,
