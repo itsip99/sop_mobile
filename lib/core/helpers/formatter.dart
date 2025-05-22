@@ -21,6 +21,10 @@ class Formatter {
     return FilteringTextInputFormatter.allow(RegExp(r'^[a-zA-Z 0-9./@]*$'));
   }
 
+  static TextInputFormatter get numberFormatter {
+    return FilteringTextInputFormatter.allow(RegExp(r'^[0-9]*$'));
+  }
+
   static TextInputFormatter get capitalFormatter {
     return FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9/]'));
   }

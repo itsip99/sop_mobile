@@ -121,6 +121,8 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                   switch (widget.validatorType) {
                     case 'email':
                       return Validator.emailValidation;
+                    case 'id':
+                      return Validator.idValidator;
                     case 'name':
                       return Validator.nameValidator;
                     case 'username':

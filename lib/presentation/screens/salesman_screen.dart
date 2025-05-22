@@ -29,6 +29,7 @@ class SalesmanScreen extends StatefulWidget {
 class _SalesmanScreenState extends State<SalesmanScreen> {
   final PanelController panelController = PanelController();
   final TextEditingController locationController = TextEditingController();
+  final TextEditingController idController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
 
   @override
@@ -41,8 +42,7 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
         controller: panelController,
         renderPanelSheet: false,
         minHeight: 0,
-        maxHeight: 330,
-        // maxHeight: MediaQuery.of(context).size.height * 0.6,
+        maxHeight: 400,
         isDraggable: false,
         panelSnapping: false,
         defaultPanelState: PanelState.CLOSED,
@@ -80,7 +80,7 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                               style: TextThemes.subtitle.copyWith(
                                 fontWeight: FontWeight.bold,
                               ),
-                              child: const Text('Informasi Sales'),
+                              child: const Text('Tambah Sales'),
                             ),
                             // ~:Page Description:~
                             DefaultTextStyle(
@@ -140,7 +140,22 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                             child: Column(
                               spacing: 12,
                               children: [
-                                // ~:Email TextField:~
+                                // ~:ID TextField:~
+                                CustomTextFormField(
+                                  'sales id',
+                                  'ID',
+                                  const Icon(Icons.person),
+                                  borderRadius: 20,
+                                  idController,
+                                  enableValidator: true,
+                                  validatorType: 'id',
+                                  inputFormatters: [
+                                    Formatter.numberFormatter,
+                                  ],
+                                  isLabelFloat: true,
+                                ),
+
+                                // ~:Name TextField:~
                                 CustomTextFormField(
                                   'sales name',
                                   'Name',
@@ -175,12 +190,13 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                           CustomButton.primaryButton2(
                             context: context,
                             height: 40,
-                            text: 'Tambah Salesman',
+                            text: 'Tambah',
                             func: () {
                               log('Add new salesman');
                               log('Name: ${nameController.text}');
                               log('Status: ${salesStatusCubit.getSalesStatus()}');
                               salesmanBloc.add(AddSalesman(
+                                idController.text,
                                 nameController.text,
                                 salesStatusCubit.getSalesStatus(),
                               ));
@@ -263,11 +279,12 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                 children: [
                   // ~:Page Header:~
                   Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // ~:Page Title:~
                       Text(
-                        'Informasi Sales',
+                        'Daftar Salesman',
                         style: TextThemes.subtitle.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -275,7 +292,7 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
 
                       // ~:Page Description:~
                       const Text(
-                        'Masukkan data diri sales untuk pembuatan laporan harian.',
+                        'Data diri salesman yang telah terdaftar di sistem.',
                         style: TextThemes.normal,
                       ),
                     ],
@@ -318,19 +335,49 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                               androidCircleColor: ConstantColors.primaryColor3,
                             );
                           } else {
-                            log('Salesman list length: ${state.salesProfileList.length}');
+                            log('Fetched salesman list length: ${state.fetchSalesList.length}');
                             return SingleChildScrollView(
                               physics: const ClampingScrollPhysics(),
-                              child: Column(
-                                children:
-                                    state.salesProfileList.map((salesProfile) {
-                                  return Column(
-                                    children: [
-                                      Text(salesProfile.name),
-                                      Text(salesProfile.tier),
-                                    ],
-                                  );
-                                }).toList(),
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 8),
+                                child: Column(
+                                  children:
+                                      state.fetchSalesList.map((salesProfile) {
+                                    return Card(
+                                      color: ConstantColors.primaryColor2,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      elevation: 5,
+                                      shadowColor: ConstantColors.shadowColor,
+                                      child: ListTile(
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                          vertical: 4,
+                                          horizontal: 20,
+                                        ),
+                                        title: Text(
+                                          'ID ${salesProfile.id}',
+                                          style: TextThemes.normal.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        subtitle: Text(
+                                          '${salesProfile.userName} - ${salesProfile.tierLevel}',
+                                          style: TextThemes.normal,
+                                        ),
+                                        // ~:Change to CheckBox for further use:~
+                                        // trailing: IconButton(
+                                        //   icon: const Icon(
+                                        //     Icons.delete_rounded,
+                                        //     color: ConstantColors.primaryColor3,
+                                        //   ),
+                                        //   onPressed: () {},
+                                        // ),
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
                               ),
                             );
                           }
@@ -352,32 +399,6 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                         width: 40,
                         height: 40,
                         enableIcon: true,
-                        icon: Icons.add_rounded,
-                        func: () => panelController.open(),
-                        bgColor: ConstantColors.primaryColor2,
-                        textStyle: TextThemes.normal,
-                        shadowColor: ConstantColors.primaryColor1,
-                      ),
-
-                      // ~:Edit Button:~
-                      CustomButton.primaryButton2(
-                        context: context,
-                        width: 40,
-                        height: 40,
-                        enableIcon: true,
-                        icon: Icons.edit_rounded,
-                        func: () {},
-                        bgColor: ConstantColors.primaryColor2,
-                        textStyle: TextThemes.normal,
-                        shadowColor: ConstantColors.primaryColor1,
-                      ),
-
-                      // ~:Delete Button:~
-                      CustomButton.primaryButton2(
-                        context: context,
-                        width: 40,
-                        height: 40,
-                        enableIcon: true,
                         icon: Icons.delete_rounded,
                         func: () {},
                         bgColor: ConstantColors.primaryColor2,
@@ -385,13 +406,39 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                         shadowColor: ConstantColors.primaryColor1,
                       ),
 
+                      // ~:Edit Button:~
+                      // CustomButton.primaryButton2(
+                      //   context: context,
+                      //   width: 40,
+                      //   height: 40,
+                      //   enableIcon: true,
+                      //   icon: Icons.edit_rounded,
+                      //   func: () {},
+                      //   bgColor: ConstantColors.primaryColor2,
+                      //   textStyle: TextThemes.normal,
+                      //   shadowColor: ConstantColors.primaryColor1,
+                      // ),
+                      //
+                      // ~:Delete Button:~
+                      // CustomButton.primaryButton2(
+                      //   context: context,
+                      //   width: 40,
+                      //   height: 40,
+                      //   enableIcon: true,
+                      //   icon: Icons.delete_rounded,
+                      //   func: () {},
+                      //   bgColor: ConstantColors.primaryColor2,
+                      //   textStyle: TextThemes.normal,
+                      //   shadowColor: ConstantColors.primaryColor1,
+                      // ),
+
                       // ~:Save Button:~
                       Expanded(
                         child: CustomButton.primaryButton2(
                           context: context,
                           height: 40,
-                          text: 'Save',
-                          func: () {},
+                          text: 'Tambah',
+                          func: () => panelController.open(),
                           bgColor: ConstantColors.primaryColor1,
                           textStyle: TextThemes.normalWhite,
                           shadowColor: ConstantColors.primaryColor1,

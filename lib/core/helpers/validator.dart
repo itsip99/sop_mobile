@@ -9,6 +9,16 @@ class Validator {
     return null; // No error
   }
 
+  // Function to validate id
+  static String? idValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Id is required';
+    } else if (value.length <= 16) {
+      return 'Id must be at least 16 characters long';
+    }
+    return null; // No error
+  }
+
   // Function to validate name
   static String? nameValidator(String? value) {
     if (value == null || value.isEmpty) {

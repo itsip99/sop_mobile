@@ -11,9 +11,14 @@ class ResetSalesman extends SalesmanEvent {
   List<Object?> get props => [];
 }
 
+class FetchSalesman extends SalesmanEvent {
+  FetchSalesman();
+}
+
 class AddSalesman extends SalesmanEvent {
+  final String id;
   final String name;
   final String tier;
 
-  AddSalesman(this.name, this.tier);
+  AddSalesman(this.id, this.name, this.tier);
 }
