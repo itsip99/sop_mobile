@@ -4,6 +4,8 @@ class APIConstants {
   static const String loginEndpoint = '/api/LoginSubDealer/Login';
   static const String fetchBriefDataEndpoint =
       '/api/BrowseSubDealer/SubDealerData';
+  static const String fetchReportDataEndpoint =
+      '/api/BrowseSubDealer/ShowDailyReport';
   static const String createBriefDataEndpoint = '/api/ModifySubDealer';
   static const String fetchSalesProfileEndpoint =
       '/api/BrowseSubDealer/SubDealerSalesman';

@@ -1,8 +1,5 @@
-import 'dart:developer';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sop_mobile/data/models/sales.dart';
-import 'package:sop_mobile/data/models/sales_profile.dart';
 import 'package:sop_mobile/data/models/user.dart';
 import 'package:sop_mobile/data/repositories/sales.dart';
 import 'package:sop_mobile/data/repositories/storage.dart';
@@ -38,7 +35,7 @@ class SalesmanBloc<BaseEvent, BaseState>
           emit(SalesmanFetched(state, result['data'] as List<SalesModel>));
         } else {
           // ~:Emit failure state with an error message:~
-          emit(SalesmanError(result['data'] as String));
+          emit(SalesmanError(result['data']));
         }
       } else {
         emit(SalesmanError('User credentials not found'));

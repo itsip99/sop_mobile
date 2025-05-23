@@ -290,7 +290,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 // ~:Acts Section:~
                 Expanded(
                   child: Refresh.iOSnAndroid(
-                    filterBloc: filterBloc,
                     onRefresh: () => Filter.onRefreshOrDateChanged(context),
                     child: BlocBuilder<FilterBloc, FilterState>(
                       builder: (context, state) {
@@ -451,8 +450,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               // ~:Report Section:~
                               Builder(builder: (context) {
                                 if (data.reportData.isNotEmpty) {
-                                  return const Center(
-                                    child: Text('Report Data'),
+                                  return Center(
+                                    child: Text(
+                                      'PIC: ${data.reportData[0].pic}',
+                                    ),
                                   );
                                 }
 

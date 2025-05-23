@@ -92,22 +92,6 @@ class Filter {
                     },
                   ),
 
-                  // ~:Salesman:~
-                  BlocBuilder<FilterBloc, FilterState>(
-                    builder: (context, state) {
-                      final isActive =
-                          state.activeFilter.contains(FilterType.salesman);
-
-                      log('Active Filter: ${state.activeFilter}');
-
-                      return FilterButton.textButton(
-                        () => onActPressed(context, FilterType.salesman),
-                        'Salesman',
-                        isActive,
-                      );
-                    },
-                  ),
-
                   // ~:Date:~
                   BlocBuilder<DateCubit, String>(
                     builder: (context, state) {
@@ -119,6 +103,22 @@ class Filter {
                       );
                     },
                   ),
+
+                  // ~:Salesman:~
+                  // BlocBuilder<FilterBloc, FilterState>(
+                  //   builder: (context, state) {
+                  //     final isActive =
+                  //         state.activeFilter.contains(FilterType.salesman);
+                  //
+                  //     log('Active Filter: ${state.activeFilter}');
+                  //
+                  //     return FilterButton.textButton(
+                  //       () => onActPressed(context, FilterType.salesman),
+                  //       'Salesman',
+                  //       isActive,
+                  //     );
+                  //   },
+                  // ),
                 ],
               ),
             ),

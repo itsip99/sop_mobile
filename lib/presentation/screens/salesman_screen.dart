@@ -17,6 +17,7 @@ import 'package:sop_mobile/presentation/themes/styles.dart';
 import 'package:sop_mobile/presentation/widgets/buttons.dart';
 import 'package:sop_mobile/presentation/widgets/dropdown.dart';
 import 'package:sop_mobile/presentation/widgets/loading.dart';
+import 'package:sop_mobile/presentation/widgets/refresh.dart';
 import 'package:sop_mobile/presentation/widgets/textformfield.dart';
 import 'package:sop_mobile/routes.dart';
 
@@ -306,39 +307,56 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height * 0.725,
-                    child: BlocConsumer<SalesmanBloc, SalesmanState>(
-                      listener: (context, state) {
-                        if (state is SalesmanAdded) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Salesman added successfully'),
-                              backgroundColor: Colors.green,
-                            ),
-                          );
-                        } else if (state is SalesmanError) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(state.error),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
-                        }
-                      },
-                      builder: (context, state) {
-                        if (state is SalesmanLoading) {
-                          return Loading.platformIndicator(
-                            iosRadius: 13,
-                            iosCircleColor: ConstantColors.primaryColor3,
-                            androidWidth: 28,
-                            androidHeight: 28,
-                            androidStrokeWidth: 3.5,
-                            androidCircleColor: ConstantColors.primaryColor3,
-                          );
-                        } else {
+                    child: Refresh.iOSnAndroid(
+                      onRefresh: () => salesmanBloc.add(FetchSalesman()),
+                      child: BlocConsumer<SalesmanBloc, SalesmanState>(
+                        listener: (context, state) {
+                          if (state is SalesmanError) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(state.error),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          } else if (state is SalesmanAdded) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Salesman added successfully'),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
+                          }
+                        },
+                        builder: (context, state) {
+                          if (state is SalesmanLoading) {
+                            return SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.725,
+                              child: Loading.platformIndicator(
+                                iosRadius: 13,
+                                iosCircleColor: ConstantColors.primaryColor3,
+                                androidWidth: 28,
+                                androidHeight: 28,
+                                androidStrokeWidth: 3.5,
+                                androidCircleColor:
+                                    ConstantColors.primaryColor3,
+                              ),
+                            );
+                          } else if (state is SalesmanError) {
+                            return Container(
+                              height: MediaQuery.of(context).size.height * 0.7,
+                              alignment: Alignment.center,
+                              child: Text(
+                                state.error,
+                                style: TextThemes.normal,
+                                textAlign: TextAlign.center,
+                              ),
+                            );
+                          }
+
                           log('Fetched salesman list length: ${state.fetchSalesList.length}');
-                          return ListView(
-                            padding: const EdgeInsets.only(bottom: 8),
-                            physics: const BouncingScrollPhysics(),
+                          return Column(
+                            spacing: 8.0,
                             children: state.fetchSalesList.map((salesProfile) {
                               return Card(
                                 color: ConstantColors.primaryColor2,
@@ -374,8 +392,8 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                               );
                             }).toList(),
                           );
-                        }
-                      },
+                        },
+                      ),
                     ),
                   ),
 

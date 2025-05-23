@@ -17,7 +17,7 @@ class FilterRepoImp extends FilterRepo {
   Future<HomeModel> dataPreprocessing(
     bool isBriefAvailable,
     bool isReportAvailable,
-    bool isSalesAvailable,
+    // bool isSalesAvailable,
     String date,
   ) async {
     if (date == '') {
@@ -50,21 +50,23 @@ class FilterRepoImp extends FilterRepo {
 
       // ~:Simulate sales data fetching:~
       // change from Success Map to data retrieval for sales
-      log('isSalesAvailable: $isSalesAvailable');
-      Map<String, dynamic> salesData = isSalesAvailable
-          ? await fetchSalesData(userCredentials.username, date)
-          : {'status': 'fail', 'data': <SalesModel>[]};
-      log('Sales data: ${salesData['data']}');
-      log('Sales data type: ${salesData['data'].runtimeType}');
+      // log('isSalesAvailable: $isSalesAvailable');
+      // Map<String, dynamic> salesData = isSalesAvailable
+      //     ? await fetchSalesData(userCredentials.username, date)
+      //     : {'status': 'fail', 'data': <SalesModel>[]};
+      // log('Sales data: ${salesData['data']}');
+      // log('Sales data type: ${salesData['data'].runtimeType}');
 
       if (briefData['status'] == 'success' ||
-          reportData['status'] == 'success' ||
-          salesData['status'] == 'success') {
+              reportData['status'] ==
+                  'success' /*||
+          salesData['status'] == 'success'*/
+          ) {
         log('Data fetched successfully');
         return HomeModel(
           briefingData: briefData['data'],
           reportData: reportData['data'],
-          salesData: salesData['data'],
+          salesData: [] /*salesData['data']*/,
         );
       } else {
         log('Data fetch failed');
@@ -82,7 +84,6 @@ class FilterRepoImp extends FilterRepo {
     String date,
   ) async {
     // Simulate a network call or data fetching
-    // Simulate a network call
     Uri uri =
         Uri.https(APIConstants.baseUrl, APIConstants.fetchBriefDataEndpoint);
 
@@ -133,11 +134,50 @@ class FilterRepoImp extends FilterRepo {
     String username,
     String date,
   ) async {
-    List<ReportModel> data = [];
-    return {
-      'status': 'success',
-      'data': data,
+    Uri uri = Uri.https(
+      APIConstants.baseUrl,
+      APIConstants.fetchReportDataEndpoint,
+    );
+
+    Map body = {
+      "CustomerID": username,
+      "TransDate": date,
     };
+    log('Map Body: $body');
+
+    final response = await http.post(
+      uri,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode(body),
+    );
+    log('Response: $response');
+
+    if (response.statusCode <= 200) {
+      log('Response: ${response.statusCode}');
+      final res = jsonDecode(response.body);
+      log("${res['Msg']}, ${res['Code']}");
+      if (res['Msg'] == 'Sukses' && res['Code'] == '100') {
+        log('Briefing fetch success');
+        final List<ReportModel> data =
+            (res['Data'] as List).map((e) => ReportModel.fromJson(e)).toList();
+        return {
+          'status': 'success',
+          'data': data,
+        };
+      } else {
+        log('Briefing fetch fail');
+        return {
+          'status': 'fail',
+          'data': [],
+        };
+      }
+    } else {
+      log('Response: ${response.statusCode}');
+      return {
+        'status': 'fail',
+        'data': [],
+      };
+    }
   }
 
   @override

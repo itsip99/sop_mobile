@@ -29,7 +29,7 @@ class FilterBloc<BaseEvent, BaseState> extends Bloc<FilterEvent, FilterState> {
       HomeModel res = await FilterRepoImp().dataPreprocessing(
         state.activeFilter.contains(FilterType.briefing),
         state.activeFilter.contains(FilterType.report),
-        state.activeFilter.contains(FilterType.salesman),
+        // state.activeFilter.contains(FilterType.salesman),
         event.date,
       );
 
@@ -67,7 +67,7 @@ class FilterBloc<BaseEvent, BaseState> extends Bloc<FilterEvent, FilterState> {
       HomeModel res = await FilterRepoImp().dataPreprocessing(
         state.activeFilter.contains(FilterType.briefing),
         state.activeFilter.contains(FilterType.report),
-        state.activeFilter.contains(FilterType.salesman),
+        // state.activeFilter.contains(FilterType.salesman),
         event.date,
       );
 
@@ -99,7 +99,7 @@ class FilterBloc<BaseEvent, BaseState> extends Bloc<FilterEvent, FilterState> {
       HomeModel res = await FilterRepoImp().dataPreprocessing(
         state.activeFilter.contains(FilterType.briefing),
         state.activeFilter.contains(FilterType.report),
-        state.activeFilter.contains(FilterType.salesman),
+        // state.activeFilter.contains(FilterType.salesman),
         event.date,
       );
 
