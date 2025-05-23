@@ -11,6 +11,7 @@ class CustomTextFormField extends StatefulWidget {
     this.controller, {
     this.isAutoFocusEnable = false,
     this.isPassword = false,
+    this.keyboardType = TextInputType.text,
     this.enableValidator = false,
     this.validatorType = '',
     this.textCapitalization = TextCapitalization.none,
@@ -26,6 +27,7 @@ class CustomTextFormField extends StatefulWidget {
   final TextEditingController controller;
   final bool isAutoFocusEnable;
   final bool isPassword;
+  final TextInputType keyboardType;
   final bool enableValidator;
   final String validatorType;
   final TextCapitalization textCapitalization;
@@ -58,6 +60,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
           enabled: true,
           obscureText: widget.isPassword,
           style: TextThemes.textfieldPlaceholder,
+          keyboardType: widget.keyboardType,
           decoration: InputDecoration(
             filled: true,
             fillColor: Colors.white54,

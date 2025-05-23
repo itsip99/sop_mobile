@@ -38,13 +38,13 @@ class SalesmanBloc<BaseEvent, BaseState>
           emit(SalesmanFetched(state, result['data'] as List<SalesModel>));
         } else {
           // ~:Emit failure state with an error message:~
-          emit(SalesmanError(state, result['data'] as String));
+          emit(SalesmanError(result['data'] as String));
         }
       } else {
-        emit(SalesmanError(state, 'Uuser credentials not found'));
+        emit(SalesmanError('User credentials not found'));
       }
     } catch (e) {
-      emit(SalesmanError(state, e.toString()));
+      emit(SalesmanError(e.toString()));
     }
   }
 
@@ -54,12 +54,35 @@ class SalesmanBloc<BaseEvent, BaseState>
   ) async {
     emit(SalesmanLoading(state));
     try {
+      // ~:Secure Storage Simulation:~
+      UserCredsModel userCredentials =
+          await StorageRepoImp().getUserCredentials();
+
+      if (userCredentials.username != '') {
+        // ~:Network Call Simulation:~
+        Map<String, dynamic> result = await SalesRepoImp().addSalesman(
+          userCredentials.username,
+          event.id,
+          event.name,
+          event.tier,
+        );
+
+        if (result['status'] == 'success') {
+          // ~:Emit success state with user data:~
+          emit(SalesmanAdded());
+        } else {
+          // ~:Emit failure state with an error message:~
+          emit(SalesmanError(result['data'] as String));
+        }
+      } else {
+        emit(SalesmanError('User credentials not found'));
+      }
       // emit(SalesmanAdded(
       //   state,
       //   SalesProfileModel(event.id, event.name, event.tier),
       // ));
     } catch (e) {
-      emit(SalesmanError(state, e.toString()));
+      emit(SalesmanError(e.toString()));
     }
   }
 }

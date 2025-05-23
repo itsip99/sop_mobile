@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:sop_mobile/core/constant/colors.dart';
@@ -34,10 +35,12 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final salesProfileBloc = context.read<SalesmanBloc>();
     final salesStatusCubit = context.read<SalesStatusCubit>();
     final salesmanBloc = context.read<SalesmanBloc>();
 
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: SlidingUpPanel(
         controller: panelController,
         renderPanelSheet: false,
@@ -63,6 +66,7 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
             padding: const EdgeInsets.all(20),
             child: Column(
               spacing: 20,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 // ~:Panel Header:~
                 Container(
@@ -128,86 +132,87 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
 
                 // ~:Panel Body:~
                 Expanded(
-                  child: Material(
-                    type: MaterialType.transparency,
-                    child: AnimatedContainer(
-                      duration: const Duration(seconds: 2),
-                      width: MediaQuery.of(context).size.width,
-                      child: Column(
-                        spacing: 28,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              spacing: 12,
-                              children: [
-                                // ~:ID TextField:~
-                                CustomTextFormField(
-                                  'sales id',
-                                  'ID',
-                                  const Icon(Icons.person),
-                                  borderRadius: 20,
-                                  idController,
-                                  enableValidator: true,
-                                  validatorType: 'id',
-                                  inputFormatters: [
-                                    Formatter.numberFormatter,
-                                  ],
-                                  isLabelFloat: true,
-                                ),
+                  child: AnimatedContainer(
+                    duration: const Duration(seconds: 2),
+                    width: MediaQuery.of(context).size.width,
+                    child: Column(
+                      spacing: 28,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            spacing: 12,
+                            children: [
+                              // ~:ID TextField:~
+                              CustomTextFormField(
+                                'sales id',
+                                'ID',
+                                const Icon(Icons.person),
+                                borderRadius: 20,
+                                idController,
+                                keyboardType: TextInputType.number,
+                                enableValidator: true,
+                                validatorType: 'id',
+                                inputFormatters: [
+                                  Formatter.numberFormatter,
+                                ],
+                                isLabelFloat: true,
+                              ),
 
-                                // ~:Name TextField:~
-                                CustomTextFormField(
-                                  'sales name',
-                                  'Name',
-                                  const Icon(Icons.person),
-                                  borderRadius: 20,
-                                  nameController,
-                                  enableValidator: true,
-                                  validatorType: 'name',
-                                  textCapitalization: TextCapitalization.words,
-                                  inputFormatters: [
-                                    Formatter.normalFormatter,
-                                  ],
-                                  isLabelFloat: true,
-                                ),
+                              // ~:Name TextField:~
+                              CustomTextFormField(
+                                'sales name',
+                                'Name',
+                                const Icon(Icons.person),
+                                borderRadius: 20,
+                                nameController,
+                                enableValidator: true,
+                                validatorType: 'name',
+                                textCapitalization: TextCapitalization.words,
+                                inputFormatters: [
+                                  Formatter.normalFormatter,
+                                ],
+                                isLabelFloat: true,
+                              ),
 
-                                // ~:Status Dropdown:~
-                                CustomDropdown.sales(
-                                  salesStatusCubit,
-                                  [
-                                    'Sales Counter',
-                                    'Freelance',
-                                    'Gold',
-                                    'Platinum'
-                                  ],
-                                  'Status',
-                                ),
-                              ],
-                            ),
+                              // ~:Status Dropdown:~
+                              CustomDropdown.sales(
+                                salesStatusCubit,
+                                [
+                                  'Sales Counter',
+                                  'Freelance',
+                                  'Gold',
+                                  'Platinum'
+                                ],
+                                'Status',
+                              ),
+                            ],
                           ),
+                        ),
 
-                          // ~:Add Button:~
-                          CustomButton.primaryButton2(
-                            context: context,
-                            height: 40,
-                            text: 'Tambah',
-                            func: () {
-                              log('Add new salesman');
-                              log('Name: ${nameController.text}');
-                              log('Status: ${salesStatusCubit.getSalesStatus()}');
-                              salesmanBloc.add(AddSalesman(
-                                idController.text,
-                                nameController.text,
-                                salesStatusCubit.getSalesStatus(),
-                              ));
-                            },
-                            bgColor: ConstantColors.primaryColor2,
-                            textStyle: TextThemes.subtitle,
-                            shadowColor: ConstantColors.primaryColor1,
-                            spreadRadius: 2,
-                          ),
-                        ],
-                      ),
+                        // ~:Add Button:~
+                        CustomButton.primaryButton2(
+                          context: context,
+                          height: 40,
+                          text: 'Tambah',
+                          func: () {
+                            log('Add new salesman');
+                            log('Name: ${nameController.text}');
+                            log('Status: ${salesStatusCubit.getSalesStatus()}');
+                            salesmanBloc.add(AddSalesman(
+                              idController.text,
+                              nameController.text,
+                              salesStatusCubit.getSalesStatus(),
+                            ));
+
+                            panelController.close();
+                            salesProfileBloc.add(FetchSalesman());
+                          },
+                          bgColor: ConstantColors.primaryColor2,
+                          textStyle: TextThemes.subtitle,
+                          shadowColor: ConstantColors.primaryColor1,
+                          spreadRadius: 2,
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -216,13 +221,13 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
           ),
         ),
         body: Scaffold(
-          resizeToAvoidBottomInset: false,
           appBar: AppBar(
             // toolbarHeight: 100,
             elevation: 0.0,
             scrolledUnderElevation: 0.0,
             automaticallyImplyLeading: true,
             backgroundColor: ConstantColors.primaryColor1,
+            systemOverlayStyle: SystemUiOverlayStyle.light,
             title: const Text(
               'Salesman',
               style: TextThemes.subtitle,
@@ -266,7 +271,6 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
             ),
             child: Container(
               width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
               decoration: const BoxDecoration(
                 color: ConstantColors.primaryColor2,
                 borderRadius: BorderRadius.only(
@@ -298,96 +302,82 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                     ],
                   ),
 
-                  // ~:Divider:~
-                  const SizedBox(height: 10),
-
                   // ~:Page Body:~
-                  Expanded(
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      height: 200,
-                      child: BlocConsumer<SalesmanBloc, SalesmanState>(
-                        listener: (context, state) {
-                          if (state is SalesmanAdded) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Salesman added successfully'),
-                                backgroundColor: Colors.green,
-                              ),
-                            );
-                          } else if (state is SalesmanError) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(state.error),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
-                          }
-                        },
-                        builder: (context, state) {
-                          if (state is SalesmanLoading) {
-                            return Loading.platformIndicator(
-                              iosRadius: 13,
-                              iosCircleColor: ConstantColors.primaryColor3,
-                              androidWidth: 28,
-                              androidHeight: 28,
-                              androidStrokeWidth: 3.5,
-                              androidCircleColor: ConstantColors.primaryColor3,
-                            );
-                          } else {
-                            log('Fetched salesman list length: ${state.fetchSalesList.length}');
-                            return SingleChildScrollView(
-                              physics: const ClampingScrollPhysics(),
-                              child: Padding(
-                                padding: const EdgeInsets.only(bottom: 8),
-                                child: Column(
-                                  children:
-                                      state.fetchSalesList.map((salesProfile) {
-                                    return Card(
-                                      color: ConstantColors.primaryColor2,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      elevation: 5,
-                                      shadowColor: ConstantColors.shadowColor,
-                                      child: ListTile(
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                          vertical: 4,
-                                          horizontal: 20,
-                                        ),
-                                        title: Text(
-                                          'ID ${salesProfile.id}',
-                                          style: TextThemes.normal.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        subtitle: Text(
-                                          '${salesProfile.userName} - ${salesProfile.tierLevel}',
-                                          style: TextThemes.normal,
-                                        ),
-                                        // ~:Change to CheckBox for further use:~
-                                        // trailing: IconButton(
-                                        //   icon: const Icon(
-                                        //     Icons.delete_rounded,
-                                        //     color: ConstantColors.primaryColor3,
-                                        //   ),
-                                        //   onPressed: () {},
-                                        // ),
-                                      ),
-                                    );
-                                  }).toList(),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height * 0.725,
+                    child: BlocConsumer<SalesmanBloc, SalesmanState>(
+                      listener: (context, state) {
+                        if (state is SalesmanAdded) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Salesman added successfully'),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+                        } else if (state is SalesmanError) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(state.error),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                      },
+                      builder: (context, state) {
+                        if (state is SalesmanLoading) {
+                          return Loading.platformIndicator(
+                            iosRadius: 13,
+                            iosCircleColor: ConstantColors.primaryColor3,
+                            androidWidth: 28,
+                            androidHeight: 28,
+                            androidStrokeWidth: 3.5,
+                            androidCircleColor: ConstantColors.primaryColor3,
+                          );
+                        } else {
+                          log('Fetched salesman list length: ${state.fetchSalesList.length}');
+                          return ListView(
+                            padding: const EdgeInsets.only(bottom: 8),
+                            physics: const BouncingScrollPhysics(),
+                            children: state.fetchSalesList.map((salesProfile) {
+                              return Card(
+                                color: ConstantColors.primaryColor2,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
                                 ),
-                              ),
-                            );
-                          }
-                        },
-                      ),
+                                elevation: 5,
+                                shadowColor: ConstantColors.shadowColor,
+                                child: ListTile(
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 4,
+                                    horizontal: 20,
+                                  ),
+                                  title: Text(
+                                    'ID ${salesProfile.id}',
+                                    style: TextThemes.normal.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  subtitle: Text(
+                                    '${salesProfile.userName} - ${salesProfile.tierLevel}',
+                                    style: TextThemes.normal,
+                                  ),
+                                  // ~:Change to CheckBox for further use:~
+                                  // trailing: IconButton(
+                                  //   icon: const Icon(
+                                  //     Icons.delete_rounded,
+                                  //     color: ConstantColors.primaryColor3,
+                                  //   ),
+                                  //   onPressed: () {},
+                                  // ),
+                                ),
+                              );
+                            }).toList(),
+                          );
+                        }
+                      },
                     ),
                   ),
-
-                  // ~:Divider:~
-                  const SizedBox(height: 10),
 
                   // ~:Page Footer:~
                   Row(

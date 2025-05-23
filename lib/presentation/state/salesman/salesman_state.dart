@@ -34,20 +34,24 @@ class SalesmanFetched extends SalesmanState {
 }
 
 class SalesmanAdded extends SalesmanState {
-  final SalesProfileModel salesProfile;
+  // final SalesProfileModel salesProfile;
 
-  SalesmanAdded(SalesmanState previousState, this.salesProfile)
-      : super([...previousState.salesDraftList, salesProfile],
-            previousState.fetchSalesList);
+  SalesmanAdded(
+      // SalesmanState previousState,
+      /*this.salesProfile*/
+      // ) : super([...previousState.salesDraftList /*, salesProfile*/],
+      )
+      : super([], []);
 
-  SalesProfileModel get getSalesmanAdded => salesProfile;
+  // SalesProfileModel get getSalesmanAdded => salesProfile;
 }
 
 class SalesmanError extends SalesmanState {
   final String error;
 
-  SalesmanError(SalesmanState previousState, this.error)
-      : super(previousState.salesDraftList, previousState.fetchSalesList);
+  SalesmanError(/*SalesmanState previousState,*/ this.error)
+      : super(/*previousState.salesDraftList, previousState.fetchSalesList*/ [],
+            []);
 
   String get getSalesmanError => 'Error: $error';
 }
