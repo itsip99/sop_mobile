@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -19,10 +21,14 @@ import 'package:sop_mobile/presentation/state/salesman/salesman_event.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
 import 'package:sop_mobile/presentation/widgets/buttons.dart';
 import 'package:sop_mobile/presentation/widgets/card.dart';
+import 'package:sop_mobile/presentation/widgets/datagrid/report_leasing.dart';
+import 'package:sop_mobile/presentation/widgets/datagrid/report_payment.dart';
+import 'package:sop_mobile/presentation/widgets/datagrid/report_stu.dart';
 import 'package:sop_mobile/presentation/widgets/filter.dart';
 import 'package:sop_mobile/presentation/widgets/loading.dart';
 import 'package:sop_mobile/presentation/widgets/refresh.dart';
 import 'package:sop_mobile/routes.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -40,7 +46,6 @@ class _HomeScreenState extends State<HomeScreen> {
     final routeBloc = context.read<RouteBloc>();
     final loginBloc = context.read<LoginBloc>();
     final counterCubit = context.read<CounterCubit>();
-    final filterBloc = context.read<FilterBloc>();
     final photoBloc = context.read<PhotoBloc>();
     final salesProfileBloc = context.read<SalesmanBloc>();
     final salesStatusCubit = context.read<SalesStatusCubit>();
@@ -321,145 +326,257 @@ class _HomeScreenState extends State<HomeScreen> {
                               // ~:Briefing Section:~
                               Builder(builder: (context) {
                                 if (data.briefingData.isNotEmpty) {
-                                  return SizedBox(
-                                    width: MediaQuery.of(context).size.width,
-                                    height: 350,
-                                    child: ListView.builder(
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      controller: scrollController,
-                                      itemCount: data.briefingData.length,
-                                      itemBuilder: (context, index) {
-                                        final briefing =
-                                            data.briefingData[index];
-
-                                        return CustomCard.card(
-                                          context,
-                                          MediaQuery.of(context).size.width,
-                                          350,
-                                          Alignment.center,
-                                          ConstantColors.primaryColor3,
-                                          ConstantColors.primaryColor2,
-                                          ConstantColors.shadowColor,
-                                          const NeverScrollableScrollPhysics(),
-                                          borderWidth: 1.5,
-                                          marginConfig: 0,
-                                          [
-                                            CustomCard.brief(
-                                              context,
-                                              'Lokasi',
-                                              briefing.location,
-                                              padHorizontal: 8,
-                                            ),
-
-                                            CustomCard.brief(
-                                              context,
-                                              'Peserta',
-                                              '${briefing.participants} orang',
-                                              padHorizontal: 8,
-                                            ),
-
-                                            CustomCard.brief(
-                                              context,
-                                              'Shop Manager',
-                                              '${briefing.shopManager} orang',
-                                              padHorizontal: 8,
-                                            ),
-
-                                            CustomCard.brief(
-                                              context,
-                                              'Sales Counter',
-                                              '${briefing.salesCounter} orang',
-                                              padHorizontal: 8,
-                                            ),
-
-                                            CustomCard.brief(
-                                              context,
-                                              'Salesman',
-                                              '${briefing.salesman} orang',
-                                              padHorizontal: 8,
-                                            ),
-
-                                            CustomCard.brief(
-                                              context,
-                                              'Others',
-                                              '${briefing.others} orang',
-                                              padHorizontal: 8,
-                                            ),
-
-                                            CustomCard.brief(
-                                              context,
-                                              'Description',
-                                              briefing.topic,
-                                              isHorizontal: false,
-                                              padHorizontal: 8,
-                                            ),
-
-                                            // ~:Image:~
-                                            CustomCard.button(
-                                              context,
-                                              () {
-                                                // showDialog(
-                                                //   context: context,
-                                                //   builder: (context) {
-                                                //     return Dialog(
-                                                //       backgroundColor:
-                                                //           ConstantColors
-                                                //               .primaryColor2,
-                                                //       child: ClipRRect(
-                                                //         borderRadius:
-                                                //             BorderRadius
-                                                //                 .circular(
-                                                //                     16),
-                                                //         child: Image
-                                                //             .memory(
-                                                //           base64Decode(
-                                                //             briefing
-                                                //                 .pic,
-                                                //           ),
-                                                //           fit: BoxFit
-                                                //               .contain,
-                                                //         ),
-                                                //       ),
-                                                //     );
-                                                //   },
-                                                // );
-                                              },
-                                              MediaQuery.of(context).size.width,
-                                              30,
-                                              Alignment.center,
-                                              'Lihat Gambar',
-                                              TextThemes.normal,
-                                              ConstantColors.primaryColor1,
-                                              8,
-                                              8,
-                                              20,
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    ),
+                                  return CustomCard.briefSection(
+                                    context,
+                                    MediaQuery.of(context).size.width,
+                                    350,
+                                    scrollController,
+                                    data.briefingData,
+                                    MediaQuery.of(context).size.width,
+                                    350,
                                   );
                                 }
 
-                                return const Center(
-                                  child: Text(''),
-                                );
+                                return const SizedBox();
                               }),
 
                               // ~:Report Section:~
                               Builder(builder: (context) {
                                 if (data.reportData.isNotEmpty) {
-                                  return Center(
-                                    child: Text(
-                                      'PIC: ${data.reportData[0].pic}',
-                                    ),
+                                  // child: Text(
+                                  //   'PIC: ${data.reportData[0].pic}',
+                                  // ),
+                                  log('STU Data: ${data.reportData[0].stu.length}');
+                                  return Column(
+                                    spacing: 8,
+                                    children: [
+                                      // ~:View Salesman Button:~
+                                      ElevatedButton(
+                                        onPressed: () =>
+                                            Navigator.pushReplacementNamed(
+                                          context,
+                                          '/sales',
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              ConstantColors.primaryColor1,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                          ),
+                                          fixedSize: Size(
+                                            MediaQuery.of(context).size.width,
+                                            44,
+                                          ),
+                                        ),
+                                        child: const Text(
+                                          'Lihat Daftar Salesman',
+                                          style: TextThemes.normalTextButton,
+                                        ),
+                                      ),
+
+                                      // ~:Sales to User Section:~
+                                      SizedBox(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.35,
+                                        child: SfDataGrid(
+                                          footerHeight: 0.0,
+                                          source: StuDataSource(
+                                            stuData: data.reportData[0].stu,
+                                          ),
+                                          columnWidthMode: ColumnWidthMode.fill,
+                                          headerGridLinesVisibility:
+                                              GridLinesVisibility.both,
+                                          gridLinesVisibility:
+                                              GridLinesVisibility.both,
+                                          horizontalScrollPhysics:
+                                              const NeverScrollableScrollPhysics(),
+                                          stackedHeaderRows: <StackedHeaderRow>[
+                                            StackedHeaderRow(
+                                              cells: [
+                                                StackedHeaderCell(
+                                                  columnNames: [
+                                                    'header',
+                                                    'result'
+                                                  ],
+                                                  child: Center(
+                                                    child: Text(
+                                                      'Sales to User',
+                                                      style: TextThemes.title2
+                                                          .copyWith(
+                                                              fontSize: 16),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                          columns: <GridColumn>[
+                                            GridColumn(
+                                              columnName: 'header',
+                                              label: Center(
+                                                child: Text(
+                                                  'Group Name',
+                                                  style: TextThemes.normal
+                                                      .copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            GridColumn(
+                                              columnName: 'result',
+                                              label: Center(
+                                                child: Text(
+                                                  'Total',
+                                                  style: TextThemes.normal
+                                                      .copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+
+                                      // ~:Payment Section:~
+                                      SizedBox(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.28,
+                                        child: SfDataGrid(
+                                          footerHeight: 0.0,
+                                          source: PaymentDataSource(
+                                            stuData: data.reportData[0].payment,
+                                          ),
+                                          columnWidthMode: ColumnWidthMode.fill,
+                                          headerGridLinesVisibility:
+                                              GridLinesVisibility.both,
+                                          gridLinesVisibility:
+                                              GridLinesVisibility.both,
+                                          horizontalScrollPhysics:
+                                              const NeverScrollableScrollPhysics(),
+                                          stackedHeaderRows: <StackedHeaderRow>[
+                                            StackedHeaderRow(
+                                              cells: [
+                                                StackedHeaderCell(
+                                                  columnNames: [
+                                                    'header',
+                                                    'result'
+                                                  ],
+                                                  child: Center(
+                                                    child: Text(
+                                                      'Payment',
+                                                      style: TextThemes.title2
+                                                          .copyWith(
+                                                              fontSize: 16),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                          columns: <GridColumn>[
+                                            GridColumn(
+                                              columnName: 'header',
+                                              label: Center(
+                                                child: Text(
+                                                  'Group Name',
+                                                  style: TextThemes.normal
+                                                      .copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            GridColumn(
+                                              columnName: 'result',
+                                              label: Center(
+                                                child: Text(
+                                                  'Total',
+                                                  style: TextThemes.normal
+                                                      .copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+
+                                      // ~:Leasing Section:~
+                                      SizedBox(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.28,
+                                        child: SfDataGrid(
+                                          footerHeight: 0.0,
+                                          source: LeasingDataSource(
+                                            stuData: data.reportData[0].leasing,
+                                          ),
+                                          columnWidthMode: ColumnWidthMode.fill,
+                                          headerGridLinesVisibility:
+                                              GridLinesVisibility.both,
+                                          gridLinesVisibility:
+                                              GridLinesVisibility.both,
+                                          horizontalScrollPhysics:
+                                              const NeverScrollableScrollPhysics(),
+                                          stackedHeaderRows: <StackedHeaderRow>[
+                                            StackedHeaderRow(
+                                              cells: [
+                                                StackedHeaderCell(
+                                                  columnNames: [
+                                                    'header',
+                                                    'result'
+                                                  ],
+                                                  child: Center(
+                                                    child: Text(
+                                                      'Leasing',
+                                                      style: TextThemes.title2
+                                                          .copyWith(
+                                                              fontSize: 16),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                          columns: <GridColumn>[
+                                            GridColumn(
+                                              columnName: 'header',
+                                              label: Center(
+                                                child: Text(
+                                                  'Group Name',
+                                                  style: TextThemes.normal
+                                                      .copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            GridColumn(
+                                              columnName: 'result',
+                                              label: Center(
+                                                child: Text(
+                                                  'Total',
+                                                  style: TextThemes.normal
+                                                      .copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   );
                                 }
 
-                                return const Center(
-                                  child: Text(''),
-                                );
+                                return const SizedBox();
                               }),
 
                               // ~:Salesman Section:~
@@ -470,9 +587,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   );
                                 }
 
-                                return const Center(
-                                  child: Text(''),
-                                );
+                                return const SizedBox();
                               }),
                             ],
                           );

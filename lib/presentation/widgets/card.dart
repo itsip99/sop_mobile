@@ -1,7 +1,146 @@
 import 'package:flutter/material.dart';
+import 'package:sop_mobile/core/constant/colors.dart';
+import 'package:sop_mobile/data/models/briefing.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
 
 class CustomCard {
+  static Widget briefSection(
+    final BuildContext context,
+    final double boxWidth,
+    final double boxHeight,
+    final ScrollController scrollController,
+    final List<BriefingModel> briefingData,
+    final double cardWidth,
+    final double cardHeight, {
+    final ScrollPhysics scrollBehavior = const NeverScrollableScrollPhysics(),
+    final Alignment cardAlignment = Alignment.center,
+    final Color cardBorderColor = ConstantColors.primaryColor3,
+    final Color cardBackgroundColor = ConstantColors.primaryColor2,
+    final Color cardShadowColor = ConstantColors.shadowColor,
+    final ScrollPhysics cardScrollBehavior =
+        const NeverScrollableScrollPhysics(),
+    final double cardBorderWidth = 1.5,
+    final double cardMargin = 0.0,
+  }) {
+    return SizedBox(
+      width: boxWidth,
+      height: boxHeight,
+      child: ListView.builder(
+        physics: scrollBehavior,
+        controller: scrollController,
+        itemCount: briefingData.length,
+        itemBuilder: (context, index) {
+          final data = briefingData[index];
+
+          return card(
+            context,
+            cardWidth,
+            cardHeight,
+            cardAlignment,
+            cardBorderColor,
+            cardBackgroundColor,
+            cardShadowColor,
+            cardScrollBehavior,
+            borderWidth: cardBorderWidth,
+            marginConfig: cardMargin,
+            [
+              brief(
+                context,
+                'Lokasi',
+                data.location,
+                padHorizontal: 8,
+              ),
+
+              brief(
+                context,
+                'Peserta',
+                '${data.participants} orang',
+                padHorizontal: 8,
+              ),
+
+              brief(
+                context,
+                'Shop Manager',
+                '${data.shopManager} orang',
+                padHorizontal: 8,
+              ),
+
+              brief(
+                context,
+                'Sales Counter',
+                '${data.salesCounter} orang',
+                padHorizontal: 8,
+              ),
+
+              brief(
+                context,
+                'Salesman',
+                '${data.salesman} orang',
+                padHorizontal: 8,
+              ),
+
+              brief(
+                context,
+                'Others',
+                '${data.others} orang',
+                padHorizontal: 8,
+              ),
+
+              brief(
+                context,
+                'Description',
+                data.topic,
+                isHorizontal: false,
+                padHorizontal: 8,
+              ),
+
+              // ~:Image:~
+              button(
+                context,
+                () {
+                  // showDialog(
+                  //   context: context,
+                  //   builder: (context) {
+                  //     return Dialog(
+                  //       backgroundColor:
+                  //           ConstantColors
+                  //               .primaryColor2,
+                  //       child: ClipRRect(
+                  //         borderRadius:
+                  //             BorderRadius
+                  //                 .circular(
+                  //                     16),
+                  //         child: Image
+                  //             .memory(
+                  //           base64Decode(
+                  //             briefing
+                  //                 .pic,
+                  //           ),
+                  //           fit: BoxFit
+                  //               .contain,
+                  //         ),
+                  //       ),
+                  //     );
+                  //   },
+                  // );
+                },
+                MediaQuery.of(context).size.width,
+                30,
+                Alignment.center,
+                'Lihat Gambar',
+                TextThemes.normal,
+                ConstantColors.primaryColor1,
+                8,
+                8,
+                20,
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
   static Widget card(
     BuildContext context,
     double widthConfig,

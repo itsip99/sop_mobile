@@ -13,9 +13,9 @@ class SalesModel {
 
   factory SalesModel.fromJson(Map<String, dynamic> json) {
     return SalesModel(
-      tierLevel: json['EntryLevelName'],
+      tierLevel: json['EntryLevel'],
       userId: json['CustomerID'],
-      id: json['KTPSalesman'],
+      id: json['KTP'],
       userName: json['SName'],
     );
   }

@@ -16,8 +16,10 @@ import 'package:sop_mobile/presentation/state/salesman/salesman_state.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
 import 'package:sop_mobile/presentation/widgets/buttons.dart';
 import 'package:sop_mobile/presentation/widgets/dropdown.dart';
+import 'package:sop_mobile/presentation/widgets/functions.dart';
 import 'package:sop_mobile/presentation/widgets/loading.dart';
 import 'package:sop_mobile/presentation/widgets/refresh.dart';
+import 'package:sop_mobile/presentation/widgets/snackbar.dart';
 import 'package:sop_mobile/presentation/widgets/textformfield.dart';
 import 'package:sop_mobile/routes.dart';
 
@@ -34,9 +36,10 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
   final TextEditingController idController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
 
+  void addSalesman() {}
+
   @override
   Widget build(BuildContext context) {
-    final salesProfileBloc = context.read<SalesmanBloc>();
     final salesStatusCubit = context.read<SalesStatusCubit>();
     final salesmanBloc = context.read<SalesmanBloc>();
 
@@ -190,28 +193,62 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                           ),
                         ),
 
-                        // ~:Add Button:~
-                        CustomButton.primaryButton2(
-                          context: context,
-                          height: 40,
-                          text: 'Tambah',
-                          func: () {
-                            log('Add new salesman');
-                            log('Name: ${nameController.text}');
-                            log('Status: ${salesStatusCubit.getSalesStatus()}');
-                            salesmanBloc.add(AddSalesman(
-                              idController.text,
-                              nameController.text,
-                              salesStatusCubit.getSalesStatus(),
-                            ));
+                        // ~:Button Section:~
+                        Row(
+                          spacing: 12,
+                          children: [
+                            // ~:Cancel Button:~
+                            Expanded(
+                              child: CustomButton.primaryButton2(
+                                context: context,
+                                height: 40,
+                                text: 'Batal',
+                                func: () => panelController.close(),
+                                bgColor: ConstantColors.primaryColor2,
+                                textStyle: TextThemes.subtitle,
+                                shadowColor: ConstantColors.shadowColor,
+                                spreadRadius: 2,
+                              ),
+                            ),
 
-                            panelController.close();
-                            salesProfileBloc.add(FetchSalesman());
-                          },
-                          bgColor: ConstantColors.primaryColor2,
-                          textStyle: TextThemes.subtitle,
-                          shadowColor: ConstantColors.primaryColor1,
-                          spreadRadius: 2,
+                            // ~:Add Button:~
+                            Expanded(
+                              child: BlocConsumer<SalesmanBloc, SalesmanState>(
+                                listener: (context, state) {
+                                  if (state is SalesmanError) {
+                                    CustomSnackbar.showSnackbar(
+                                      context,
+                                      state.error,
+                                    );
+                                  } else if (state is SalesmanAdded) {
+                                    CustomSnackbar.showSnackbar(
+                                      context,
+                                      'Salesman added successfully',
+                                    );
+                                  }
+                                },
+                                builder: (context, state) {
+                                  return CustomButton.primaryButton2(
+                                    context: context,
+                                    height: 40,
+                                    text: 'Tambah',
+                                    func: () => CustomFunctions.addSalesman(
+                                      salesmanBloc,
+                                      panelController,
+                                      idController.text,
+                                      nameController.text,
+                                      salesStatusCubit.getSalesStatus(),
+                                    ),
+                                    bgColor: ConstantColors.primaryColor1,
+                                    textStyle: TextThemes.subtitle,
+                                    shadowColor: ConstantColors.shadowColor,
+                                    spreadRadius: 2,
+                                    isLoading: state is SalesmanLoading,
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -309,24 +346,7 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                     height: MediaQuery.of(context).size.height * 0.725,
                     child: Refresh.iOSnAndroid(
                       onRefresh: () => salesmanBloc.add(FetchSalesman()),
-                      child: BlocConsumer<SalesmanBloc, SalesmanState>(
-                        listener: (context, state) {
-                          if (state is SalesmanError) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(state.error),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
-                          } else if (state is SalesmanAdded) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Salesman added successfully'),
-                                backgroundColor: Colors.green,
-                              ),
-                            );
-                          }
-                        },
+                      child: BlocBuilder<SalesmanBloc, SalesmanState>(
                         builder: (context, state) {
                           if (state is SalesmanLoading) {
                             return SizedBox(
@@ -445,10 +465,13 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                         child: CustomButton.primaryButton2(
                           context: context,
                           height: 40,
-                          text: 'Tambah',
-                          func: () => panelController.open(),
+                          text: 'Tambah Sales',
+                          func: () {
+                            // salesmanBloc.add(ResetSalesman());
+                            panelController.open();
+                          },
                           bgColor: ConstantColors.primaryColor1,
-                          textStyle: TextThemes.normalWhite,
+                          textStyle: TextThemes.normal,
                           shadowColor: ConstantColors.primaryColor1,
                         ),
                       ),

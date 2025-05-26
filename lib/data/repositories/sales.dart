@@ -94,10 +94,26 @@ class SalesRepoImp extends SalesRepo {
       final res = jsonDecode(response.body);
       log("${res['Msg']}, ${res['Code']}");
       if (res['Msg'] == 'Sukses' && res['Code'] == '100') {
-        log('Success');
+        // Check if the result message contains 'duplicate key'
+        final message = (res['Data'] as List)[0]['ResultMessage'].toString();
+        if (message.toLowerCase().contains('duplicate key')) {
+          log('Duplicate key found');
+          return {
+            'status': 'fail',
+            'data': 'Duplicate key found.',
+          };
+        } else if (message.toLowerCase() == 'sukses') {
+          log('Success');
+          return {
+            'status': 'success',
+            'data': (res['Data'] as List)[0]['ResultMessage'],
+          };
+        }
+
+        log('Something\'s wrong');
         return {
           'status': 'success',
-          'data': (res['Data'] as List)[0]['ResultMessage'],
+          'data': 'Something went wrong.',
         };
       } else {
         log('Fail');
