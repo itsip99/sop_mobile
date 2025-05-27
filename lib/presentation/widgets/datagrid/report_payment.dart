@@ -20,6 +20,15 @@ class PaymentDataSource extends DataGridSource {
             columnName: 'result',
             value: data.result.toString(),
           ),
+          DataGridCell<String>(
+            columnName: 'lm',
+            value: data.lmPayment.toString(),
+          ),
+          DataGridCell<String>(
+            columnName: 'growth',
+            value:
+                '${(data.result / data.lmPayment * 100).toStringAsFixed(0)}%',
+          ),
         ],
       );
 
@@ -44,7 +53,9 @@ class PaymentDataSource extends DataGridSource {
           padding: const EdgeInsets.all(8.0),
           child: Text(
             e.value.toString(),
+            textAlign: TextAlign.center,
             style: TextThemes.normal,
+            overflow: TextOverflow.clip,
           ),
         );
       }).toList(),

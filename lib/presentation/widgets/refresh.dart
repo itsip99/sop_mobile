@@ -10,30 +10,35 @@ class Refresh {
     bool isLoading = false,
     bool isError = false,
     String? errorMessage,
+    bool isDisabled = false,
   }) {
-    if (Platform.isIOS) {
-      return CustomScrollView(
-        slivers: [
-          CupertinoSliverRefreshControl(onRefresh: () async => onRefresh()),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, _) => SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                child: child,
+    if (!isDisabled) {
+      if (Platform.isIOS) {
+        return CustomScrollView(
+          slivers: [
+            CupertinoSliverRefreshControl(onRefresh: () async => onRefresh()),
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, _) => SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: child,
+                ),
+                childCount: 1,
               ),
-              childCount: 1,
             ),
+          ],
+        );
+      } else {
+        return RefreshIndicator(
+          onRefresh: () async => onRefresh(),
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: child,
           ),
-        ],
-      );
+        );
+      }
     } else {
-      return RefreshIndicator(
-        onRefresh: () async => onRefresh(),
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: child,
-        ),
-      );
+      return const SizedBox();
     }
   }
 }

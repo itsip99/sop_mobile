@@ -16,9 +16,26 @@ class StuDataSource extends DataGridSource {
             columnName: 'header',
             value: data.group,
           ),
-          DataGridCell<String>(
+          DataGridCell<int>(
             columnName: 'result',
-            value: data.stuResult.toString(),
+            value: data.stuResult,
+          ),
+          DataGridCell<int>(
+            columnName: 'target',
+            value: data.stuTarget,
+          ),
+          DataGridCell<String>(
+            columnName: 'ach',
+            value:
+                '${(data.stuResult / data.stuTarget * 100).toStringAsFixed(0)}%',
+          ),
+          DataGridCell<int>(
+            columnName: 'lm',
+            value: data.lmStu,
+          ),
+          DataGridCell<String>(
+            columnName: 'growth',
+            value: '${(data.stuResult / data.lmStu * 100).toStringAsFixed(0)}%',
           ),
         ],
       );
@@ -44,7 +61,9 @@ class StuDataSource extends DataGridSource {
           padding: const EdgeInsets.all(8.0),
           child: Text(
             e.value.toString(),
+            textAlign: TextAlign.center,
             style: TextThemes.normal,
+            overflow: TextOverflow.clip,
           ),
         );
       }).toList(),

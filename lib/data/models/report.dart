@@ -137,7 +137,7 @@ class StuModel {
 class LeasingModel {
   final String leasing;
   final int openSpk;
-  final int approvedSpk;
+  final int acceptedSpk;
   final int rejectedSpk;
   final int line;
   final int flag;
@@ -145,7 +145,7 @@ class LeasingModel {
   LeasingModel({
     required this.leasing,
     required this.openSpk,
-    required this.approvedSpk,
+    required this.acceptedSpk,
     required this.rejectedSpk,
     required this.line,
     required this.flag,
@@ -155,7 +155,7 @@ class LeasingModel {
     return LeasingModel(
       leasing: json['Leasing'],
       openSpk: json['OpenSPK'],
-      approvedSpk: json['ApprovedSPK'],
+      acceptedSpk: json['ApprovedSPK'],
       rejectedSpk: json['RejectedSPK'],
       line: json['LineLeasing'],
       flag: json['FlagLeasing'],

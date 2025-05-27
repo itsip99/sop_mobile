@@ -18,15 +18,12 @@ import 'package:sop_mobile/presentation/state/permission/camera_cubit.dart';
 import 'package:sop_mobile/presentation/state/photo/photo_bloc.dart';
 import 'package:sop_mobile/presentation/state/photo/photo_event.dart';
 import 'package:sop_mobile/presentation/state/photo/photo_state.dart';
-import 'package:sop_mobile/presentation/state/route/route_bloc.dart';
-import 'package:sop_mobile/presentation/state/route/route_event.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
 import 'package:sop_mobile/presentation/widgets/counter.dart';
 import 'package:sop_mobile/presentation/widgets/filter.dart';
 import 'package:sop_mobile/presentation/widgets/loading.dart';
 import 'package:sop_mobile/presentation/widgets/snackbar.dart';
 import 'package:sop_mobile/presentation/widgets/textformfield.dart';
-import 'package:sop_mobile/routes.dart';
 import 'package:dotted_border/dotted_border.dart';
 
 class BriefingScreen extends StatefulWidget {
@@ -66,10 +63,7 @@ class _BriefingScreenState extends State<BriefingScreen> {
                   Icons.arrow_back_ios_new_rounded,
                   size: 15,
                 ),
-                onPressed: () {
-                  context.read<RouteBloc>().add(RoutePop(ConstantRoutes.home));
-                  Navigator.pop(context);
-                },
+                onPressed: () => Navigator.pop(context),
               );
             } else {
               return IconButton(
@@ -77,10 +71,7 @@ class _BriefingScreenState extends State<BriefingScreen> {
                   Icons.arrow_back_rounded,
                   size: 20,
                 ),
-                onPressed: () {
-                  context.read<RouteBloc>().add(RoutePop(ConstantRoutes.home));
-                  Navigator.pop(context);
-                },
+                onPressed: () => Navigator.pop(context),
               );
             }
           },
@@ -131,12 +122,23 @@ class _BriefingScreenState extends State<BriefingScreen> {
                       ),
 
                       // ~:Location Textfield:~
-                      CustomTextFormField(
-                        'your location',
-                        'Location',
-                        const Icon(Icons.location_pin),
-                        locationController,
-                        inputFormatters: [Formatter.normalFormatter],
+                      BlocBuilder<LoginBloc, LoginState>(
+                        builder: (context, state) {
+                          if (state is LoginSuccess) {
+                            // ~:Set the location controller text:~
+                            locationController.text = state.getUserCreds.name;
+                          }
+
+                          return CustomTextFormField(
+                            'your location',
+                            'Location',
+                            const Icon(Icons.location_pin),
+                            locationController,
+                            inputFormatters: [Formatter.normalFormatter],
+                            borderRadius: 20,
+                            isEnabled: false,
+                          );
+                        },
                       ),
 
                       // ~:Counter Section:~

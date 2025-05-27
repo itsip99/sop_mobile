@@ -1,14 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sop_mobile/core/constant/colors.dart';
 import 'package:sop_mobile/core/helpers/formatter.dart';
-import 'package:sop_mobile/presentation/state/route/route_bloc.dart';
-import 'package:sop_mobile/presentation/state/route/route_event.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
+import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_stu.dart';
 import 'package:sop_mobile/presentation/widgets/textformfield.dart';
-import 'package:sop_mobile/routes.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class ReportScreen extends StatefulWidget {
   const ReportScreen({super.key});
@@ -45,10 +43,7 @@ class _ReportScreenState extends State<ReportScreen> {
                   Icons.arrow_back_ios_new_rounded,
                   size: 15,
                 ),
-                onPressed: () {
-                  context.read<RouteBloc>().add(RoutePop(ConstantRoutes.home));
-                  Navigator.pop(context);
-                },
+                onPressed: () => Navigator.pop(context),
               );
             } else {
               return IconButton(
@@ -56,10 +51,7 @@ class _ReportScreenState extends State<ReportScreen> {
                   Icons.arrow_back_rounded,
                   size: 20,
                 ),
-                onPressed: () {
-                  context.read<RouteBloc>().add(RoutePop(ConstantRoutes.home));
-                  Navigator.pop(context);
-                },
+                onPressed: () => Navigator.pop(context),
               );
             }
           },
@@ -83,10 +75,11 @@ class _ReportScreenState extends State<ReportScreen> {
           child: Wrap(
             runSpacing: 10,
             children: [
+              // ~:Page Title and Description:~
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // ~:Page Title:~
+                  // ~:Title:~
                   Text(
                     'Informasi Laporan',
                     style: TextThemes.subtitle.copyWith(
@@ -94,13 +87,15 @@ class _ReportScreenState extends State<ReportScreen> {
                     ),
                   ),
 
-                  // ~:Page Description:~
+                  // ~:Description:~
                   const Text(
                     'Masukkan data untuk membuat laporan harian.',
                     style: TextThemes.normal,
                   ),
                 ],
               ),
+
+              // ~:Subdealer Data:~
               Wrap(
                 children: [
                   // ~:Dealer Textfield:~
@@ -130,6 +125,80 @@ class _ReportScreenState extends State<ReportScreen> {
                     inputFormatters: [Formatter.normalFormatter],
                   ),
                 ],
+              ),
+
+              // ~:STU Input Table:~
+              SizedBox(
+                height: 300,
+                child: SfDataGrid(
+                  source: StuInsertDataSource(),
+                  allowEditing: true,
+                  columnWidthMode: ColumnWidthMode.fill,
+                  horizontalScrollPhysics: const NeverScrollableScrollPhysics(),
+                  verticalScrollPhysics: const NeverScrollableScrollPhysics(),
+                  columns: [
+                    GridColumn(
+                      columnName: 'Type',
+                      label: Container(
+                        alignment: Alignment.center,
+                        child: const Text(
+                          'Type',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    GridColumn(
+                      columnName: 'Result',
+                      label: Container(
+                        alignment: Alignment.center,
+                        child: const Text(
+                          'Result',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    GridColumn(
+                      columnName: 'Target',
+                      label: Container(
+                        alignment: Alignment.center,
+                        child: const Text(
+                          'Target',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    GridColumn(
+                      columnName: 'Ach',
+                      label: Container(
+                        alignment: Alignment.center,
+                        child: const Text(
+                          'Ach',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    GridColumn(
+                      columnName: 'LM',
+                      label: Container(
+                        alignment: Alignment.center,
+                        child: const Text(
+                          'LM',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    GridColumn(
+                      columnName: 'Growth',
+                      label: Container(
+                        alignment: Alignment.center,
+                        child: const Text(
+                          'Growth',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

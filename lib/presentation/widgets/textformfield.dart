@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sop_mobile/core/constant/colors.dart';
 import 'package:sop_mobile/core/helpers/validator.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
 
@@ -18,6 +19,7 @@ class CustomTextFormField extends StatefulWidget {
     this.inputFormatters = const [],
     this.isLabelFloat = false,
     this.borderRadius = 10,
+    this.isEnabled = true,
     super.key,
   });
 
@@ -34,6 +36,7 @@ class CustomTextFormField extends StatefulWidget {
   final List<TextInputFormatter> inputFormatters;
   final bool isLabelFloat;
   final double borderRadius;
+  final bool isEnabled;
 
   @override
   State<CustomTextFormField> createState() => _CustomTextFormFieldState();
@@ -57,9 +60,12 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
           inputFormatters: widget.inputFormatters,
           textCapitalization: widget.textCapitalization,
           controller: widget.controller,
-          enabled: true,
+          enabled: widget.isEnabled,
           obscureText: widget.isPassword,
-          style: TextThemes.textfieldPlaceholder,
+          style: widget.isEnabled
+              ? TextThemes.textfieldPlaceholder
+              : TextThemes.textfieldPlaceholder
+                  .copyWith(color: ConstantColors.shadowColor),
           keyboardType: widget.keyboardType,
           decoration: InputDecoration(
             filled: true,

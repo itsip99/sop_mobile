@@ -17,8 +17,21 @@ class LeasingDataSource extends DataGridSource {
             value: data.leasing,
           ),
           DataGridCell<String>(
-            columnName: 'result',
+            columnName: 'open',
             value: data.openSpk.toString(),
+          ),
+          DataGridCell<String>(
+            columnName: 'accepted',
+            value: data.acceptedSpk.toString(),
+          ),
+          DataGridCell<String>(
+            columnName: 'rejected',
+            value: data.rejectedSpk.toString(),
+          ),
+          DataGridCell<String>(
+            columnName: 'approved',
+            value:
+                '${(data.acceptedSpk / (data.acceptedSpk + data.rejectedSpk) * 100).toStringAsFixed(0)}%',
           ),
         ],
       );
@@ -44,7 +57,9 @@ class LeasingDataSource extends DataGridSource {
           padding: const EdgeInsets.all(8.0),
           child: Text(
             e.value.toString(),
+            textAlign: TextAlign.center,
             style: TextThemes.normal,
+            overflow: TextOverflow.clip,
           ),
         );
       }).toList(),
