@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:sop_mobile/core/constant/colors.dart';
 import 'package:sop_mobile/core/helpers/formatter.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
+import 'package:sop_mobile/presentation/widgets/data_grid.dart';
+import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_leasing.dart';
+import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_payment.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_stu.dart';
 import 'package:sop_mobile/presentation/widgets/textformfield.dart';
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class ReportScreen extends StatefulWidget {
   const ReportScreen({super.key});
@@ -72,8 +74,8 @@ class _ReportScreenState extends State<ReportScreen> {
             ),
           ),
           padding: const EdgeInsets.all(20),
-          child: Wrap(
-            runSpacing: 10,
+          child: Column(
+            spacing: 10,
             children: [
               // ~:Page Title and Description:~
               Column(
@@ -96,108 +98,101 @@ class _ReportScreenState extends State<ReportScreen> {
               ),
 
               // ~:Subdealer Data:~
-              Wrap(
-                children: [
-                  // ~:Dealer Textfield:~
-                  CustomTextFormField(
-                    'your dealer',
-                    'Dealer',
-                    const Icon(Icons.house_siding_rounded),
-                    dealerController,
-                    inputFormatters: [Formatter.normalFormatter],
-                  ),
+              Expanded(
+                child: SingleChildScrollView(
+                  physics: const ClampingScrollPhysics(),
+                  child: Column(
+                    children: [
+                      // ~:Dealer Textfield:~
+                      CustomTextFormField(
+                        'your dealer',
+                        'Dealer',
+                        const Icon(Icons.house_siding_rounded),
+                        dealerController,
+                        isLabelFloat: true,
+                        inputFormatters: [Formatter.normalFormatter],
+                        borderRadius: 20,
+                      ),
 
-                  // ~:Dealer Textfield:~
-                  CustomTextFormField(
-                    'your area',
-                    'Area',
-                    const Icon(Icons.location_pin),
-                    areaController,
-                    inputFormatters: [Formatter.normalFormatter],
-                  ),
+                      // ~:Dealer Textfield:~
+                      CustomTextFormField(
+                        'your area',
+                        'Area',
+                        const Icon(Icons.location_pin),
+                        areaController,
+                        isLabelFloat: true,
+                        inputFormatters: [Formatter.normalFormatter],
+                        borderRadius: 20,
+                      ),
 
-                  // ~:Dealer Textfield:~
-                  CustomTextFormField(
-                    'your PIC name',
-                    'PIC',
-                    const Icon(Icons.person),
-                    personController,
-                    inputFormatters: [Formatter.normalFormatter],
+                      // ~:Dealer Textfield:~
+                      CustomTextFormField(
+                        'your PIC name',
+                        'PIC',
+                        const Icon(Icons.person),
+                        personController,
+                        isLabelFloat: true,
+                        inputFormatters: [Formatter.normalFormatter],
+                        borderRadius: 20,
+                      ),
+
+                      // ~:STU Input Table:~
+                      CustomDataGrid.report(
+                        StuInsertDataSource(),
+                        ['STU', 'Result', 'Target', 'Ach', 'LM', 'Growth'],
+                        allowEditing: true,
+                        horizontalScrollPhysics: const BouncingScrollPhysics(),
+                      ),
+
+                      // ~:Payment Input Table:~
+                      CustomDataGrid.report(
+                        PaymentInsertDataSource(),
+                        ['Payment', 'Result', 'Target', 'Growth'],
+                        allowEditing: true,
+                        horizontalScrollPhysics: const BouncingScrollPhysics(),
+                      ),
+
+                      // ~:Payment Input Table:~
+                      CustomDataGrid.report(
+                        LeasingInsertDataSource(),
+                        [
+                          'Leasing',
+                          'SPK',
+                          'Terbuka',
+                          'Disetujui',
+                          'Ditolak',
+                          'Approval',
+                        ],
+                        allowEditing: true,
+                        horizontalScrollPhysics: const BouncingScrollPhysics(),
+                        enableAddRow: true,
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
 
-              // ~:STU Input Table:~
-              SizedBox(
-                height: 300,
-                child: SfDataGrid(
-                  source: StuInsertDataSource(),
-                  allowEditing: true,
-                  columnWidthMode: ColumnWidthMode.fill,
-                  horizontalScrollPhysics: const NeverScrollableScrollPhysics(),
-                  verticalScrollPhysics: const NeverScrollableScrollPhysics(),
-                  columns: [
-                    GridColumn(
-                      columnName: 'Type',
-                      label: Container(
-                        alignment: Alignment.center,
-                        child: const Text(
-                          'Type',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                    GridColumn(
-                      columnName: 'Result',
-                      label: Container(
-                        alignment: Alignment.center,
-                        child: const Text(
-                          'Result',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                    GridColumn(
-                      columnName: 'Target',
-                      label: Container(
-                        alignment: Alignment.center,
-                        child: const Text(
-                          'Target',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                    GridColumn(
-                      columnName: 'Ach',
-                      label: Container(
-                        alignment: Alignment.center,
-                        child: const Text(
-                          'Ach',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                    GridColumn(
-                      columnName: 'LM',
-                      label: Container(
-                        alignment: Alignment.center,
-                        child: const Text(
-                          'LM',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                    GridColumn(
-                      columnName: 'Growth',
-                      label: Container(
-                        alignment: Alignment.center,
-                        child: const Text(
-                          'Growth',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                  ],
+              // ~:Create Button:~
+              ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: ConstantColors.primaryColor1,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 10,
+                    horizontal: 20,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  height: 24,
+                  child: const Text(
+                    'Buat',
+                    style: TextThemes.subtitle,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
             ],

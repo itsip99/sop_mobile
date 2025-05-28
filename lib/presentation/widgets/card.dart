@@ -3,9 +3,9 @@ import 'package:sop_mobile/core/constant/colors.dart';
 import 'package:sop_mobile/data/models/briefing.dart';
 import 'package:sop_mobile/data/models/report.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
-import 'package:sop_mobile/presentation/widgets/datagrid/report_leasing.dart';
-import 'package:sop_mobile/presentation/widgets/datagrid/report_payment.dart';
-import 'package:sop_mobile/presentation/widgets/datagrid/report_stu.dart';
+import 'package:sop_mobile/presentation/widgets/datagrid/source/leasing_source.dart';
+import 'package:sop_mobile/presentation/widgets/datagrid/source/payment_source.dart';
+import 'package:sop_mobile/presentation/widgets/datagrid/source/stu_source.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class CustomCard {

@@ -5,40 +5,54 @@ import 'package:flutter/material.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-class StuData {
-  StuData(this.type, this.result, this.target, this.ach, this.lm, this.growth);
+class LeasingData {
+  LeasingData(
+    this.type,
+    this.spk,
+    this.open,
+    this.accept,
+    this.reject,
+    this.approve,
+  );
 
   final String type;
-  final int result;
-  final int target;
-  final int ach;
-  final int lm;
-  final int growth;
+  final int spk;
+  final int open;
+  final int accept;
+  final int reject;
+  final int approve;
 }
 
 // DataGridSource implementation for the STU table
-class StuInsertDataSource extends DataGridSource {
-  StuInsertDataSource() {
+class LeasingInsertDataSource extends DataGridSource {
+  LeasingInsertDataSource() {
     _stuData = [
-      StuData('MAXI', 0, 0, 0, 0, 0),
-      StuData('AT CLASSY', 0, 0, 0, 0, 0),
-      StuData('AT LPM', 0, 0, 0, 0, 0),
+      LeasingData('BAF', 0, 0, 0, 0, 0),
+      LeasingData('Adira', 0, 0, 0, 0, 0),
+      LeasingData('SOF', 0, 0, 0, 0, 0),
     ];
     buildDataGridRows();
   }
 
-  late List<StuData> _stuData;
+  // Method to add a new empty row
+  void addEmptyRow() {
+    _stuData.add(LeasingData('', 0, 0, 0, 0, 0));
+    buildDataGridRows();
+    notifyListeners();
+  }
+
+  late List<LeasingData> _stuData;
   late List<DataGridRow> _dataGridRows;
 
   void buildDataGridRows() {
     _dataGridRows = _stuData.map<DataGridRow>((data) {
       return DataGridRow(cells: [
-        DataGridCell<String>(columnName: 'STU', value: data.type),
-        DataGridCell<int>(columnName: 'Result', value: data.result),
-        DataGridCell<int>(columnName: 'Target', value: data.target),
-        DataGridCell<int>(columnName: 'Ach', value: data.ach),
-        DataGridCell<int>(columnName: 'LM', value: data.lm),
-        DataGridCell<int>(columnName: 'Growth', value: data.growth),
+        DataGridCell<String>(columnName: 'Leasing', value: data.type),
+        DataGridCell<int>(columnName: 'SPK', value: data.spk),
+        DataGridCell<int>(columnName: 'Opened', value: data.open),
+        DataGridCell<int>(columnName: 'Accepted', value: data.accept),
+        DataGridCell<int>(columnName: 'Rejected', value: data.reject),
+        DataGridCell<int>(columnName: 'Approval', value: data.approve),
       ]);
     }).toList();
   }
@@ -55,7 +69,7 @@ class StuInsertDataSource extends DataGridSource {
         final int index = cell.key;
         final String data = cell.value.value.toString();
 
-        if (index == 0 || index == 3 || index == 5) {
+        if (index == 0 || index == 5) {
           return Center(
             child: Text(
               data,
