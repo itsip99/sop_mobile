@@ -17,6 +17,7 @@ class CustomDataGrid {
     final double rowBodyWidth = 60,
     final TextStyle textStyle = TextThemes.normal,
     final Alignment textAlignment = Alignment.center,
+    final VoidCallback? addFunction,
   }) {
     return SfDataGrid(
       source: dataSource,
@@ -38,10 +39,7 @@ class CustomDataGrid {
                     IconButton(
                       icon: const Icon(Icons.add),
                       tooltip: 'Add Row',
-                      onPressed: () {
-                        // Implement your logic to add a new row here.
-                        // For example, you might call a method on your DataGridSource.
-                      },
+                      onPressed: () async => addFunction!(),
                     ),
                   Text(
                     '${loadedData[0]} Report',

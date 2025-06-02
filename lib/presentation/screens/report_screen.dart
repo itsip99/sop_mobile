@@ -1,8 +1,11 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sop_mobile/core/constant/colors.dart';
 import 'package:sop_mobile/core/helpers/formatter.dart';
+import 'package:sop_mobile/presentation/state/leasing/leasing_cubit.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
 import 'package:sop_mobile/presentation/widgets/data_grid.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_leasing.dart';
@@ -24,6 +27,8 @@ class _ReportScreenState extends State<ReportScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final leasingCubit = context.read<LeasingCubit>();
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -152,20 +157,31 @@ class _ReportScreenState extends State<ReportScreen> {
                         horizontalScrollPhysics: const BouncingScrollPhysics(),
                       ),
 
-                      // ~:Payment Input Table:~
-                      CustomDataGrid.report(
-                        LeasingInsertDataSource(),
-                        [
-                          'Leasing',
-                          'SPK',
-                          'Terbuka',
-                          'Disetujui',
-                          'Ditolak',
-                          'Approval',
-                        ],
-                        allowEditing: true,
-                        horizontalScrollPhysics: const BouncingScrollPhysics(),
-                        enableAddRow: true,
+                      // ~:Leasing Input Table:~
+                      BlocBuilder<LeasingCubit, List<LeasingData>>(
+                        builder: (context, state) {
+                          return CustomDataGrid.report(
+                            LeasingInsertDataSource(state),
+                            [
+                              'Leasing',
+                              'SPK',
+                              'Terbuka',
+                              'Disetujui',
+                              'Ditolak',
+                              'Approval',
+                            ],
+                            allowEditing: true,
+                            horizontalScrollPhysics:
+                                const BouncingScrollPhysics(),
+                            verticalScrollPhysics:
+                                const AlwaysScrollableScrollPhysics(),
+                            enableAddRow: true,
+                            addFunction: () async {
+                              log('Add New Row');
+                              leasingCubit.addData();
+                            },
+                          );
+                        },
                       ),
                     ],
                   ),

@@ -1,4 +1,5 @@
 // Define a model for the STU data
+
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -25,21 +26,24 @@ class LeasingData {
 
 // DataGridSource implementation for the STU table
 class LeasingInsertDataSource extends DataGridSource {
-  LeasingInsertDataSource() {
-    _stuData = [
-      LeasingData('BAF', 0, 0, 0, 0, 0),
-      LeasingData('Adira', 0, 0, 0, 0, 0),
-      LeasingData('SOF', 0, 0, 0, 0, 0),
-    ];
-    buildDataGridRows();
-  }
-
-  // Method to add a new empty row
-  void addEmptyRow() {
-    _stuData.add(LeasingData('', 0, 0, 0, 0, 0));
+  LeasingInsertDataSource(List<LeasingData> data) {
+    // _stuData = [
+    //   LeasingData('BAF', 0, 0, 0, 0, 0),
+    //   LeasingData('Adira', 0, 0, 0, 0, 0),
+    //   LeasingData('SOF', 0, 0, 0, 0, 0),
+    // ];
+    log('Data length: ${data.length}');
+    _stuData = data;
     buildDataGridRows();
     notifyListeners();
   }
+
+  // Method to add a new empty row
+  // void addEmptyRow() {
+  //   _stuData.add(LeasingData('JOE', 0, 0, 0, 0, 0));
+  //   buildDataGridRows();
+  //   notifyListeners();
+  // }
 
   late List<LeasingData> _stuData;
   late List<DataGridRow> _dataGridRows;
@@ -64,8 +68,8 @@ class LeasingInsertDataSource extends DataGridSource {
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(
       cells: row.getCells().asMap().entries.map<Widget>((cell) {
-        log('Cell key: ${cell.key}');
-        log('Cell value: ${cell.value.value}');
+        // log('Cell key: ${cell.key}');
+        // log('Cell value: ${cell.value.value}');
         final int index = cell.key;
         final String data = cell.value.value.toString();
 

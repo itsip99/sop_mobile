@@ -1,5 +1,4 @@
 // Define a model for the STU data
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
@@ -45,8 +44,8 @@ class PaymentInsertDataSource extends DataGridSource {
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(
       cells: row.getCells().asMap().entries.map<Widget>((cell) {
-        log('Cell key: ${cell.key}');
-        log('Cell value: ${cell.value.value}');
+        // log('Cell key: ${cell.key}');
+        // log('Cell value: ${cell.value.value}');
         final int index = cell.key;
         final String data = cell.value.value.toString();
 
