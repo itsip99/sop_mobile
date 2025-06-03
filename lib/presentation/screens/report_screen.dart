@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sop_mobile/core/constant/colors.dart';
 import 'package:sop_mobile/core/helpers/formatter.dart';
-import 'package:sop_mobile/presentation/state/leasing/leasing_cubit.dart';
+import 'package:sop_mobile/presentation/state/leasing/leasing_bloc.dart';
+import 'package:sop_mobile/presentation/state/leasing/leasing_event.dart';
+import 'package:sop_mobile/presentation/state/leasing/leasing_state.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
 import 'package:sop_mobile/presentation/widgets/data_grid.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_leasing.dart';
@@ -25,12 +27,14 @@ class _ReportScreenState extends State<ReportScreen> {
   final TextEditingController areaController = TextEditingController();
   final TextEditingController personController = TextEditingController();
 
+  List<LeasingData> leasingData = [];
+
   @override
   Widget build(BuildContext context) {
-    final leasingCubit = context.read<LeasingCubit>();
+    final leasingCubit = context.read<LeasingBloc>();
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         // toolbarHeight: 100,
         elevation: 0.0,
@@ -158,11 +162,19 @@ class _ReportScreenState extends State<ReportScreen> {
                       ),
 
                       // ~:Leasing Input Table:~
-                      BlocBuilder<LeasingCubit, List<LeasingData>>(
+                      BlocBuilder<LeasingBloc, LeasingState>(
                         builder: (context, state) {
+                          leasingData = state.data;
+                          if (state is AddLeasingData) {
+                            leasingData = state.newData;
+                            log('New Leasing length: ${leasingData.length}');
+                          }
+
+                          log('Leasing length: ${state.data.length}');
                           return CustomDataGrid.report(
-                            LeasingInsertDataSource(state),
-                            [
+                            key: ValueKey(leasingData),
+                            LeasingInsertDataSource(leasingData),
+                            <String>[
                               'Leasing',
                               'SPK',
                               'Terbuka',
@@ -178,7 +190,7 @@ class _ReportScreenState extends State<ReportScreen> {
                             enableAddRow: true,
                             addFunction: () async {
                               log('Add New Row');
-                              leasingCubit.addData();
+                              leasingCubit.add(LeasingDataAdded());
                             },
                           );
                         },
@@ -190,7 +202,11 @@ class _ReportScreenState extends State<ReportScreen> {
 
               // ~:Create Button:~
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  for (var data in leasingData) {
+                    log('Leasing Data: ${data.type}, SPK: ${data.spk}, Opened: ${data.open}, Accepted: ${data.accept}, Rejected: ${data.reject}, Approval: ${data.approve}');
+                  }
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: ConstantColors.primaryColor1,
                   padding: const EdgeInsets.symmetric(

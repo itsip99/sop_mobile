@@ -8,7 +8,7 @@ class LeasingState extends BaseState with EquatableMixin {
   LeasingState(this.data);
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [data];
 }
 
 class LeasingInitial extends LeasingState {
@@ -16,8 +16,7 @@ class LeasingInitial extends LeasingState {
 }
 
 class AddLeasingData extends LeasingState {
-  final LeasingData newData;
+  final List<LeasingData> newData;
 
-  AddLeasingData(List<LeasingData> previousData, this.newData)
-      : super([...previousData, newData]);
+  AddLeasingData(this.newData) : super(newData);
 }

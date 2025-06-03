@@ -16,12 +16,12 @@ class LeasingData {
     this.approve,
   );
 
-  final String type;
-  final int spk;
-  final int open;
-  final int accept;
-  final int reject;
-  final int approve;
+  String type;
+  int spk;
+  int open;
+  int accept;
+  int reject;
+  int approve;
 }
 
 // DataGridSource implementation for the STU table
@@ -32,7 +32,7 @@ class LeasingInsertDataSource extends DataGridSource {
     //   LeasingData('Adira', 0, 0, 0, 0, 0),
     //   LeasingData('SOF', 0, 0, 0, 0, 0),
     // ];
-    log('Data length: ${data.length}');
+    log('Data Source length: ${data.length}');
     _stuData = data;
     buildDataGridRows();
     notifyListeners();
@@ -70,10 +70,12 @@ class LeasingInsertDataSource extends DataGridSource {
       cells: row.getCells().asMap().entries.map<Widget>((cell) {
         // log('Cell key: ${cell.key}');
         // log('Cell value: ${cell.value.value}');
-        final int index = cell.key;
-        final String data = cell.value.value.toString();
+        int index = cell.key;
+        String data = cell.value.value.toString();
 
-        if (index == 0 || index == 5) {
+        if ((index == 0 &&
+                (data == 'BAF' || data == 'Adira' || data == 'SOF')) ||
+            index == 5) {
           return Center(
             child: Text(
               data,
@@ -90,6 +92,8 @@ class LeasingInsertDataSource extends DataGridSource {
             child: TextFormField(
               initialValue: cell.value.value.toString(),
               textAlign: TextAlign.center,
+              keyboardType:
+                  index == 0 ? TextInputType.text : TextInputType.number,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 isDense: true,
@@ -97,6 +101,46 @@ class LeasingInsertDataSource extends DataGridSource {
               ),
               onChanged: (value) {
                 // You can add logic here to update the underlying data model if needed
+                final rowIndex = _dataGridRows.indexOf(row);
+                if (rowIndex != -1) {
+                  switch (index) {
+                    case 1:
+                      _stuData[rowIndex].spk = int.tryParse(value) ?? 0;
+                      break;
+                    case 2:
+                      _stuData[rowIndex].open = int.tryParse(value) ?? 0;
+                      break;
+                    case 3:
+                      _stuData[rowIndex].accept = int.tryParse(value) ?? 0;
+                      break;
+                    case 4:
+                      _stuData[rowIndex].reject = int.tryParse(value) ?? 0;
+                      break;
+                    case 5:
+                      _stuData[rowIndex].approve = int.tryParse(value) ?? 0;
+                      break;
+                    default:
+                      break;
+                  }
+                  buildDataGridRows();
+                  notifyListeners();
+                }
+                // if (index == 1) {
+                //   _stuData[row.getCells()[index].value].spk =
+                //       int.tryParse(value) ?? 0;
+                // } else if (index == 2) {
+                //   _stuData[row.getCells()[index].value].open =
+                //       int.tryParse(value) ?? 0;
+                // } else if (index == 3) {
+                //   _stuData[row.getCells()[index].value].accept =
+                //       int.tryParse(value) ?? 0;
+                // } else if (index == 4) {
+                //   _stuData[row.getCells()[index].value].reject =
+                //       int.tryParse(value) ?? 0;
+                // } else if (index == 5) {
+                //   _stuData[row.getCells()[index].value].approve =
+                //       int.tryParse(value) ?? 0;
+                // }
               },
             ),
           );

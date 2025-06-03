@@ -6,10 +6,11 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:sop_mobile/core/constant/colors.dart';
 import 'package:sop_mobile/data/models/home.dart';
 import 'package:sop_mobile/presentation/state/counter/counter_cubit.dart';
-import 'package:sop_mobile/presentation/state/leasing/leasing_cubit.dart';
+import 'package:sop_mobile/presentation/state/leasing/leasing_bloc.dart';
 import 'package:sop_mobile/presentation/state/cubit/sales.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_bloc.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_state.dart';
+import 'package:sop_mobile/presentation/state/leasing/leasing_event.dart';
 import 'package:sop_mobile/presentation/state/login/login_bloc.dart';
 import 'package:sop_mobile/presentation/state/login/login_event.dart';
 import 'package:sop_mobile/presentation/state/login/login_state.dart';
@@ -22,7 +23,6 @@ import 'package:sop_mobile/presentation/state/salesman/salesman_event.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
 import 'package:sop_mobile/presentation/widgets/buttons.dart';
 import 'package:sop_mobile/presentation/widgets/card.dart';
-import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_leasing.dart';
 import 'package:sop_mobile/presentation/widgets/filter.dart';
 import 'package:sop_mobile/presentation/widgets/loading.dart';
 import 'package:sop_mobile/presentation/widgets/refresh.dart';
@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final photoBloc = context.read<PhotoBloc>();
     final salesProfileBloc = context.read<SalesmanBloc>();
     final salesStatusCubit = context.read<SalesStatusCubit>();
-    final leasingCubit = context.read<LeasingCubit>();
+    final leasingBloc = context.read<LeasingBloc>();
     // log('Width: ${MediaQuery.of(context).size.width}');
     // log('Height: ${MediaQuery.of(context).size.height}');
 
@@ -126,7 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       text: 'Daily Report',
                       func: () {
                         routeBloc.add(RoutePush(ConstantRoutes.report));
-                        leasingCubit.resetData();
+                        leasingBloc.add(ResetLeasingData());
                         Navigator.pushNamed(context, ConstantRoutes.report);
                         panelController.close();
                       },

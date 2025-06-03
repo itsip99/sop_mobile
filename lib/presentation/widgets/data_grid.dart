@@ -18,8 +18,10 @@ class CustomDataGrid {
     final TextStyle textStyle = TextThemes.normal,
     final Alignment textAlignment = Alignment.center,
     final VoidCallback? addFunction,
+    final Key? key,
   }) {
     return SfDataGrid(
+      key: key,
       source: dataSource,
       allowEditing: allowEditing,
       columnWidthMode: columnWidthMode,

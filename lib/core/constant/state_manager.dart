@@ -4,7 +4,7 @@ import 'package:sop_mobile/presentation/screens/report_screen.dart';
 import 'package:sop_mobile/presentation/state/brief/brief_bloc.dart';
 import 'package:sop_mobile/presentation/state/carousel/carousel_bloc.dart';
 import 'package:sop_mobile/presentation/state/counter/counter_cubit.dart';
-import 'package:sop_mobile/presentation/state/leasing/leasing_cubit.dart';
+import 'package:sop_mobile/presentation/state/leasing/leasing_bloc.dart';
 import 'package:sop_mobile/presentation/state/cubit/sales.dart';
 import 'package:sop_mobile/presentation/state/date/date_cubit.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_bloc.dart';
@@ -54,8 +54,8 @@ class StateManager {
       BlocProvider<SalesStatusCubit>(
         create: (context) => SalesStatusCubit(),
       ),
-      BlocProvider<LeasingCubit>(
-        create: (context) => LeasingCubit(),
+      BlocProvider<LeasingBloc>(
+        create: (context) => LeasingBloc(),
         child: const ReportScreen(),
       ),
     ];
