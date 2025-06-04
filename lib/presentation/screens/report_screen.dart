@@ -27,11 +27,33 @@ class _ReportScreenState extends State<ReportScreen> {
   final TextEditingController areaController = TextEditingController();
   final TextEditingController personController = TextEditingController();
 
+  double tableHeight = 260;
   List<LeasingData> leasingData = [];
+
+  void editLeasingValue(
+    LeasingBloc leasingBloc,
+    int rowIndex,
+    String columnName,
+    int newValue,
+  ) {
+    if (columnName == 'Accepted') {
+      // 'accept'
+      leasingBloc.add(LeasingDataModified(
+        rowIndex: rowIndex,
+        newAcceptedValue: newValue,
+      ));
+    } else if (columnName == 'Rejected') {
+      // 'reject'
+      leasingBloc.add(LeasingDataModified(
+        rowIndex: rowIndex,
+        newRejectedValue: newValue,
+      ));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final leasingCubit = context.read<LeasingBloc>();
+    final leasingBloc = context.read<LeasingBloc>();
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -111,89 +133,122 @@ class _ReportScreenState extends State<ReportScreen> {
                 child: SingleChildScrollView(
                   physics: const ClampingScrollPhysics(),
                   child: Column(
+                    spacing: 8,
                     children: [
-                      // ~:Dealer Textfield:~
-                      CustomTextFormField(
-                        'your dealer',
-                        'Dealer',
-                        const Icon(Icons.house_siding_rounded),
-                        dealerController,
-                        isLabelFloat: true,
-                        inputFormatters: [Formatter.normalFormatter],
-                        borderRadius: 20,
+                      // ~:Textfields:~
+                      Column(
+                        spacing: 4,
+                        children: [
+                          // ~:Dealer Textfield:~
+                          CustomTextFormField(
+                            'your dealer',
+                            'Dealer',
+                            const Icon(Icons.house_siding_rounded),
+                            dealerController,
+                            isLabelFloat: true,
+                            inputFormatters: [Formatter.normalFormatter],
+                            borderRadius: 20,
+                          ),
+
+                          // ~:Dealer Textfield:~
+                          CustomTextFormField(
+                            'your area',
+                            'Area',
+                            const Icon(Icons.location_pin),
+                            areaController,
+                            isLabelFloat: true,
+                            inputFormatters: [Formatter.normalFormatter],
+                            borderRadius: 20,
+                          ),
+
+                          // ~:Dealer Textfield:~
+                          CustomTextFormField(
+                            'your PIC name',
+                            'PIC',
+                            const Icon(Icons.person),
+                            personController,
+                            isLabelFloat: true,
+                            inputFormatters: [Formatter.normalFormatter],
+                            borderRadius: 20,
+                          ),
+                        ],
                       ),
 
-                      // ~:Dealer Textfield:~
-                      CustomTextFormField(
-                        'your area',
-                        'Area',
-                        const Icon(Icons.location_pin),
-                        areaController,
-                        isLabelFloat: true,
-                        inputFormatters: [Formatter.normalFormatter],
-                        borderRadius: 20,
-                      ),
-
-                      // ~:Dealer Textfield:~
-                      CustomTextFormField(
-                        'your PIC name',
-                        'PIC',
-                        const Icon(Icons.person),
-                        personController,
-                        isLabelFloat: true,
-                        inputFormatters: [Formatter.normalFormatter],
-                        borderRadius: 20,
-                      ),
-
-                      // ~:STU Input Table:~
-                      CustomDataGrid.report(
-                        StuInsertDataSource(),
-                        ['STU', 'Result', 'Target', 'Ach', 'LM', 'Growth'],
-                        allowEditing: true,
-                        horizontalScrollPhysics: const BouncingScrollPhysics(),
-                      ),
-
-                      // ~:Payment Input Table:~
-                      CustomDataGrid.report(
-                        PaymentInsertDataSource(),
-                        ['Payment', 'Result', 'Target', 'Growth'],
-                        allowEditing: true,
-                        horizontalScrollPhysics: const BouncingScrollPhysics(),
-                      ),
-
-                      // ~:Leasing Input Table:~
-                      BlocBuilder<LeasingBloc, LeasingState>(
-                        builder: (context, state) {
-                          leasingData = state.data;
-                          if (state is AddLeasingData) {
-                            leasingData = state.newData;
-                            log('New Leasing length: ${leasingData.length}');
-                          }
-
-                          log('Leasing length: ${state.data.length}');
-                          return CustomDataGrid.report(
-                            key: ValueKey(leasingData),
-                            LeasingInsertDataSource(leasingData),
-                            <String>[
-                              'Leasing',
-                              'SPK',
-                              'Terbuka',
-                              'Disetujui',
-                              'Ditolak',
-                              'Approval',
-                            ],
+                      // ~:Input Tables:~
+                      Column(
+                        spacing: 12,
+                        children: [
+                          // ~:STU Input Table:~
+                          CustomDataGrid.report(
+                            context,
+                            StuInsertDataSource(),
+                            ['STU', 'Result', 'Target', 'Ach', 'LM', 'Growth'],
                             allowEditing: true,
                             horizontalScrollPhysics:
                                 const BouncingScrollPhysics(),
-                            verticalScrollPhysics:
-                                const AlwaysScrollableScrollPhysics(),
-                            enableAddRow: true,
-                            addFunction: () async {
-                              log('Add New Row');
-                              leasingCubit.add(LeasingDataAdded());
+                          ),
+
+                          // ~:Payment Input Table:~
+                          CustomDataGrid.report(
+                            context,
+                            PaymentInsertDataSource(),
+                            ['Payment', 'Result', 'Target', 'Growth'],
+                            tableHeight: 215,
+                            allowEditing: true,
+                            horizontalScrollPhysics:
+                                const BouncingScrollPhysics(),
+                          ),
+
+                          // ~:Leasing Input Table:~
+                          BlocBuilder<LeasingBloc, LeasingState>(
+                            builder: (context, state) {
+                              leasingData = state.data;
+                              if (state is AddLeasingData) {
+                                leasingData = state.newData;
+                                log('New Leasing length: ${leasingData.length}');
+                                tableHeight =
+                                    260 + (50 * (leasingData.length - 3));
+                                log('Updated table height: $tableHeight');
+                              }
+
+                              log('Leasing length: ${state.data.length}');
+                              return CustomDataGrid.report(
+                                context,
+                                LeasingInsertDataSource(
+                                  leasingData,
+                                  onCellValueEdited:
+                                      (rowIndex, columnName, newValue) {
+                                    editLeasingValue(
+                                      leasingBloc,
+                                      rowIndex,
+                                      columnName,
+                                      newValue,
+                                    );
+                                  },
+                                ),
+                                <String>[
+                                  'Leasing',
+                                  'SPK',
+                                  'Terbuka',
+                                  'Disetujui',
+                                  'Ditolak',
+                                  'Approval',
+                                ],
+                                tableHeight: tableHeight,
+                                allowEditing: true,
+                                horizontalScrollPhysics:
+                                    const BouncingScrollPhysics(),
+                                verticalScrollPhysics:
+                                    const AlwaysScrollableScrollPhysics(),
+                                enableAddRow: true,
+                                addFunction: () async {
+                                  log('Add New Row');
+                                  leasingBloc.add(LeasingDataAdded());
+                                },
+                              );
                             },
-                          );
-                        },
+                          ),
+                        ],
                       ),
                     ],
                   ),

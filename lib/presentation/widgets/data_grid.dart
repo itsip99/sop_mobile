@@ -4,11 +4,15 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class CustomDataGrid {
   static Widget report(
+    final BuildContext context,
     final DataGridSource dataSource,
     final List<String> loadedData, {
+    final double tableHeight = 260,
     final bool enableAddRow = false,
     final bool allowEditing = false,
-    final ColumnWidthMode columnWidthMode = ColumnWidthMode.fill,
+    final double headerRowHeight = 48,
+    final double rowHeight = 48,
+    final ColumnWidthMode columnWidthMode = ColumnWidthMode.fitByColumnName,
     final ScrollPhysics horizontalScrollPhysics =
         const NeverScrollableScrollPhysics(),
     final ScrollPhysics verticalScrollPhysics =
@@ -20,75 +24,81 @@ class CustomDataGrid {
     final VoidCallback? addFunction,
     final Key? key,
   }) {
-    return SfDataGrid(
-      key: key,
-      source: dataSource,
-      allowEditing: allowEditing,
-      columnWidthMode: columnWidthMode,
-      horizontalScrollPhysics: horizontalScrollPhysics,
-      verticalScrollPhysics: verticalScrollPhysics,
-      footerHeight: 0.0,
-      footer: const SizedBox(),
-      stackedHeaderRows: [
-        StackedHeaderRow(
-          cells: [
-            StackedHeaderCell(
-              columnNames: loadedData,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (enableAddRow)
-                    IconButton(
-                      icon: const Icon(Icons.add),
-                      tooltip: 'Add Row',
-                      onPressed: () async => addFunction!(),
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: tableHeight,
+      child: SfDataGrid(
+        key: key,
+        source: dataSource,
+        allowEditing: allowEditing,
+        columnWidthMode: columnWidthMode,
+        horizontalScrollPhysics: horizontalScrollPhysics,
+        verticalScrollPhysics: verticalScrollPhysics,
+        // headerRowHeight: headerRowHeight,
+        // rowHeight: rowHeight,
+        footerHeight: 0.0,
+        footer: const SizedBox(),
+        stackedHeaderRows: [
+          StackedHeaderRow(
+            cells: [
+              StackedHeaderCell(
+                columnNames: loadedData,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (enableAddRow)
+                      IconButton(
+                        icon: const Icon(Icons.add),
+                        tooltip: 'Add Row',
+                        onPressed: () async => addFunction!(),
+                      ),
+                    Text(
+                      '${loadedData[0]} Report',
+                      style: textStyle.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  Text(
-                    '${loadedData[0]} Report',
-                    style: textStyle.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
-      ],
-      columns: loadedData.asMap().entries.map((name) {
-        final int index = name.key;
-        final String data = name.value;
+            ],
+          ),
+        ],
+        columns: loadedData.asMap().entries.map((name) {
+          final int index = name.key;
+          final String data = name.value;
 
-        if (index == 0) {
-          return GridColumn(
-            columnName: data,
-            width: rowHeaderWidth,
-            label: Container(
-              alignment: textAlignment,
-              child: Text(
-                data,
-                style: textStyle.copyWith(
-                  fontWeight: FontWeight.bold,
+          if (index == 0) {
+            return GridColumn(
+              columnName: data,
+              width: rowHeaderWidth,
+              label: Container(
+                alignment: textAlignment,
+                child: Text(
+                  data,
+                  style: textStyle.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
-          );
-        } else {
-          return GridColumn(
-            columnName: data,
-            width: rowBodyWidth,
-            label: Container(
-              alignment: textAlignment,
-              child: Text(
-                data,
-                style: textStyle.copyWith(
-                  fontWeight: FontWeight.bold,
+            );
+          } else {
+            return GridColumn(
+              columnName: data,
+              width: rowBodyWidth,
+              label: Container(
+                alignment: textAlignment,
+                child: Text(
+                  data,
+                  style: textStyle.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
-          );
-        }
-      }).toList(),
+            );
+          }
+        }).toList(),
+      ),
     );
   }
 }

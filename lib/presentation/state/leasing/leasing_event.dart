@@ -9,3 +9,15 @@ class ResetLeasingData extends LeasingEvent {
 class LeasingDataAdded extends LeasingEvent {
   LeasingDataAdded();
 }
+
+class LeasingDataModified extends LeasingEvent {
+  final int rowIndex;
+  final int? newAcceptedValue;
+  final int? newRejectedValue;
+
+  LeasingDataModified({
+    required this.rowIndex,
+    this.newAcceptedValue,
+    this.newRejectedValue,
+  });
+}
