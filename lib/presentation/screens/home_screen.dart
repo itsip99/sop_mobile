@@ -14,12 +14,16 @@ import 'package:sop_mobile/presentation/state/leasing/leasing_event.dart';
 import 'package:sop_mobile/presentation/state/login/login_bloc.dart';
 import 'package:sop_mobile/presentation/state/login/login_event.dart';
 import 'package:sop_mobile/presentation/state/login/login_state.dart';
+import 'package:sop_mobile/presentation/state/payment/payment_bloc.dart';
+import 'package:sop_mobile/presentation/state/payment/payment_event.dart';
 import 'package:sop_mobile/presentation/state/photo/photo_bloc.dart';
 import 'package:sop_mobile/presentation/state/photo/photo_event.dart';
 import 'package:sop_mobile/presentation/state/route/route_bloc.dart';
 import 'package:sop_mobile/presentation/state/route/route_event.dart';
 import 'package:sop_mobile/presentation/state/salesman/salesman_bloc.dart';
 import 'package:sop_mobile/presentation/state/salesman/salesman_event.dart';
+import 'package:sop_mobile/presentation/state/stu/stu_bloc.dart';
+import 'package:sop_mobile/presentation/state/stu/stu_event.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
 import 'package:sop_mobile/presentation/widgets/buttons.dart';
 import 'package:sop_mobile/presentation/widgets/card.dart';
@@ -47,7 +51,6 @@ class _HomeScreenState extends State<HomeScreen> {
     final photoBloc = context.read<PhotoBloc>();
     final salesProfileBloc = context.read<SalesmanBloc>();
     final salesStatusCubit = context.read<SalesStatusCubit>();
-    final leasingBloc = context.read<LeasingBloc>();
     // log('Width: ${MediaQuery.of(context).size.width}');
     // log('Height: ${MediaQuery.of(context).size.height}');
 
@@ -126,7 +129,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       text: 'Daily Report',
                       func: () {
                         routeBloc.add(RoutePush(ConstantRoutes.report));
-                        leasingBloc.add(ResetLeasingData());
+
+                        // ~:Reset Table Data:~
+                        context.read<StuBloc>().add(ResetStuData());
+                        context.read<PaymentBloc>().add(ResetPaymentData());
+                        context.read<LeasingBloc>().add(ResetLeasingData());
+
                         Navigator.pushNamed(context, ConstantRoutes.report);
                         panelController.close();
                       },

@@ -8,6 +8,12 @@ import 'package:sop_mobile/core/helpers/formatter.dart';
 import 'package:sop_mobile/presentation/state/leasing/leasing_bloc.dart';
 import 'package:sop_mobile/presentation/state/leasing/leasing_event.dart';
 import 'package:sop_mobile/presentation/state/leasing/leasing_state.dart';
+import 'package:sop_mobile/presentation/state/payment/payment_bloc.dart';
+import 'package:sop_mobile/presentation/state/payment/payment_event.dart';
+import 'package:sop_mobile/presentation/state/payment/payment_state.dart';
+import 'package:sop_mobile/presentation/state/stu/stu_bloc.dart';
+import 'package:sop_mobile/presentation/state/stu/stu_event.dart';
+import 'package:sop_mobile/presentation/state/stu/stu_state.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
 import 'package:sop_mobile/presentation/widgets/data_grid.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_leasing.dart';
@@ -28,7 +34,52 @@ class _ReportScreenState extends State<ReportScreen> {
   final TextEditingController personController = TextEditingController();
 
   double tableHeight = 260;
+  List<StuData> stuData = [];
+  List<PaymentData> paymentData = [];
   List<LeasingData> leasingData = [];
+
+  void editStuValue(
+    StuBloc stuBloc,
+    int rowIndex,
+    String columnName,
+    int newValue,
+  ) {
+    if (columnName == 'Result') {
+      stuBloc.add(ModifyStuResultData(
+        rowIndex: rowIndex,
+        newResultValue: newValue,
+      ));
+    } else if (columnName == 'Target') {
+      stuBloc.add(ModifyStuTargetData(
+        rowIndex: rowIndex,
+        newTargetValue: newValue,
+      ));
+    } else if (columnName == 'LM') {
+      stuBloc.add(ModifyStuLmData(
+        rowIndex: rowIndex,
+        newLmValue: newValue,
+      ));
+    }
+  }
+
+  void editPaymentValue(
+    PaymentBloc paymentBloc,
+    int rowIndex,
+    String columnName,
+    int newValue,
+  ) {
+    if (columnName == 'Result') {
+      paymentBloc.add(PaymentDataModified(
+        rowIndex: rowIndex,
+        newResultValue: newValue,
+      ));
+    } else if (columnName == 'LM') {
+      paymentBloc.add(PaymentDataModified(
+        rowIndex: rowIndex,
+        newTargetValue: newValue,
+      ));
+    }
+  }
 
   void editLeasingValue(
     LeasingBloc leasingBloc,
@@ -179,24 +230,72 @@ class _ReportScreenState extends State<ReportScreen> {
                         spacing: 12,
                         children: [
                           // ~:STU Input Table:~
-                          CustomDataGrid.report(
-                            context,
-                            StuInsertDataSource(),
-                            ['STU', 'Result', 'Target', 'Ach', 'LM', 'Growth'],
-                            allowEditing: true,
-                            horizontalScrollPhysics:
-                                const BouncingScrollPhysics(),
-                          ),
+                          BlocBuilder<StuBloc, StuState>(
+                              builder: (context, state) {
+                            stuData = state.data;
+                            if (state is StuDataModified) {
+                              stuData = state.newData;
+                              log('New STU length: ${stuData.length}');
+                            }
+
+                            return CustomDataGrid.report(
+                              context,
+                              StuInsertDataSource(
+                                state.data,
+                                onCellValueEdited:
+                                    (rowIndex, columnName, newValue) {
+                                  editStuValue(
+                                    context.read<StuBloc>(),
+                                    rowIndex,
+                                    columnName,
+                                    newValue,
+                                  );
+                                },
+                              ),
+                              [
+                                'STU',
+                                'Result',
+                                'Target',
+                                'Ach',
+                                'LM',
+                                'Growth'
+                              ],
+                              allowEditing: true,
+                              horizontalScrollPhysics:
+                                  const BouncingScrollPhysics(),
+                            );
+                          }),
 
                           // ~:Payment Input Table:~
-                          CustomDataGrid.report(
-                            context,
-                            PaymentInsertDataSource(),
-                            ['Payment', 'Result', 'Target', 'Growth'],
-                            tableHeight: 215,
-                            allowEditing: true,
-                            horizontalScrollPhysics:
-                                const BouncingScrollPhysics(),
+                          BlocBuilder<PaymentBloc, PaymentState>(
+                            builder: (context, state) {
+                              paymentData = state.data;
+                              if (state is PaymentModified) {
+                                paymentData = state.newData;
+                                log('New Payment length: ${paymentData.length}');
+                              }
+
+                              return CustomDataGrid.report(
+                                context,
+                                PaymentInsertDataSource(
+                                  paymentData,
+                                  onCellValueEdited:
+                                      (rowIndex, columnName, newValue) {
+                                    editPaymentValue(
+                                      context.read<PaymentBloc>(),
+                                      rowIndex,
+                                      columnName,
+                                      newValue,
+                                    );
+                                  },
+                                ),
+                                ['Payment', 'Result', 'Target', 'Growth'],
+                                tableHeight: 215,
+                                allowEditing: true,
+                                horizontalScrollPhysics:
+                                    const BouncingScrollPhysics(),
+                              );
+                            },
                           ),
 
                           // ~:Leasing Input Table:~
@@ -258,6 +357,10 @@ class _ReportScreenState extends State<ReportScreen> {
               // ~:Create Button:~
               ElevatedButton(
                 onPressed: () {
+                  for (var data in paymentData) {
+                    log('Payment Data: ${data.type}, Result: ${data.result}, Target: ${data.lm}, Growth: ${data.growth}%');
+                  }
+
                   for (var data in leasingData) {
                     log('Leasing Data: ${data.type}, SPK: ${data.spk}, Opened: ${data.open}, Accepted: ${data.accept}, Rejected: ${data.reject}, Approval: ${data.approve}');
                   }

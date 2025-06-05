@@ -9,11 +9,13 @@ import 'package:sop_mobile/presentation/state/cubit/sales.dart';
 import 'package:sop_mobile/presentation/state/date/date_cubit.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_bloc.dart';
 import 'package:sop_mobile/presentation/state/login/login_bloc.dart';
+import 'package:sop_mobile/presentation/state/payment/payment_bloc.dart';
 import 'package:sop_mobile/presentation/state/permission/camera_cubit.dart';
 import 'package:sop_mobile/presentation/state/permission/permission_bloc.dart';
 import 'package:sop_mobile/presentation/state/photo/photo_bloc.dart';
 import 'package:sop_mobile/presentation/state/route/route_bloc.dart';
 import 'package:sop_mobile/presentation/state/salesman/salesman_bloc.dart';
+import 'package:sop_mobile/presentation/state/stu/stu_bloc.dart';
 
 class StateManager {
   static List<SingleChildWidget> getBlocProviders() {
@@ -53,6 +55,14 @@ class StateManager {
       ),
       BlocProvider<SalesStatusCubit>(
         create: (context) => SalesStatusCubit(),
+      ),
+      BlocProvider<StuBloc>(
+        create: (context) => StuBloc(),
+        child: const ReportScreen(),
+      ),
+      BlocProvider<PaymentBloc>(
+        create: (context) => PaymentBloc(),
+        child: const ReportScreen(),
       ),
       BlocProvider<LeasingBloc>(
         create: (context) => LeasingBloc(),

@@ -56,7 +56,7 @@ class LeasingInsertDataSource extends DataGridSource {
     //   LeasingData('SOF', 0, 0, 0, 0, 0),
     // ];
     log('Data Source length: ${data.length}');
-    _stuData = data;
+    _leasingData = data;
     buildDataGridRows();
     notifyListeners();
   }
@@ -68,11 +68,11 @@ class LeasingInsertDataSource extends DataGridSource {
   //   notifyListeners();
   // }
 
-  late List<LeasingData> _stuData;
+  late List<LeasingData> _leasingData;
   late List<DataGridRow> _dataGridRows;
 
   void buildDataGridRows() {
-    _dataGridRows = _stuData.map<DataGridRow>((data) {
+    _dataGridRows = _leasingData.map<DataGridRow>((data) {
       return DataGridRow(cells: [
         DataGridCell<String>(columnName: 'Leasing', value: data.type),
         DataGridCell<int>(columnName: 'SPK', value: data.spk),
@@ -90,7 +90,7 @@ class LeasingInsertDataSource extends DataGridSource {
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
     final int rowIndex = _dataGridRows.indexOf(row);
-    LeasingData leasingEntry = _stuData[rowIndex];
+    LeasingData leasingEntry = _leasingData[rowIndex];
 
     return DataGridRowAdapter(
       cells: row.getCells().asMap().entries.map<Widget>((entry) {
@@ -118,8 +118,7 @@ class LeasingInsertDataSource extends DataGridSource {
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 isDense: true,
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 8), // Reduced padding
+                contentPadding: EdgeInsets.symmetric(vertical: 8),
               ),
               onChanged: (String newValueString) {
                 int? parsedValue = int.tryParse(newValueString);
@@ -128,19 +127,19 @@ class LeasingInsertDataSource extends DataGridSource {
                 if (rowIndex != -1) {
                   switch (cellIndex) {
                     case 1:
-                      _stuData[rowIndex].spk = parsedValue ?? 0;
+                      _leasingData[rowIndex].spk = parsedValue ?? 0;
                       break;
                     case 2:
-                      _stuData[rowIndex].open = parsedValue ?? 0;
+                      _leasingData[rowIndex].open = parsedValue ?? 0;
                       break;
                     case 3:
-                      _stuData[rowIndex].accept = parsedValue ?? 0;
+                      _leasingData[rowIndex].accept = parsedValue ?? 0;
                       break;
                     case 4:
-                      _stuData[rowIndex].reject = parsedValue ?? 0;
+                      _leasingData[rowIndex].reject = parsedValue ?? 0;
                       break;
                     case 5:
-                      _stuData[rowIndex].approve =
+                      _leasingData[rowIndex].approve =
                           double.tryParse(newValueString) ?? 0;
                       break;
                     default:
@@ -175,72 +174,6 @@ class LeasingInsertDataSource extends DataGridSource {
             ),
           );
         }
-
-        // if ((index == 0 &&
-        //         (data == 'BAF' || data == 'Adira' || data == 'SOF')) ||
-        //     index == 5) {
-        //   return Center(
-        //     child: Text(
-        //       data,
-        //       textAlign: TextAlign.center,
-        //       style: (index == 0)
-        //           ? TextThemes.normal.copyWith(fontWeight: FontWeight.bold)
-        //           : TextThemes.normal,
-        //     ),
-        //   );
-        // } else {
-        //   return Container(
-        //     alignment: Alignment.center,
-        //     padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        //     child: TextFormField(
-        //       initialValue: data.toString(),
-        //       textAlign: TextAlign.center,
-        //       keyboardType:
-        //           index == 0 ? TextInputType.text : TextInputType.number,
-        //       decoration: const InputDecoration(
-        //         border: OutlineInputBorder(),
-        //         isDense: true,
-        //         contentPadding: EdgeInsets.symmetric(vertical: 8),
-        //       ),
-        //       onChanged: (value) {
-        //         // You can add logic here to update the underlying data model if needed
-        //         final rowIndex = _dataGridRows.indexOf(row);
-        //         if (rowIndex != -1) {
-        //           switch (index) {
-        //             case 1:
-        //               _stuData[rowIndex].spk = int.tryParse(value) ?? 0;
-        //               break;
-        //             case 2:
-        //               _stuData[rowIndex].open = int.tryParse(value) ?? 0;
-        //               break;
-        //             case 3:
-        //               _stuData[rowIndex].accept = int.tryParse(value) ?? 0;
-        //               break;
-        //             case 4:
-        //               _stuData[rowIndex].reject = int.tryParse(value) ?? 0;
-        //               break;
-        //             case 5:
-        //               _stuData[rowIndex].approve = double.tryParse(value) ?? 0;
-        //               break;
-        //             default:
-        //               break;
-        //           }
-
-        //           int? parsedValue = int.tryParse(value);
-        //           if (parsedValue != null && onCellValueEdited != null) {
-        //             onCellValueEdited!(
-        //               rowIndex,
-        //               cell.value.columnName,
-        //               parsedValue,
-        //             );
-        //           }
-        //           buildDataGridRows();
-        //           notifyListeners();
-        //         }
-        //       },
-        //     ),
-        //   );
-        // }
       }).toList(),
     );
   }
