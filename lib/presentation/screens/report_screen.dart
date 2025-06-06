@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sop_mobile/core/constant/colors.dart';
+import 'package:sop_mobile/core/constant/enum.dart';
 import 'package:sop_mobile/core/helpers/formatter.dart';
 import 'package:sop_mobile/presentation/state/leasing/leasing_bloc.dart';
 import 'package:sop_mobile/presentation/state/leasing/leasing_event.dart';
@@ -45,17 +46,17 @@ class _ReportScreenState extends State<ReportScreen> {
     int newValue,
   ) {
     if (columnName == 'Result') {
-      stuBloc.add(ModifyStuResultData(
+      stuBloc.add(ModifyStuData(
         rowIndex: rowIndex,
         newResultValue: newValue,
       ));
     } else if (columnName == 'Target') {
-      stuBloc.add(ModifyStuTargetData(
+      stuBloc.add(ModifyStuData(
         rowIndex: rowIndex,
         newTargetValue: newValue,
       ));
     } else if (columnName == 'LM') {
-      stuBloc.add(ModifyStuLmData(
+      stuBloc.add(ModifyStuData(
         rowIndex: rowIndex,
         newLmValue: newValue,
       ));
@@ -231,40 +232,35 @@ class _ReportScreenState extends State<ReportScreen> {
                         children: [
                           // ~:STU Input Table:~
                           BlocBuilder<StuBloc, StuState>(
-                              builder: (context, state) {
-                            stuData = state.data;
-                            if (state is StuDataModified) {
-                              stuData = state.newData;
-                              log('New STU length: ${stuData.length}');
-                            }
+                            builder: (context, state) {
+                              stuData = state.data;
+                              if (state is StuDataModified) {
+                                stuData = state.newData;
+                              }
 
-                            return CustomDataGrid.report(
-                              context,
-                              StuInsertDataSource(
-                                state.data,
-                                onCellValueEdited:
-                                    (rowIndex, columnName, newValue) {
-                                  editStuValue(
-                                    context.read<StuBloc>(),
-                                    rowIndex,
-                                    columnName,
-                                    newValue,
-                                  );
-                                },
-                              ),
-                              [
-                                'STU',
-                                'Result',
-                                'Target',
-                                'Ach',
-                                'LM',
-                                'Growth'
-                              ],
-                              allowEditing: true,
-                              horizontalScrollPhysics:
-                                  const BouncingScrollPhysics(),
-                            );
-                          }),
+                              return CustomDataGrid.report(
+                                context,
+                                StuInsertDataSource(
+                                  stuData,
+                                  onCellValueEdited:
+                                      (rowIndex, columnName, newValue) {
+                                    editStuValue(
+                                      context.read<StuBloc>(),
+                                      rowIndex,
+                                      columnName,
+                                      newValue,
+                                    );
+                                  },
+                                ),
+                                StuType.values
+                                    .map((e) => e.name.toString())
+                                    .toList(),
+                                allowEditing: true,
+                                horizontalScrollPhysics:
+                                    const BouncingScrollPhysics(),
+                              );
+                            },
+                          ),
 
                           // ~:Payment Input Table:~
                           BlocBuilder<PaymentBloc, PaymentState>(
@@ -289,7 +285,9 @@ class _ReportScreenState extends State<ReportScreen> {
                                     );
                                   },
                                 ),
-                                ['Payment', 'Result', 'Target', 'Growth'],
+                                PaymentType.values
+                                    .map((e) => e.name.toString())
+                                    .toList(),
                                 tableHeight: 215,
                                 allowEditing: true,
                                 horizontalScrollPhysics:
@@ -325,14 +323,9 @@ class _ReportScreenState extends State<ReportScreen> {
                                     );
                                   },
                                 ),
-                                <String>[
-                                  'Leasing',
-                                  'SPK',
-                                  'Terbuka',
-                                  'Disetujui',
-                                  'Ditolak',
-                                  'Approval',
-                                ],
+                                LeasingType.values
+                                    .map((e) => e.name.toString())
+                                    .toList(),
                                 tableHeight: tableHeight,
                                 allowEditing: true,
                                 horizontalScrollPhysics:
@@ -357,6 +350,14 @@ class _ReportScreenState extends State<ReportScreen> {
               // ~:Create Button:~
               ElevatedButton(
                 onPressed: () {
+                  log('Dealer: ${dealerController.text}');
+                  log('Area: ${areaController.text}');
+                  log('PIC: ${personController.text}');
+
+                  for (var data in stuData) {
+                    log('STU Data: ${data.type}, Result: ${data.result}, Target: ${data.target}, Ach: ${data.ach}, LM: ${data.lm}, Growth: ${data.growth}');
+                  }
+
                   for (var data in paymentData) {
                     log('Payment Data: ${data.type}, Result: ${data.result}, Target: ${data.lm}, Growth: ${data.growth}%');
                   }

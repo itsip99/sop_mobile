@@ -6,6 +6,20 @@ class ResetStuData extends StuEvent {
   ResetStuData();
 }
 
+class ModifyStuData extends StuEvent {
+  final int rowIndex;
+  final int? newResultValue;
+  final int? newTargetValue;
+  final int? newLmValue;
+
+  ModifyStuData({
+    required this.rowIndex,
+    this.newResultValue,
+    this.newTargetValue,
+    this.newLmValue,
+  });
+}
+
 class ModifyStuResultData extends StuEvent {
   final int rowIndex;
   final int? newResultValue;

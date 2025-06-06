@@ -14,9 +14,62 @@ class StuBloc<BaseEvent, BaseState> extends Bloc<StuEvent, StuState> {
         StuData('AT LPM', 0, 0, '0.0', 0, '0.0'),
       ]));
     });
+    on<ModifyStuData>(modifyData);
     on<ModifyStuResultData>(modifyResultData);
     on<ModifyStuTargetData>(modifyTargetData);
     on<ModifyStuLmData>(modifyLmData);
+  }
+
+  Future<void> modifyData(
+    ModifyStuData event,
+    Emitter<StuState> emit,
+  ) async {
+    // Create a NEW list based on the current state's data
+    final List<StuData> newList = List<StuData>.from(state.data);
+
+    StuData entryToUpdate = newList[event.rowIndex];
+
+    int currentResult = entryToUpdate.result;
+    int currentTarget = entryToUpdate.target;
+    int currentLm = entryToUpdate.lm;
+
+    if (event.newResultValue != null) {
+      currentResult = event.newResultValue!;
+    }
+    if (event.newTargetValue != null) {
+      currentTarget = event.newTargetValue!;
+    }
+    if (event.newLmValue != null) {
+      currentLm = event.newLmValue!;
+    }
+
+    log('Current Result: $currentResult, Current Target: $currentTarget, Current LM: $currentLm');
+
+    String newAchievementRate = '0.0';
+    if (currentResult > 0 && currentTarget > 0) {
+      log('Calculating Achievement Rate');
+      newAchievementRate =
+          (currentResult / currentTarget * 100).toStringAsFixed(1);
+      log('New Achievement Rate: $newAchievementRate%');
+    }
+
+    String newGrowthRate = '0.0';
+    if (currentResult > 0 && currentLm > 0) {
+      log('Calculating Growth Rate');
+      newGrowthRate = (currentResult / currentLm * 100).toStringAsFixed(1);
+      log('New Growth Rate: $newGrowthRate%');
+    }
+
+    newList[event.rowIndex] = StuData(
+      entryToUpdate.type,
+      currentResult,
+      currentTarget,
+      newAchievementRate,
+      currentLm,
+      newGrowthRate,
+    );
+
+    emit(StuDataModified(newList));
   }
 
   Future<void> modifyResultData(

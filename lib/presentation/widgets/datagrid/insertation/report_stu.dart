@@ -77,8 +77,6 @@ class StuInsertDataSource extends DataGridSource {
 
     return DataGridRowAdapter(
       cells: row.getCells().asMap().entries.map<Widget>((entry) {
-        // log('Cell key: ${cell.key}');
-        // log('Cell value: ${cell.value.value}');
         final int cellIndex = entry.key;
         final DataGridCell<dynamic> dataGridCell = entry.value;
         final String columnName = dataGridCell.columnName;
@@ -88,6 +86,7 @@ class StuInsertDataSource extends DataGridSource {
             columnName == 'LM';
 
         if (isEditable) {
+          // ~:Editable TextFormField for Result, Target, and LM:~
           return Container(
             alignment: Alignment.center,
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
@@ -124,24 +123,35 @@ class StuInsertDataSource extends DataGridSource {
                   }
                 }
 
+                // ~:Update the data source value:~
                 if (parsedValue != null && onCellValueEdited != null) {
                   onCellValueEdited!(rowIndex, columnName, parsedValue);
                 }
               },
             ),
           );
-        } else if (columnName == 'Ach' || columnName == 'Growth') {
-          // Format the approvalRate (double 0.0-1.0) as a percentage string
-          String growthText = stuEntry.growth;
+        } else if (columnName == 'Ach') {
+          // ~:Display achievement rate as a percentage string:~
+          String achievementRate = stuEntry.ach;
           return Center(
             child: Text(
-              '$growthText%',
+              '$achievementRate%',
               textAlign: TextAlign.center,
-              style: TextThemes.normal, // (using existing style)
+              style: TextThemes.normal,
+            ),
+          );
+        } else if (columnName == 'Growth') {
+          // ~:Display growth rate as a percentage string:~
+          String growthRate = stuEntry.growth;
+          return Center(
+            child: Text(
+              '$growthRate%',
+              textAlign: TextAlign.center,
+              style: TextThemes.normal,
             ),
           );
         } else {
-          // 'Leasing' column (Type)
+          // ~:STU Type:~
           return Center(
             child: Text(
               dataGridCell.value.toString(),
