@@ -8,18 +8,14 @@ class Logo {
     double widthConfig,
     double heightConfig,
   ) {
-    return Container(
+    return DecoratedBox(
       decoration: BoxDecoration(
         color: ConstantColors.primaryColor2,
         borderRadius: BorderRadius.circular(20),
       ),
-      padding: EdgeInsets.symmetric(
-        horizontal: (MediaQuery.of(context).size.width < 800) ? 20 : 60,
-        vertical: (MediaQuery.of(context).size.height < 800) ? 10 : 30,
-      ),
       child: Image.asset(
         imgPath,
-        fit: BoxFit.cover,
+        fit: BoxFit.contain,
         width: widthConfig,
         height: heightConfig,
       ),

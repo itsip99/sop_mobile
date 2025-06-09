@@ -306,34 +306,38 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                   topRight: Radius.circular(20),
                 ),
               ),
-              padding: const EdgeInsets.all(20),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // ~:Page Header:~
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // ~:Page Title:~
-                      Text(
-                        'Daftar Salesman',
-                        style: TextThemes.subtitle.copyWith(
-                          fontWeight: FontWeight.bold,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // ~:Page Title:~
+                        Text(
+                          'Daftar Salesman',
+                          style: TextThemes.subtitle.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
 
-                      // ~:Page Description:~
-                      const Text(
-                        'Data diri salesman yang telah terdaftar di sistem.',
-                        style: TextThemes.normal,
-                      ),
-                    ],
+                        // ~:Page Description:~
+                        const Text(
+                          'Data diri salesman yang telah terdaftar di sistem.',
+                          style: TextThemes.normal,
+                        ),
+                      ],
+                    ),
                   ),
 
                   // ~:Page Body:~
-                  SizedBox(
+                  Container(
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height * 0.725,
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Builder(builder: (context) {
                       if (args != null &&
                           args.containsKey('registeredSales') &&
@@ -468,64 +472,71 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                         return const SizedBox();
                       }
 
-                      return Row(
-                        spacing: 8,
-                        children: [
-                          // ~:Add Button:~
-                          CustomButton.primaryButton2(
-                            context: context,
-                            width: 40,
-                            height: 40,
-                            enableIcon: true,
-                            icon: Icons.delete_rounded,
-                            func: () {},
-                            bgColor: ConstantColors.primaryColor2,
-                            textStyle: TextThemes.normal,
-                            shadowColor: ConstantColors.primaryColor1,
-                          ),
-
-                          // ~:Edit Button:~
-                          // CustomButton.primaryButton2(
-                          //   context: context,
-                          //   width: 40,
-                          //   height: 40,
-                          //   enableIcon: true,
-                          //   icon: Icons.edit_rounded,
-                          //   func: () {},
-                          //   bgColor: ConstantColors.primaryColor2,
-                          //   textStyle: TextThemes.normal,
-                          //   shadowColor: ConstantColors.primaryColor1,
-                          // ),
-                          //
-                          // ~:Delete Button:~
-                          // CustomButton.primaryButton2(
-                          //   context: context,
-                          //   width: 40,
-                          //   height: 40,
-                          //   enableIcon: true,
-                          //   icon: Icons.delete_rounded,
-                          //   func: () {},
-                          //   bgColor: ConstantColors.primaryColor2,
-                          //   textStyle: TextThemes.normal,
-                          //   shadowColor: ConstantColors.primaryColor1,
-                          // ),
-
-                          // ~:Save Button:~
-                          Expanded(
-                            child: CustomButton.primaryButton2(
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 8,
+                        ),
+                        child: Row(
+                          spacing: 8,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            // ~:Add Button:~
+                            CustomButton.primaryButton2(
                               context: context,
+                              width: 40,
                               height: 40,
-                              text: 'Tambah Sales',
-                              func: () {
-                                // salesmanBloc.add(ResetSalesman());
-                                panelController.open();
-                              },
-                              bgColor: ConstantColors.primaryColor1,
+                              enableIcon: true,
+                              icon: Icons.delete_rounded,
+                              func: () {},
+                              bgColor: ConstantColors.primaryColor2,
                               textStyle: TextThemes.normal,
                               shadowColor: ConstantColors.primaryColor1,
                             ),
-                          ),
-                        ],
+
+                            // ~:Edit Button:~
+                            // CustomButton.primaryButton2(
+                            //   context: context,
+                            //   width: 40,
+                            //   height: 40,
+                            //   enableIcon: true,
+                            //   icon: Icons.edit_rounded,
+                            //   func: () {},
+                            //   bgColor: ConstantColors.primaryColor2,
+                            //   textStyle: TextThemes.normal,
+                            //   shadowColor: ConstantColors.primaryColor1,
+                            // ),
+                            //
+                            // ~:Delete Button:~
+                            // CustomButton.primaryButton2(
+                            //   context: context,
+                            //   width: 40,
+                            //   height: 40,
+                            //   enableIcon: true,
+                            //   icon: Icons.delete_rounded,
+                            //   func: () {},
+                            //   bgColor: ConstantColors.primaryColor2,
+                            //   textStyle: TextThemes.normal,
+                            //   shadowColor: ConstantColors.primaryColor1,
+                            // ),
+
+                            // ~:Save Button:~
+                            Expanded(
+                              child: CustomButton.primaryButton2(
+                                context: context,
+                                height: 40,
+                                text: 'Tambah Sales',
+                                func: () {
+                                  // salesmanBloc.add(ResetSalesman());
+                                  panelController.open();
+                                },
+                                bgColor: ConstantColors.primaryColor1,
+                                textStyle: TextThemes.normal,
+                                shadowColor: ConstantColors.primaryColor1,
+                              ),
+                            ),
+                          ],
+                        ),
                       );
                     },
                   ),

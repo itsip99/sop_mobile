@@ -54,11 +54,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 ),
                 padding: EdgeInsets.symmetric(
                   horizontal:
-                      (MediaQuery.of(context).size.width < 800) ? 8 : 24,
-                  vertical: (MediaQuery.of(context).size.height < 800) ? 8 : 24,
+                      (MediaQuery.of(context).size.width < 800) ? 4 : 20,
+                  vertical: (MediaQuery.of(context).size.height < 800) ? 4 : 20,
                 ),
                 child: Image.asset(
-                  'assets/images/logo 5.png',
+                  'assets/images/logo.png',
                   fit: BoxFit.cover,
                   width: (MediaQuery.of(context).size.width < 800) ? 70 : 150,
                 ),

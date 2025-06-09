@@ -337,6 +337,36 @@ class _ReportScreenState extends State<ReportScreen> {
                               );
                             },
                           ),
+
+                          // ~:Salesman Input Table:~
+                          CustomDataGrid.report(
+                            context,
+                            LeasingInsertDataSource(
+                              leasingData,
+                              onCellValueEdited:
+                                  (rowIndex, columnName, newValue) =>
+                                      editLeasingValue(
+                                leasingBloc,
+                                rowIndex,
+                                columnName,
+                                newValue,
+                              ),
+                            ),
+                            LeasingType.values
+                                .map((e) => e.name.toString())
+                                .toList(),
+                            tableHeight: tableHeight,
+                            allowEditing: true,
+                            horizontalScrollPhysics:
+                                const BouncingScrollPhysics(),
+                            verticalScrollPhysics:
+                                const AlwaysScrollableScrollPhysics(),
+                            enableAddRow: true,
+                            addFunction: () async {
+                              log('Add New Row');
+                              leasingBloc.add(LeasingDataAdded());
+                            },
+                          ),
                         ],
                       ),
                     ],
