@@ -243,14 +243,13 @@ class _ReportScreenState extends State<ReportScreen> {
                                 StuInsertDataSource(
                                   stuData,
                                   onCellValueEdited:
-                                      (rowIndex, columnName, newValue) {
-                                    editStuValue(
-                                      context.read<StuBloc>(),
-                                      rowIndex,
-                                      columnName,
-                                      newValue,
-                                    );
-                                  },
+                                      (rowIndex, columnName, newValue) =>
+                                          editStuValue(
+                                    context.read<StuBloc>(),
+                                    rowIndex,
+                                    columnName,
+                                    newValue,
+                                  ),
                                 ),
                                 StuType.values
                                     .map((e) => e.name.toString())
@@ -276,14 +275,13 @@ class _ReportScreenState extends State<ReportScreen> {
                                 PaymentInsertDataSource(
                                   paymentData,
                                   onCellValueEdited:
-                                      (rowIndex, columnName, newValue) {
-                                    editPaymentValue(
-                                      context.read<PaymentBloc>(),
-                                      rowIndex,
-                                      columnName,
-                                      newValue,
-                                    );
-                                  },
+                                      (rowIndex, columnName, newValue) =>
+                                          editPaymentValue(
+                                    context.read<PaymentBloc>(),
+                                    rowIndex,
+                                    columnName,
+                                    newValue,
+                                  ),
                                 ),
                                 PaymentType.values
                                     .map((e) => e.name.toString())
@@ -314,14 +312,13 @@ class _ReportScreenState extends State<ReportScreen> {
                                 LeasingInsertDataSource(
                                   leasingData,
                                   onCellValueEdited:
-                                      (rowIndex, columnName, newValue) {
-                                    editLeasingValue(
-                                      leasingBloc,
-                                      rowIndex,
-                                      columnName,
-                                      newValue,
-                                    );
-                                  },
+                                      (rowIndex, columnName, newValue) =>
+                                          editLeasingValue(
+                                    leasingBloc,
+                                    rowIndex,
+                                    columnName,
+                                    newValue,
+                                  ),
                                 ),
                                 LeasingType.values
                                     .map((e) => e.name.toString())

@@ -8,9 +8,10 @@ import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_paym
 class PaymentBloc<BaseEvent, BaseState>
     extends Bloc<PaymentEvent, PaymentState> {
   PaymentBloc()
-      : super(PaymentInitial(
-          [PaymentData('Cash', 0, 0, '0'), PaymentData('Credit', 0, 0, '0')],
-        )) {
+      : super(PaymentInitial([
+          PaymentData('Cash', 0, 0, '0.0'),
+          PaymentData('Credit', 0, 0, '0.0'),
+        ])) {
     on<ResetPaymentData>(resetData);
     on<PaymentDataModified>(onPaymentDataModify);
   }
@@ -20,8 +21,8 @@ class PaymentBloc<BaseEvent, BaseState>
     Emitter<PaymentState> emit,
   ) async {
     emit(PaymentInitial([
-      PaymentData('Cash', 0, 0, '0'),
-      PaymentData('Credit', 0, 0, '0'),
+      PaymentData('Cash', 0, 0, '0.0'),
+      PaymentData('Credit', 0, 0, '0.0'),
     ]));
   }
 

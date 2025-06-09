@@ -13,6 +13,7 @@ import 'package:sop_mobile/presentation/state/payment/payment_bloc.dart';
 import 'package:sop_mobile/presentation/state/permission/camera_cubit.dart';
 import 'package:sop_mobile/presentation/state/permission/permission_bloc.dart';
 import 'package:sop_mobile/presentation/state/photo/photo_bloc.dart';
+import 'package:sop_mobile/presentation/state/report/report_bloc.dart';
 import 'package:sop_mobile/presentation/state/route/route_bloc.dart';
 import 'package:sop_mobile/presentation/state/salesman/salesman_bloc.dart';
 import 'package:sop_mobile/presentation/state/stu/stu_bloc.dart';
@@ -66,6 +67,10 @@ class StateManager {
       ),
       BlocProvider<LeasingBloc>(
         create: (context) => LeasingBloc(),
+        child: const ReportScreen(),
+      ),
+      BlocProvider<ReportBloc>(
+        create: (context) => ReportBloc(),
         child: const ReportScreen(),
       ),
     ];
