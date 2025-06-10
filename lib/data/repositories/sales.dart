@@ -67,7 +67,7 @@ class SalesRepoImp extends SalesRepo {
     // Simulate a network call
     Uri uri = Uri.https(
       APIConstants.baseUrl,
-      APIConstants.addSalesProfileEndpoint,
+      APIConstants.salesAndReportEndpoint,
     );
 
     Map body = {

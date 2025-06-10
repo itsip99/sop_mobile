@@ -22,3 +22,17 @@ class AddSalesman extends SalesmanEvent {
 
   AddSalesman(this.id, this.name, this.tier);
 }
+
+class ModifySalesman extends SalesmanEvent {
+  final int rowIndex;
+  final int? newSpkValue;
+  final int? newStuValue;
+  final int? newLmValue;
+
+  ModifySalesman({
+    required this.rowIndex,
+    this.newSpkValue,
+    this.newStuValue,
+    this.newLmValue,
+  });
+}

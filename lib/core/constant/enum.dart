@@ -29,3 +29,11 @@ enum LeasingType {
   ditolak,
   approval,
 }
+
+enum SalesmanType {
+  sales,
+  status,
+  spk,
+  stu,
+  lm,
+}

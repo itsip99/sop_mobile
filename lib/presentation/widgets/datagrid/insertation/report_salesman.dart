@@ -12,17 +12,17 @@ class SalesmanData {
 
   String name;
   String status;
-  int spk;
-  int stu;
-  int stuLm;
+  double spk;
+  double stu;
+  double stuLm;
 
   // Add a copyWith method for easier immutable updates
   SalesmanData copyWith({
     String? name,
     String? status,
-    int? spk,
-    int? stu,
-    int? stuLm,
+    double? spk,
+    double? stu,
+    double? stuLm,
   }) {
     return SalesmanData(
       name ?? this.name,
@@ -55,9 +55,9 @@ class SalesmanInsertDataSource extends DataGridSource {
       return DataGridRow(cells: [
         DataGridCell<String>(columnName: 'Nama', value: salesman.name),
         DataGridCell<String>(columnName: 'Status', value: salesman.status),
-        DataGridCell<int>(columnName: 'SPK', value: salesman.spk),
-        DataGridCell<int>(columnName: 'STU', value: salesman.stu),
-        DataGridCell<int>(columnName: 'STU LM', value: salesman.stuLm),
+        DataGridCell<double>(columnName: 'SPK', value: salesman.spk),
+        DataGridCell<double>(columnName: 'STU', value: salesman.stu),
+        DataGridCell<double>(columnName: 'STU LM', value: salesman.stuLm),
       ]);
     }).toList();
   }
@@ -66,14 +66,27 @@ class SalesmanInsertDataSource extends DataGridSource {
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(
       cells: row.getCells().map<Widget>((DataGridCell cell) {
-        return Container(
-          alignment: Alignment.center,
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            cell.value.toString(),
-            style: const TextStyle(fontSize: 14),
-          ),
-        );
+        if (cell.value is double) {
+          return Container(
+            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              cell.value.toStringAsFixed(2),
+              style: const TextStyle(fontSize: 14),
+            ),
+          );
+        } else {
+          String text =
+              cell.value.toString()[0] + cell.value.toString().substring(1);
+          return Container(
+            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              text,
+              style: const TextStyle(fontSize: 14),
+            ),
+          );
+        }
       }).toList(),
     );
   }

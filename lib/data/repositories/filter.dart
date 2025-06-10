@@ -7,7 +7,6 @@ import 'package:sop_mobile/core/helpers/formatter.dart';
 import 'package:sop_mobile/data/models/briefing.dart';
 import 'package:sop_mobile/data/models/home.dart';
 import 'package:sop_mobile/data/models/report.dart';
-import 'package:sop_mobile/data/models/sales.dart';
 import 'package:sop_mobile/data/models/user.dart';
 import 'package:sop_mobile/data/repositories/storage.dart';
 import 'package:sop_mobile/domain/repositories/filter.dart';
@@ -180,15 +179,15 @@ class FilterRepoImp extends FilterRepo {
     }
   }
 
-  @override
-  Future<Map<String, dynamic>> fetchSalesData(
-    String username,
-    String date,
-  ) async {
-    List<SalesModel> data = [];
-    return {
-      'status': 'success',
-      'data': data,
-    };
-  }
+  // @override
+  // Future<Map<String, dynamic>> fetchSalesData(
+  //   String username,
+  //   String date,
+  // ) async {
+  //   List<SalesModel> data = [];
+  //   return {
+  //     'status': 'success',
+  //     'data': data,
+  //   };
+  // }
 }

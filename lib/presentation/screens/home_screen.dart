@@ -134,6 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         context.read<StuBloc>().add(ResetStuData());
                         context.read<PaymentBloc>().add(ResetPaymentData());
                         context.read<LeasingBloc>().add(ResetLeasingData());
+                        context.read<SalesmanBloc>().add(FetchSalesman());
 
                         Navigator.pushNamed(context, ConstantRoutes.report);
                         panelController.close();

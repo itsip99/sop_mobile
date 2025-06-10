@@ -5,7 +5,7 @@ import 'package:sop_mobile/presentation/state/report/report_event.dart';
 import 'package:sop_mobile/presentation/state/report/report_state.dart';
 
 class ReportBloc<BaseEvent, BaseState> extends Bloc<ReportEvent, ReportState> {
-  ReportBloc() : super(ReportInitial('initiated')) {
+  ReportBloc() : super(ReportInitial('init')) {
     on<CreateReport>(onCreateReport);
   }
 

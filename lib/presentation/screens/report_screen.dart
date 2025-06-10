@@ -12,6 +12,9 @@ import 'package:sop_mobile/presentation/state/leasing/leasing_state.dart';
 import 'package:sop_mobile/presentation/state/payment/payment_bloc.dart';
 import 'package:sop_mobile/presentation/state/payment/payment_event.dart';
 import 'package:sop_mobile/presentation/state/payment/payment_state.dart';
+import 'package:sop_mobile/presentation/state/salesman/salesman_bloc.dart';
+import 'package:sop_mobile/presentation/state/salesman/salesman_event.dart';
+import 'package:sop_mobile/presentation/state/salesman/salesman_state.dart';
 import 'package:sop_mobile/presentation/state/stu/stu_bloc.dart';
 import 'package:sop_mobile/presentation/state/stu/stu_event.dart';
 import 'package:sop_mobile/presentation/state/stu/stu_state.dart';
@@ -19,8 +22,10 @@ import 'package:sop_mobile/presentation/themes/styles.dart';
 import 'package:sop_mobile/presentation/widgets/data_grid.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_leasing.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_payment.dart';
+import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_salesman.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_stu.dart';
 import 'package:sop_mobile/presentation/widgets/textformfield.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class ReportScreen extends StatefulWidget {
   const ReportScreen({super.key});
@@ -38,6 +43,7 @@ class _ReportScreenState extends State<ReportScreen> {
   List<StuData> stuData = [];
   List<PaymentData> paymentData = [];
   List<LeasingData> leasingData = [];
+  List<SalesmanData> salesmanData = [];
 
   void editStuValue(
     StuBloc stuBloc,
@@ -99,6 +105,33 @@ class _ReportScreenState extends State<ReportScreen> {
       leasingBloc.add(LeasingDataModified(
         rowIndex: rowIndex,
         newRejectedValue: newValue,
+      ));
+    }
+  }
+
+  void editSalesmanValue(
+    SalesmanBloc salesmanBloc,
+    int rowIndex,
+    String columnName,
+    int newValue,
+  ) {
+    if (columnName == 'SPK') {
+      // 'SPK'
+      salesmanBloc.add(ModifySalesman(
+        rowIndex: rowIndex,
+        newSpkValue: newValue,
+      ));
+    } else if (columnName == 'STU') {
+      // 'STU'
+      salesmanBloc.add(ModifySalesman(
+        rowIndex: rowIndex,
+        newStuValue: newValue,
+      ));
+    } else if (columnName == 'STU LM') {
+      // 'STU LM'
+      salesmanBloc.add(ModifySalesman(
+        rowIndex: rowIndex,
+        newLmValue: newValue,
       ));
     }
   }
@@ -339,32 +372,49 @@ class _ReportScreenState extends State<ReportScreen> {
                           ),
 
                           // ~:Salesman Input Table:~
-                          CustomDataGrid.report(
-                            context,
-                            LeasingInsertDataSource(
-                              leasingData,
-                              onCellValueEdited:
-                                  (rowIndex, columnName, newValue) =>
-                                      editLeasingValue(
-                                leasingBloc,
-                                rowIndex,
-                                columnName,
-                                newValue,
-                              ),
-                            ),
-                            LeasingType.values
-                                .map((e) => e.name.toString())
-                                .toList(),
-                            tableHeight: tableHeight,
-                            allowEditing: true,
-                            horizontalScrollPhysics:
-                                const BouncingScrollPhysics(),
-                            verticalScrollPhysics:
-                                const AlwaysScrollableScrollPhysics(),
-                            enableAddRow: true,
-                            addFunction: () async {
-                              log('Add New Row');
-                              leasingBloc.add(LeasingDataAdded());
+                          BlocBuilder<SalesmanBloc, SalesmanState>(
+                            builder: (context, state) {
+                              if (state is SalesmanFetched) {
+                                salesmanData = state.fetchSalesList
+                                    .map(
+                                      (e) => SalesmanData(
+                                        e.userName,
+                                        e.tierLevel,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                      ),
+                                    )
+                                    .toList();
+                                log('Salesman fetch length: ${state.fetchSalesList.length}');
+                                log('Salesman length: ${salesmanData.length}');
+                              }
+
+                              return CustomDataGrid.report(
+                                context,
+                                SalesmanInsertDataSource(
+                                  salesmanData,
+                                  onCellValueEdited:
+                                      (rowIndex, columnName, newValue) =>
+                                          editSalesmanValue(
+                                    context.read<SalesmanBloc>(),
+                                    rowIndex,
+                                    columnName,
+                                    newValue,
+                                  ),
+                                ),
+                                SalesmanType.values
+                                    .map((e) => e.name.toString())
+                                    .toList(),
+                                tableHeight: tableHeight,
+                                rowHeaderWidth: 100,
+                                allowEditing: true,
+                                horizontalScrollPhysics:
+                                    const BouncingScrollPhysics(),
+                                verticalScrollPhysics:
+                                    const AlwaysScrollableScrollPhysics(),
+                                columnWidthMode: ColumnWidthMode.fitByCellValue,
+                              );
                             },
                           ),
                         ],

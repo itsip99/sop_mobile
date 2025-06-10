@@ -53,9 +53,13 @@ class CustomDataGrid {
                         onPressed: () async => addFunction!(),
                       ),
                     Text(
-                      loadedData[0] != 'stu'
-                          ? '${(loadedData[0][0].toUpperCase() + loadedData[0].substring(1))} Report'
-                          : '${loadedData[0].toUpperCase()} Report',
+                      loadedData[0] == 'sales'
+                          ? '${(loadedData[0][0].toUpperCase() + loadedData[0].substring(1))}man List'
+                          : loadedData[0] != 'stu' ||
+                                  loadedData[0] != 'spk' ||
+                                  loadedData[0] != 'lm'
+                              ? '${(loadedData[0][0].toUpperCase() + loadedData[0].substring(1))} Report'
+                              : '${loadedData[0].toUpperCase()} Report',
                       style: textStyle.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -93,7 +97,7 @@ class CustomDataGrid {
               label: Container(
                 alignment: textAlignment,
                 child: Text(
-                  data == 'lm' || data == 'spk'
+                  data == 'stu' || data == 'lm' || data == 'spk'
                       ? data.toUpperCase()
                       : data[0].toUpperCase() + data.substring(1),
                   style: textStyle.copyWith(

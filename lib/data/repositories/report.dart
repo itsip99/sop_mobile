@@ -21,7 +21,7 @@ class ReportRepoImp extends ReportRepo {
     // Simulate a network call
     Uri uri = Uri.https(
       APIConstants.baseUrl,
-      APIConstants.reportDataEndpoint,
+      APIConstants.salesAndReportEndpoint,
     );
 
     Map body = {
