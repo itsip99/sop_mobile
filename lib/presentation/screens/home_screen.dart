@@ -151,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       context: context,
                       text: 'Salesman',
                       func: () {
-                        salesProfileBloc.add(ResetSalesman());
+                        salesProfileBloc.add(ResetSalesman([]));
                         salesProfileBloc.add(FetchSalesman());
                         salesStatusCubit.setSalesStatus('Sales Counter');
                         routeBloc.add(RoutePush(ConstantRoutes.sales));

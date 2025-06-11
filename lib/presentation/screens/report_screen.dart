@@ -380,14 +380,17 @@ class _ReportScreenState extends State<ReportScreen> {
                                       (e) => SalesmanData(
                                         e.userName,
                                         e.tierLevel,
-                                        0.0,
-                                        0.0,
-                                        0.0,
+                                        0,
+                                        0,
+                                        0,
                                       ),
                                     )
                                     .toList();
                                 log('Salesman fetch length: ${state.fetchSalesList.length}');
                                 log('Salesman length: ${salesmanData.length}');
+                              } else if (state is SalesmanModified) {
+                                salesmanData = state.newData;
+                                log('Salesman modified length: ${salesmanData.length}');
                               }
 
                               return CustomDataGrid.report(
@@ -407,7 +410,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                     .map((e) => e.name.toString())
                                     .toList(),
                                 tableHeight: tableHeight,
-                                rowHeaderWidth: 100,
+                                rowHeaderWidth: 75,
                                 allowEditing: true,
                                 horizontalScrollPhysics:
                                     const BouncingScrollPhysics(),
@@ -441,6 +444,10 @@ class _ReportScreenState extends State<ReportScreen> {
 
                   for (var data in leasingData) {
                     log('Leasing Data: ${data.type}, SPK: ${data.spk}, Opened: ${data.open}, Accepted: ${data.accept}, Rejected: ${data.reject}, Approval: ${data.approve}');
+                  }
+
+                  for (var data in salesmanData) {
+                    log('Salesman Data: ${data.name}, Status: ${data.status}, SPK: ${data.spk}, STU: ${data.stu}, STU LM: ${data.stuLm}');
                   }
                 },
                 style: ElevatedButton.styleFrom(

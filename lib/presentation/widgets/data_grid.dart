@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -24,6 +26,9 @@ class CustomDataGrid {
     final VoidCallback? addFunction,
     final Key? key,
   }) {
+    String firstValue = loadedData[0];
+    log('First value: $firstValue');
+
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: tableHeight,
@@ -53,13 +58,11 @@ class CustomDataGrid {
                         onPressed: () async => addFunction!(),
                       ),
                     Text(
-                      loadedData[0] == 'sales'
-                          ? '${(loadedData[0][0].toUpperCase() + loadedData[0].substring(1))}man List'
-                          : loadedData[0] != 'stu' ||
-                                  loadedData[0] != 'spk' ||
-                                  loadedData[0] != 'lm'
-                              ? '${(loadedData[0][0].toUpperCase() + loadedData[0].substring(1))} Report'
-                              : '${loadedData[0].toUpperCase()} Report',
+                      firstValue == 'sales'
+                          ? '${(firstValue[0].toUpperCase() + firstValue.substring(1))}man List'
+                          : firstValue != 'stu'
+                              ? '${(firstValue[0].toUpperCase() + firstValue.substring(1))} Report'
+                              : '${firstValue.toUpperCase()} Report',
                       style: textStyle.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -93,7 +96,7 @@ class CustomDataGrid {
           } else {
             return GridColumn(
               columnName: data,
-              width: rowBodyWidth,
+              width: rowHeaderWidth,
               label: Container(
                 alignment: textAlignment,
                 child: Text(

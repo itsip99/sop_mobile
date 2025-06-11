@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:sop_mobile/presentation/state/base_event.dart';
+import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_salesman.dart';
 
 class SalesmanEvent extends BaseEvent with EquatableMixin {
   @override
@@ -7,8 +8,9 @@ class SalesmanEvent extends BaseEvent with EquatableMixin {
 }
 
 class ResetSalesman extends SalesmanEvent {
-  @override
-  List<Object?> get props => [];
+  final List<SalesmanData> salesDraftList;
+
+  ResetSalesman(this.salesDraftList);
 }
 
 class FetchSalesman extends SalesmanEvent {

@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class SalesmanData {
@@ -12,17 +15,17 @@ class SalesmanData {
 
   String name;
   String status;
-  double spk;
-  double stu;
-  double stuLm;
+  int spk;
+  int stu;
+  int stuLm;
 
   // Add a copyWith method for easier immutable updates
   SalesmanData copyWith({
     String? name,
     String? status,
-    double? spk,
-    double? stu,
-    double? stuLm,
+    int? spk,
+    int? stu,
+    int? stuLm,
   }) {
     return SalesmanData(
       name ?? this.name,
@@ -55,9 +58,9 @@ class SalesmanInsertDataSource extends DataGridSource {
       return DataGridRow(cells: [
         DataGridCell<String>(columnName: 'Nama', value: salesman.name),
         DataGridCell<String>(columnName: 'Status', value: salesman.status),
-        DataGridCell<double>(columnName: 'SPK', value: salesman.spk),
-        DataGridCell<double>(columnName: 'STU', value: salesman.stu),
-        DataGridCell<double>(columnName: 'STU LM', value: salesman.stuLm),
+        DataGridCell<int>(columnName: 'SPK', value: salesman.spk),
+        DataGridCell<int>(columnName: 'STU', value: salesman.stu),
+        DataGridCell<int>(columnName: 'STU LM', value: salesman.stuLm),
       ]);
     }).toList();
   }
@@ -65,24 +68,66 @@ class SalesmanInsertDataSource extends DataGridSource {
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(
-      cells: row.getCells().map<Widget>((DataGridCell cell) {
-        if (cell.value is double) {
+      cells: row.getCells().asMap().entries.map<Widget>((entry) {
+        final int cellIndex = entry.key;
+        final DataGridCell<dynamic> dataGridCell = entry.value;
+        final String columnName = dataGridCell.columnName;
+        // dynamic data = entry.value.value;
+
+        if (dataGridCell.value is int) {
           return Container(
-            alignment: Alignment.centerRight,
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              cell.value.toStringAsFixed(2),
-              style: const TextStyle(fontSize: 14),
+            alignment: Alignment.center,
+            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            child: TextFormField(
+              initialValue: dataGridCell.value.toString(),
+              textAlign: TextAlign.center,
+              keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                isDense: true,
+                contentPadding: EdgeInsets.symmetric(vertical: 8),
+              ),
+              onChanged: (String newValue) {
+                int? parsedValue = int.tryParse(newValue);
+                // You can add logic here to update the underlying data model if needed
+                final rowIndex = _dataGridRows.indexOf(row);
+                log('Row index: $rowIndex, Column: $columnName, New Value: $parsedValue');
+                if (rowIndex != -1) {
+                  switch (cellIndex) {
+                    case 1:
+                      _salesmanData[rowIndex].spk = parsedValue ?? 0;
+                      break;
+                    case 2:
+                      _salesmanData[rowIndex].stu = parsedValue ?? 0;
+                      break;
+                    case 3:
+                      _salesmanData[rowIndex].stuLm = parsedValue ?? 0;
+                      break;
+                    default:
+                      break;
+                  }
+                }
+
+                if (parsedValue != null && onCellValueEdited != null) {
+                  onCellValueEdited!(rowIndex, columnName, parsedValue);
+                }
+              },
             ),
           );
         } else {
-          String text =
-              cell.value.toString()[0] + cell.value.toString().substring(1);
+          String temp = dataGridCell.value.toString().toLowerCase();
+          String displayText = temp.split(' ').map((word) {
+            if (word.isEmpty) return '';
+            return word[0].toUpperCase() + word.substring(1);
+          }).join(' ');
+
           return Container(
-            alignment: Alignment.centerRight,
-            padding: const EdgeInsets.all(8.0),
+            alignment: Alignment.center,
+            // padding: const EdgeInsets.all(8.0),
             child: Text(
-              text,
+              displayText,
+              textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 14),
             ),
           );

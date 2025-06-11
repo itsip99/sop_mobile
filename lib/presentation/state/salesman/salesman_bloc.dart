@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sop_mobile/data/models/sales.dart';
 import 'package:sop_mobile/data/models/user.dart';
@@ -5,14 +7,32 @@ import 'package:sop_mobile/data/repositories/sales.dart';
 import 'package:sop_mobile/data/repositories/storage.dart';
 import 'package:sop_mobile/presentation/state/salesman/salesman_event.dart';
 import 'package:sop_mobile/presentation/state/salesman/salesman_state.dart';
+import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_salesman.dart';
 
 class SalesmanBloc<BaseEvent, BaseState>
     extends Bloc<SalesmanEvent, SalesmanState> {
-  SalesmanBloc() : super(SalesmanInitial()) {
-    on<ResetSalesman>((event, emit) => emit(SalesmanInitial()));
+  SalesmanBloc() : super(SalesmanInitial([], [], [])) {
+    on<ResetSalesman>(
+      (event, emit) => emit(SalesmanInitial([], [], event.salesDraftList)),
+    );
     on<FetchSalesman>(fetchSalesmanHandler);
     on<AddSalesman>(addSalesmanHandler);
+    on<ModifySalesman>(modifySalesmanHandler);
     // on<RemoveSalesman>(removeSalesmanHandler);
+  }
+
+  /// Dynamically creates a list of SalesmanData using state.fetchSalesList,
+  /// extracting only the name and tier, and setting other parameters to 0.
+  List<SalesmanData> buildSalesmanDataListFromFetchSalesList() {
+    return state.fetchSalesList.map((sales) {
+      return SalesmanData(
+        sales.userName,
+        sales.tierLevel,
+        0,
+        0,
+        0,
+      );
+    }).toList();
   }
 
   Future<void> fetchSalesmanHandler(
@@ -80,6 +100,47 @@ class SalesmanBloc<BaseEvent, BaseState>
       // ));
     } catch (e) {
       emit(SalesmanError(e.toString()));
+    }
+  }
+
+  Future<void> modifySalesmanHandler(
+    ModifySalesman event,
+    Emitter<SalesmanState> emit,
+  ) async {
+    if (state.salesDataList.isEmpty) {
+      log('Unable to modify sales data');
+      emit(SalesmanError('No sales data available to modify'));
+    } else {
+      // Create a NEW list based on the current state's data
+      final List<SalesmanData> newList =
+          List<SalesmanData>.from(state.salesDataList);
+
+      SalesmanData entryToUpdate = newList[event.rowIndex];
+
+      int currentSpk = entryToUpdate.spk;
+      int currentStu = entryToUpdate.stu;
+      int currentStuLm = entryToUpdate.stuLm;
+
+      if (event.newSpkValue != null) {
+        currentSpk = event.newSpkValue!;
+      }
+      if (event.newStuValue != null) {
+        currentStu = event.newStuValue!;
+      }
+      if (event.newLmValue != null) {
+        currentStuLm = event.newLmValue!;
+      }
+
+      // Create new LeasingData with updated values
+      newList[event.rowIndex] = entryToUpdate.copyWith(
+        spk: currentSpk,
+        stu: currentStu,
+        stuLm: currentStuLm,
+      );
+
+      log('Row ${event.rowIndex} updated: SPK: $currentSpk, STU: $currentStu, STU LM: $currentStuLm');
+      emit(SalesmanModified(newList));
+      log('Updated data length: ${newList.length}');
     }
   }
 }
