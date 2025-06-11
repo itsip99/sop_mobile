@@ -374,7 +374,8 @@ class _ReportScreenState extends State<ReportScreen> {
                           // ~:Salesman Input Table:~
                           BlocBuilder<SalesmanBloc, SalesmanState>(
                             builder: (context, state) {
-                              if (state is SalesmanFetched) {
+                              salesmanData = state.salesDataList;
+                              /*if (state is SalesmanFetched) {
                                 salesmanData = state.fetchSalesList
                                     .map(
                                       (e) => SalesmanData(
@@ -386,9 +387,11 @@ class _ReportScreenState extends State<ReportScreen> {
                                       ),
                                     )
                                     .toList();
-                                log('Salesman fetch length: ${state.fetchSalesList.length}');
-                                log('Salesman length: ${salesmanData.length}');
-                              } else if (state is SalesmanModified) {
+                                for (var data in salesmanData) {
+                                  log('Salesman fetched: ${data.name}, Tier: ${data.status}, SPK: ${data.spk}, STU: ${data.stu}, STU LM: ${data.stuLm}');
+                                }
+                              } else*/
+                              if (state is SalesmanModified) {
                                 salesmanData = state.newData;
                                 log('Salesman modified length: ${salesmanData.length}');
                               }

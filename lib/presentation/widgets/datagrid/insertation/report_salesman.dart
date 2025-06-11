@@ -118,7 +118,7 @@ class SalesmanInsertDataSource extends DataGridSource {
         } else {
           String temp = dataGridCell.value.toString().toLowerCase();
           String displayText = temp.split(' ').map((word) {
-            if (word.isEmpty) return '';
+            if (word.isEmpty) return ' ';
             return word[0].toUpperCase() + word.substring(1);
           }).join(' ');
 

@@ -32,9 +32,11 @@ class SalesmanLoading extends SalesmanState {
 
 class SalesmanFetched extends SalesmanState {
   final List<SalesModel> salesList;
+  final List<SalesmanData> salesmanDataList;
 
-  SalesmanFetched(SalesmanState previousState, this.salesList)
-      : super(previousState.salesDraftList, salesList, []);
+  SalesmanFetched(
+      SalesmanState previousState, this.salesList, this.salesmanDataList)
+      : super(previousState.salesDraftList, salesList, salesmanDataList);
 }
 
 class SalesmanAdded extends SalesmanState {
