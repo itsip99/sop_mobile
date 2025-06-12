@@ -1,6 +1,7 @@
 import 'package:sop_mobile/presentation/state/base_event.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_leasing.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_payment.dart';
+import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_salesman.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_stu.dart';
 
 abstract class ReportEvent extends BaseEvent {}
@@ -12,6 +13,7 @@ class CreateReport extends ReportEvent {
   final List<StuData> stuData;
   final List<PaymentData> paymentData;
   final List<LeasingData> leasingData;
+  final List<SalesmanData> salesmanData;
 
   CreateReport({
     this.dealerName = '',
@@ -20,5 +22,6 @@ class CreateReport extends ReportEvent {
     this.stuData = const [],
     this.paymentData = const [],
     this.leasingData = const [],
+    this.salesmanData = const [],
   });
 }

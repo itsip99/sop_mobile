@@ -12,6 +12,9 @@ import 'package:sop_mobile/presentation/state/leasing/leasing_state.dart';
 import 'package:sop_mobile/presentation/state/payment/payment_bloc.dart';
 import 'package:sop_mobile/presentation/state/payment/payment_event.dart';
 import 'package:sop_mobile/presentation/state/payment/payment_state.dart';
+import 'package:sop_mobile/presentation/state/report/report_bloc.dart';
+import 'package:sop_mobile/presentation/state/report/report_event.dart';
+import 'package:sop_mobile/presentation/state/report/report_state.dart';
 import 'package:sop_mobile/presentation/state/salesman/salesman_bloc.dart';
 import 'package:sop_mobile/presentation/state/salesman/salesman_event.dart';
 import 'package:sop_mobile/presentation/state/salesman/salesman_state.dart';
@@ -19,6 +22,7 @@ import 'package:sop_mobile/presentation/state/stu/stu_bloc.dart';
 import 'package:sop_mobile/presentation/state/stu/stu_event.dart';
 import 'package:sop_mobile/presentation/state/stu/stu_state.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
+import 'package:sop_mobile/presentation/widgets/buttons.dart';
 import 'package:sop_mobile/presentation/widgets/data_grid.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_leasing.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_payment.dart';
@@ -115,6 +119,9 @@ class _ReportScreenState extends State<ReportScreen> {
     String columnName,
     int newValue,
   ) {
+    log('Column name: $columnName');
+    log('Row index: $rowIndex');
+    log('New value: $newValue');
     if (columnName == 'SPK') {
       // 'SPK'
       salesmanBloc.add(ModifySalesman(
@@ -330,6 +337,7 @@ class _ReportScreenState extends State<ReportScreen> {
                           // ~:Leasing Input Table:~
                           BlocBuilder<LeasingBloc, LeasingState>(
                             builder: (context, state) {
+                              tableHeight = 260;
                               leasingData = state.data;
                               if (state is AddLeasingData) {
                                 leasingData = state.newData;
@@ -374,6 +382,7 @@ class _ReportScreenState extends State<ReportScreen> {
                           // ~:Salesman Input Table:~
                           BlocBuilder<SalesmanBloc, SalesmanState>(
                             builder: (context, state) {
+                              tableHeight = 260;
                               salesmanData = state.salesDataList;
                               /*if (state is SalesmanFetched) {
                                 salesmanData = state.fetchSalesList
@@ -394,6 +403,13 @@ class _ReportScreenState extends State<ReportScreen> {
                               if (state is SalesmanModified) {
                                 salesmanData = state.newData;
                                 log('Salesman modified length: ${salesmanData.length}');
+                              }
+                              log('Salesman length: ${salesmanData.length}');
+
+                              // ~:Set a dynamic table height:~
+                              if (salesmanData.length <= 7) {
+                                tableHeight =
+                                    260 + (50 * (salesmanData.length - 3));
                               }
 
                               return CustomDataGrid.report(
@@ -431,47 +447,73 @@ class _ReportScreenState extends State<ReportScreen> {
               ),
 
               // ~:Create Button:~
-              ElevatedButton(
-                onPressed: () {
-                  log('Dealer: ${dealerController.text}');
-                  log('Area: ${areaController.text}');
-                  log('PIC: ${personController.text}');
-
-                  for (var data in stuData) {
-                    log('STU Data: ${data.type}, Result: ${data.result}, Target: ${data.target}, Ach: ${data.ach}, LM: ${data.lm}, Growth: ${data.growth}');
-                  }
-
-                  for (var data in paymentData) {
-                    log('Payment Data: ${data.type}, Result: ${data.result}, Target: ${data.lm}, Growth: ${data.growth}%');
-                  }
-
-                  for (var data in leasingData) {
-                    log('Leasing Data: ${data.type}, SPK: ${data.spk}, Opened: ${data.open}, Accepted: ${data.accept}, Rejected: ${data.reject}, Approval: ${data.approve}');
-                  }
-
-                  for (var data in salesmanData) {
-                    log('Salesman Data: ${data.name}, Status: ${data.status}, SPK: ${data.spk}, STU: ${data.stu}, STU LM: ${data.stuLm}');
-                  }
+              // ElevatedButton(
+              //   onPressed: () {
+              //     log('Dealer: ${dealerController.text}');
+              //     log('Area: ${areaController.text}');
+              //     log('PIC: ${personController.text}');
+              //
+              //     for (var data in stuData) {
+              //       log('STU Data: ${data.type}, Result: ${data.result}, Target: ${data.target}, Ach: ${data.ach}, LM: ${data.lm}, Growth: ${data.growth}');
+              //     }
+              //
+              //     for (var data in paymentData) {
+              //       log('Payment Data: ${data.type}, Result: ${data.result}, Target: ${data.lm}, Growth: ${data.growth}%');
+              //     }
+              //
+              //     for (var data in leasingData) {
+              //       log('Leasing Data: ${data.type}, SPK: ${data.spk}, Opened: ${data.open}, Accepted: ${data.accept}, Rejected: ${data.reject}, Approval: ${data.approve}');
+              //     }
+              //
+              //     for (var data in salesmanData) {
+              //       log('Salesman Data: ${data.name}, Status: ${data.status}, SPK: ${data.spk}, STU: ${data.stu}, STU LM: ${data.stuLm}');
+              //     }
+              //   },
+              //   style: ElevatedButton.styleFrom(
+              //     backgroundColor: ConstantColors.primaryColor1,
+              //     padding: const EdgeInsets.symmetric(
+              //       vertical: 10,
+              //       horizontal: 20,
+              //     ),
+              //     shape: RoundedRectangleBorder(
+              //       borderRadius: BorderRadius.circular(20),
+              //     ),
+              //   ),
+              //   child: SizedBox(
+              //     width: MediaQuery.of(context).size.width,
+              //     height: 24,
+              //     child: BlocBuilder<ReportBloc, ReportState>(
+              //       builder: (context, state) {
+              //         return const Text(
+              //           'Buat',
+              //           style: TextThemes.subtitle,
+              //           textAlign: TextAlign.center,
+              //         );
+              //       },
+              //     ),
+              //   ),
+              // ),
+              BlocBuilder<ReportBloc, ReportState>(
+                builder: (context, state) {
+                  return CustomButton.primaryButton2(
+                    context: context,
+                    text: 'Sign In',
+                    func: () => context.read<ReportBloc>().add(CreateReport(
+                          dealerName: dealerController.text,
+                          areaName: areaController.text,
+                          personInChange: personController.text,
+                          stuData: stuData,
+                          paymentData: paymentData,
+                          leasingData: leasingData,
+                          salesmanData: salesmanData,
+                        )),
+                    bgColor: ConstantColors.primaryColor1,
+                    textStyle: TextThemes.subtitle,
+                    shadowColor: ConstantColors.shadowColor,
+                    height: 40,
+                    isLoading: state is ReportLoading,
+                  );
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: ConstantColors.primaryColor1,
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 10,
-                    horizontal: 20,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: 24,
-                  child: const Text(
-                    'Buat',
-                    style: TextThemes.subtitle,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
               ),
             ],
           ),

@@ -121,12 +121,20 @@ class SalesmanBloc<BaseEvent, BaseState>
     ModifySalesman event,
     Emitter<SalesmanState> emit,
   ) async {
-    if (state is SalesmanFetched) {
-      log('Salesman Fetched');
-      final currentState = state as SalesmanFetched;
-      // Create a NEW list based on the current state's data
-      final List<SalesmanData> newList =
-          List<SalesmanData>.from(currentState.salesDataList);
+    try {
+      log('Modify Salesman Handler called');
+      List<SalesmanData> newList = [];
+      if (state is SalesmanFetched) {
+        // Create a NEW list based on the current state's data
+        newList =
+            List<SalesmanData>.from((state as SalesmanFetched).salesDataList);
+      } else if (state is SalesmanModified) {
+        newList =
+            List<SalesmanData>.from((state as SalesmanModified).salesDataList);
+      } else {
+        log('State is not SalesmanFetched, cannot modify sales data');
+        emit(SalesmanError('No sales data available to modify'));
+      }
 
       for (var entry in newList) {
         log('Salesman: ${entry.name}, SPK: ${entry.spk}, STU: ${entry.stu}, STU LM: ${entry.stuLm}');
@@ -134,6 +142,7 @@ class SalesmanBloc<BaseEvent, BaseState>
 
       SalesmanData entryToUpdate = newList[event.rowIndex];
 
+      log('Entry to update: ${entryToUpdate.name}, SPK: ${entryToUpdate.spk}, STU: ${entryToUpdate.stu}, STU LM: ${entryToUpdate.stuLm}');
       int currentSpk = entryToUpdate.spk;
       int currentStu = entryToUpdate.stu;
       int currentStuLm = entryToUpdate.stuLm;
@@ -148,6 +157,7 @@ class SalesmanBloc<BaseEvent, BaseState>
       if (event.newLmValue != null) {
         currentStuLm = event.newLmValue!;
       }
+      log('Updated SPK: $currentSpk, Updated STU: $currentStu, Updated STU LM: $currentStuLm');
 
       // Create new LeasingData with updated values
       newList[event.rowIndex] = entryToUpdate.copyWith(
@@ -159,9 +169,9 @@ class SalesmanBloc<BaseEvent, BaseState>
       log('Row ${event.rowIndex} updated: SPK: $currentSpk, STU: $currentStu, STU LM: $currentStuLm');
       emit(SalesmanModified(newList));
       log('Updated data length: ${newList.length}');
-    } else {
-      log('Unable to modify sales data');
-      emit(SalesmanError('No sales data available to modify'));
+    } catch (e) {
+      log('Error modifying salesman data: $e');
+      emit(SalesmanError(e.toString()));
     }
   }
 }

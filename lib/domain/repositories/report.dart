@@ -1,10 +1,11 @@
 import 'package:sop_mobile/data/models/login.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_leasing.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_payment.dart';
+import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_salesman.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_stu.dart';
 
 abstract class ReportRepo {
-  Future<Map<String, dynamic>> createReport(
+  Future<Map<String, dynamic>> createReportInformation(
     LoginModel userCreds,
     String date,
     String dealerName,
@@ -13,14 +14,30 @@ abstract class ReportRepo {
   );
 
   Future<Map<String, dynamic>> createReportSTU(
-    List<StuData> stuData,
+    LoginModel userCreds,
+    String date,
+    StuData stuData,
+    int index,
   );
 
   Future<Map<String, dynamic>> createReportPayment(
-    List<PaymentData> paymentData,
+    LoginModel userCreds,
+    String date,
+    PaymentData paymentData,
+    int index,
   );
 
   Future<Map<String, dynamic>> createReportLeasing(
-    List<LeasingData> leasingData,
+    LoginModel userCreds,
+    String date,
+    LeasingData leasingData,
+    int index,
+  );
+
+  Future<Map<String, dynamic>> createReportSalesman(
+    LoginModel userCreds,
+    String date,
+    SalesmanData leasingData,
+    int index,
   );
 }

@@ -7,11 +7,12 @@ import 'package:sop_mobile/data/models/login.dart';
 import 'package:sop_mobile/domain/repositories/report.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_leasing.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_payment.dart';
+import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_salesman.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_stu.dart';
 
 class ReportRepoImp extends ReportRepo {
   @override
-  Future<Map<String, dynamic>> createReport(
+  Future<Map<String, dynamic>> createReportInformation(
     LoginModel userCreds,
     String date,
     String dealerName,
@@ -58,7 +59,7 @@ class ReportRepoImp extends ReportRepo {
           };
         } else {
           return {
-            'status': 'success',
+            'status': 'warn',
             'data': res['Data'][0]['ResultMessage'],
           };
         }
@@ -72,29 +73,285 @@ class ReportRepoImp extends ReportRepo {
     } else {
       log('Response: ${response.statusCode}');
       return {
-        'status': 'fail',
+        'status': 'error',
         'data': 'Status Code ${response.statusCode}',
       };
     }
   }
 
   @override
-  Future<Map<String, dynamic>> createReportSTU(List<StuData> stuData) async {
+  Future<Map<String, dynamic>> createReportSTU(
+    LoginModel userCreds,
+    String date,
+    StuData stuData,
+    int index,
+  ) async {
     // Implement the logic to create a report for STU data
-    return {'status': 'STU Report Created'};
+    Uri uri = Uri.https(
+      APIConstants.baseUrl,
+      APIConstants.salesAndReportEndpoint,
+    );
+
+    Map body = {
+      "Jenis": "SUBDEALER SALESMAN STU",
+      "Mode": "1",
+      "Data": {
+        "CustomerID": userCreds.id,
+        "TransDate": date,
+        "Memo": stuData.type,
+        "ResultSTU": stuData.result,
+        "TargetSTU": stuData.target,
+        "LMSTU": stuData.lm,
+        "Line": index,
+      }
+    };
+    log('Map Body: $body');
+
+    final response = await http.post(
+      uri,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode(body),
+    );
+    log('Response: $response');
+
+    if (response.statusCode <= 200) {
+      log('Response: ${response.statusCode}');
+      final res = jsonDecode(response.body);
+      log("${res['Msg']}, ${res['Code']}");
+      if (res['Msg'] == 'Sukses' && res['Code'] == '100') {
+        log('Success');
+        if (res['Data'][0]['ResultMessage'] != null &&
+            res['Data'][0]['ResultMessage'] == 'SUKSES') {
+          return {
+            'status': 'success',
+            'data': 'Laporan STU berhasil dibuat.',
+          };
+        } else {
+          return {
+            'status': 'warn',
+            'data': res['Data'][0]['ResultMessage'],
+          };
+        }
+      } else {
+        log('Fail');
+        return {
+          'status': 'fail',
+          'data': 'Laporan STU gagal dibuat.',
+        };
+      }
+    } else {
+      log('Response: ${response.statusCode}');
+      return {
+        'status': 'error',
+        'data': 'Status Code ${response.statusCode}',
+      };
+    }
   }
 
   @override
   Future<Map<String, dynamic>> createReportPayment(
-      List<PaymentData> paymentData) async {
+    LoginModel userCreds,
+    String date,
+    PaymentData paymentData,
+    int index,
+  ) async {
     // Implement the logic to create a report for Payment data
-    return {'status': 'Payment Report Created'};
+    Uri uri = Uri.https(
+      APIConstants.baseUrl,
+      APIConstants.salesAndReportEndpoint,
+    );
+
+    Map body = {
+      "Jenis": "SUBDEALER PAYMENT",
+      "Mode": "1",
+      "Data": {
+        "CustomerID": userCreds.id,
+        "TransDate": date,
+        "Memo": paymentData.type,
+        "ResultPayment": paymentData.result,
+        "LMPayment": paymentData.lm,
+        "Line": index,
+      }
+    };
+    log('Map Body: $body');
+
+    final response = await http.post(
+      uri,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode(body),
+    );
+    log('Response: $response');
+
+    if (response.statusCode <= 200) {
+      log('Response: ${response.statusCode}');
+      final res = jsonDecode(response.body);
+      log("${res['Msg']}, ${res['Code']}");
+      if (res['Msg'] == 'Sukses' && res['Code'] == '100') {
+        log('Success');
+        if (res['Data'][0]['ResultMessage'] != null &&
+            res['Data'][0]['ResultMessage'] == 'SUKSES') {
+          return {
+            'status': 'success',
+            'data': 'Laporan Payment berhasil dibuat.',
+          };
+        } else {
+          return {
+            'status': 'warn',
+            'data': res['Data'][0]['ResultMessage'],
+          };
+        }
+      } else {
+        log('Fail');
+        return {
+          'status': 'fail',
+          'data': 'Laporan Payment gagal dibuat.',
+        };
+      }
+    } else {
+      log('Response: ${response.statusCode}');
+      return {
+        'status': 'error',
+        'data': 'Status Code ${response.statusCode}',
+      };
+    }
   }
 
   @override
   Future<Map<String, dynamic>> createReportLeasing(
-      List<LeasingData> leasingData) async {
+    LoginModel userCreds,
+    String date,
+    LeasingData leasingData,
+    int index,
+  ) async {
     // Implement the logic to create a report for Leasing data
-    return {'status': 'Leasing Report Created'};
+    Uri uri = Uri.https(
+      APIConstants.baseUrl,
+      APIConstants.salesAndReportEndpoint,
+    );
+
+    Map body = {
+      "Jenis": "SUBDEALER SPK LEASING",
+      "Mode": "1",
+      "Data": {
+        "CustomerID": userCreds.id,
+        "TransDate": date,
+        "Memo": leasingData.type,
+        "SPK": leasingData.spk,
+        "OpenSPK": leasingData.open,
+        "ApprovedSPK": leasingData.accept,
+        "RejectedSPK": leasingData.reject,
+        "Line": index,
+      }
+    };
+    log('Map Body: $body');
+
+    final response = await http.post(
+      uri,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode(body),
+    );
+    log('Response: $response');
+
+    if (response.statusCode <= 200) {
+      log('Response: ${response.statusCode}');
+      final res = jsonDecode(response.body);
+      log("${res['Msg']}, ${res['Code']}");
+      if (res['Msg'] == 'Sukses' && res['Code'] == '100') {
+        log('Success');
+        if (res['Data'][0]['ResultMessage'] != null &&
+            res['Data'][0]['ResultMessage'] == 'SUKSES') {
+          return {
+            'status': 'success',
+            'data': 'Laporan Leasing berhasil dibuat.',
+          };
+        } else {
+          return {
+            'status': 'warn',
+            'data': res['Data'][0]['ResultMessage'],
+          };
+        }
+      } else {
+        log('Fail');
+        return {
+          'status': 'fail',
+          'data': 'Laporan Leasing gagal dibuat.',
+        };
+      }
+    } else {
+      log('Response: ${response.statusCode}');
+      return {
+        'status': 'error',
+        'data': 'Status Code ${response.statusCode}',
+      };
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>> createReportSalesman(
+    LoginModel userCreds,
+    String date,
+    SalesmanData salesmanData,
+    int index,
+  ) async {
+    // Implement the logic to fetch report data
+    Uri uri = Uri.https(
+      APIConstants.baseUrl,
+      APIConstants.salesAndReportEndpoint,
+    );
+
+    Map body = {
+      "Jenis": "SUBDEALER SALESMAN STU",
+      "Mode": "1",
+      "Data": {
+        "CustomerID": userCreds.id,
+        "TransDate": date,
+        "Memo": '${salesmanData.name} - ${salesmanData.status}',
+        "ResultSTU": salesmanData.spk,
+        "TargetSTU": salesmanData.stu,
+        "LMSTU": salesmanData.stuLm,
+        "Line": index,
+      }
+    };
+    log('Map Body: $body');
+
+    final response = await http.post(
+      uri,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode(body),
+    );
+    log('Response: $response');
+
+    if (response.statusCode <= 200) {
+      log('Response: ${response.statusCode}');
+      final res = jsonDecode(response.body);
+      log("${res['Msg']}, ${res['Code']}");
+      if (res['Msg'] == 'Sukses' && res['Code'] == '100') {
+        log('Success');
+        if (res['Data'][0]['ResultMessage'] != null &&
+            res['Data'][0]['ResultMessage'] == 'SUKSES') {
+          return {
+            'status': 'success',
+            'data': 'Laporan Salesman berhasil dibuat.',
+          };
+        } else {
+          return {
+            'status': 'warn',
+            'data': res['Data'][0]['ResultMessage'],
+          };
+        }
+      } else {
+        log('Fail');
+        return {
+          'status': 'fail',
+          'data': 'Laporan Salesman gagal dibuat.',
+        };
+      }
+    } else {
+      log('Response: ${response.statusCode}');
+      return {
+        'status': 'error',
+        'data': 'Status Code ${response.statusCode}',
+      };
+    }
   }
 }

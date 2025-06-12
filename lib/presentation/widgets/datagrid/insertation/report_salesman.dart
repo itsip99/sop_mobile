@@ -69,7 +69,7 @@ class SalesmanInsertDataSource extends DataGridSource {
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(
       cells: row.getCells().asMap().entries.map<Widget>((entry) {
-        final int cellIndex = entry.key;
+        // final int cellIndex = entry.key;
         final DataGridCell<dynamic> dataGridCell = entry.value;
         final String columnName = dataGridCell.columnName;
         // dynamic data = entry.value.value;
@@ -93,21 +93,7 @@ class SalesmanInsertDataSource extends DataGridSource {
                 // You can add logic here to update the underlying data model if needed
                 final rowIndex = _dataGridRows.indexOf(row);
                 log('Row index: $rowIndex, Column: $columnName, New Value: $parsedValue');
-                if (rowIndex != -1) {
-                  switch (cellIndex) {
-                    case 1:
-                      _salesmanData[rowIndex].spk = parsedValue ?? 0;
-                      break;
-                    case 2:
-                      _salesmanData[rowIndex].stu = parsedValue ?? 0;
-                      break;
-                    case 3:
-                      _salesmanData[rowIndex].stuLm = parsedValue ?? 0;
-                      break;
-                    default:
-                      break;
-                  }
-                }
+                if (newValue.isEmpty) parsedValue = 0;
 
                 if (parsedValue != null && onCellValueEdited != null) {
                   onCellValueEdited!(rowIndex, columnName, parsedValue);
@@ -118,13 +104,12 @@ class SalesmanInsertDataSource extends DataGridSource {
         } else {
           String temp = dataGridCell.value.toString().toLowerCase();
           String displayText = temp.split(' ').map((word) {
-            if (word.isEmpty) return ' ';
+            // if (word.isEmpty) return ' ';
             return word[0].toUpperCase() + word.substring(1);
           }).join(' ');
 
-          return Container(
+          return Align(
             alignment: Alignment.center,
-            // padding: const EdgeInsets.all(8.0),
             child: Text(
               displayText,
               textAlign: TextAlign.center,

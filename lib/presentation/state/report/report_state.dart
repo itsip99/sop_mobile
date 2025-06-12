@@ -25,3 +25,11 @@ class ReportCreationFailed extends ReportState {
 class ReportCreationSuccess extends ReportState {
   ReportCreationSuccess(super.message);
 }
+
+class ReportCreationWarning extends ReportState {
+  ReportCreationWarning(super.message);
+}
+
+class ReportCreationError extends ReportState {
+  ReportCreationError(super.message);
+}
