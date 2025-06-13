@@ -63,6 +63,8 @@ class SalesmanInsertDataSource extends DataGridSource {
         DataGridCell<int>(columnName: 'STU LM', value: salesman.stuLm),
       ]);
     }).toList();
+
+    // log('DataGridRows built: ${_dataGridRows.length} rows');
   }
 
   @override
@@ -73,6 +75,7 @@ class SalesmanInsertDataSource extends DataGridSource {
         final DataGridCell<dynamic> dataGridCell = entry.value;
         final String columnName = dataGridCell.columnName;
         // dynamic data = entry.value.value;
+        // log('Column: $columnName, Value: ${dataGridCell.value.toString()}');
 
         if (dataGridCell.value is int) {
           return Container(
@@ -92,7 +95,7 @@ class SalesmanInsertDataSource extends DataGridSource {
                 int? parsedValue = int.tryParse(newValue);
                 // You can add logic here to update the underlying data model if needed
                 final rowIndex = _dataGridRows.indexOf(row);
-                log('Row index: $rowIndex, Column: $columnName, New Value: $parsedValue');
+                // log('Row index: $rowIndex, Column: $columnName, New Value: $parsedValue');
                 if (newValue.isEmpty) parsedValue = 0;
 
                 if (parsedValue != null && onCellValueEdited != null) {

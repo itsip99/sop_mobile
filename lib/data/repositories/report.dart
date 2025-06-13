@@ -3,7 +3,6 @@ import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 import 'package:sop_mobile/core/constant/api.dart';
-import 'package:sop_mobile/data/models/login.dart';
 import 'package:sop_mobile/domain/repositories/report.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_leasing.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_payment.dart';
@@ -12,8 +11,8 @@ import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_stu.
 
 class ReportRepoImp extends ReportRepo {
   @override
-  Future<Map<String, dynamic>> createReportInformation(
-    LoginModel userCreds,
+  Future<Map<String, dynamic>> createBasicReport(
+    String username,
     String date,
     String dealerName,
     String areaName,
@@ -29,7 +28,7 @@ class ReportRepoImp extends ReportRepo {
       "Jenis": "SUBDEALER DATA",
       "Mode": "1",
       "Data": {
-        "CustomerID": userCreds.id,
+        "CustomerID": username,
         "TransDate": date,
         "CName": dealerName,
         "Area": areaName,
@@ -81,7 +80,7 @@ class ReportRepoImp extends ReportRepo {
 
   @override
   Future<Map<String, dynamic>> createReportSTU(
-    LoginModel userCreds,
+    String username,
     String date,
     StuData stuData,
     int index,
@@ -96,7 +95,7 @@ class ReportRepoImp extends ReportRepo {
       "Jenis": "SUBDEALER SALESMAN STU",
       "Mode": "1",
       "Data": {
-        "CustomerID": userCreds.id,
+        "CustomerID": username,
         "TransDate": date,
         "Memo": stuData.type,
         "ResultSTU": stuData.result,
@@ -150,7 +149,7 @@ class ReportRepoImp extends ReportRepo {
 
   @override
   Future<Map<String, dynamic>> createReportPayment(
-    LoginModel userCreds,
+    String username,
     String date,
     PaymentData paymentData,
     int index,
@@ -165,7 +164,7 @@ class ReportRepoImp extends ReportRepo {
       "Jenis": "SUBDEALER PAYMENT",
       "Mode": "1",
       "Data": {
-        "CustomerID": userCreds.id,
+        "CustomerID": username,
         "TransDate": date,
         "Memo": paymentData.type,
         "ResultPayment": paymentData.result,
@@ -218,7 +217,7 @@ class ReportRepoImp extends ReportRepo {
 
   @override
   Future<Map<String, dynamic>> createReportLeasing(
-    LoginModel userCreds,
+    String username,
     String date,
     LeasingData leasingData,
     int index,
@@ -233,7 +232,7 @@ class ReportRepoImp extends ReportRepo {
       "Jenis": "SUBDEALER SPK LEASING",
       "Mode": "1",
       "Data": {
-        "CustomerID": userCreds.id,
+        "CustomerID": username,
         "TransDate": date,
         "Memo": leasingData.type,
         "SPK": leasingData.spk,
@@ -288,7 +287,7 @@ class ReportRepoImp extends ReportRepo {
 
   @override
   Future<Map<String, dynamic>> createReportSalesman(
-    LoginModel userCreds,
+    String username,
     String date,
     SalesmanData salesmanData,
     int index,
@@ -303,7 +302,7 @@ class ReportRepoImp extends ReportRepo {
       "Jenis": "SUBDEALER SALESMAN STU",
       "Mode": "1",
       "Data": {
-        "CustomerID": userCreds.id,
+        "CustomerID": username,
         "TransDate": date,
         "Memo": '${salesmanData.name} - ${salesmanData.status}',
         "ResultSTU": salesmanData.spk,

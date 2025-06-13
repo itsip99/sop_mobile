@@ -51,21 +51,24 @@ class SalesmanBloc<BaseEvent, BaseState>
             await SalesRepoImp().fetchSalesman(userCredentials.username);
 
         if (result['status'] == 'success') {
+          List<SalesmanData> salesDataList =
+              (result['data'] as List<SalesModel>)
+                  .map((e) => SalesmanData(
+                        e.userName,
+                        e.tierLevel,
+                        0,
+                        0,
+                        0,
+                      ))
+                  .toList();
+
+          log('Salesman data fetched successfully: ${salesDataList.length} entries');
+
           // ~:Emit success state with user data:~
           emit(SalesmanFetched(
             state,
             result['data'] as List<SalesModel>,
-            (result['data'] as List<SalesModel>)
-                .map(
-                  (e) => SalesmanData(
-                    e.userName,
-                    e.tierLevel,
-                    0,
-                    0,
-                    0,
-                  ),
-                )
-                .toList(),
+            salesDataList,
           ));
         } else {
           // ~:Emit failure state with an error message:~

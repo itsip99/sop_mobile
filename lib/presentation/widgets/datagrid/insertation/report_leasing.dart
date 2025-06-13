@@ -58,7 +58,6 @@ class LeasingInsertDataSource extends DataGridSource {
     log('Data Source length: ${data.length}');
     _leasingData = data;
     buildDataGridRows();
-    notifyListeners();
   }
 
   // Method to add a new empty row

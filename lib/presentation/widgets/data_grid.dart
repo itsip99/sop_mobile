@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -27,7 +25,6 @@ class CustomDataGrid {
     final Key? key,
   }) {
     String firstValue = loadedData[0];
-    log('First value: $firstValue');
 
     return SizedBox(
       width: MediaQuery.of(context).size.width,

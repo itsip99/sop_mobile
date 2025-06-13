@@ -6,10 +6,14 @@ import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_stu.
 
 abstract class ReportEvent extends BaseEvent {}
 
+class InitiateReport extends ReportEvent {
+  InitiateReport();
+}
+
 class CreateReport extends ReportEvent {
   final String dealerName;
   final String areaName;
-  final String personInChange;
+  final String personInCharge;
   final List<StuData> stuData;
   final List<PaymentData> paymentData;
   final List<LeasingData> leasingData;
@@ -18,7 +22,7 @@ class CreateReport extends ReportEvent {
   CreateReport({
     this.dealerName = '',
     this.areaName = '',
-    this.personInChange = '',
+    this.personInCharge = '',
     this.stuData = const [],
     this.paymentData = const [],
     this.leasingData = const [],

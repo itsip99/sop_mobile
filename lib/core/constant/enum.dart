@@ -37,3 +37,12 @@ enum SalesmanType {
   stu,
   lm,
 }
+
+enum BranchAreaType {
+  malang,
+  jmeber,
+  ntb,
+  surabaya,
+  balikpapan,
+  banjarmasin,
+}

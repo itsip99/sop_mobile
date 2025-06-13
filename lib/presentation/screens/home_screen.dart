@@ -18,6 +18,8 @@ import 'package:sop_mobile/presentation/state/payment/payment_bloc.dart';
 import 'package:sop_mobile/presentation/state/payment/payment_event.dart';
 import 'package:sop_mobile/presentation/state/photo/photo_bloc.dart';
 import 'package:sop_mobile/presentation/state/photo/photo_event.dart';
+import 'package:sop_mobile/presentation/state/report/report_bloc.dart';
+import 'package:sop_mobile/presentation/state/report/report_event.dart';
 import 'package:sop_mobile/presentation/state/route/route_bloc.dart';
 import 'package:sop_mobile/presentation/state/route/route_event.dart';
 import 'package:sop_mobile/presentation/state/salesman/salesman_bloc.dart';
@@ -134,7 +136,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         context.read<StuBloc>().add(ResetStuData());
                         context.read<PaymentBloc>().add(ResetPaymentData());
                         context.read<LeasingBloc>().add(ResetLeasingData());
-                        context.read<SalesmanBloc>().add(FetchSalesman());
+                        // context.read<SalesmanBloc>().add(FetchSalesman());
+                        context.read<ReportBloc>().add(InitiateReport());
 
                         Navigator.pushNamed(context, ConstantRoutes.report);
                         panelController.close();

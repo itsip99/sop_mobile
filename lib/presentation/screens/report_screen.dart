@@ -307,7 +307,7 @@ class _ReportScreenState extends State<ReportScreen> {
                               paymentData = state.data;
                               if (state is PaymentModified) {
                                 paymentData = state.newData;
-                                log('New Payment length: ${paymentData.length}');
+                                // log('New Payment length: ${paymentData.length}');
                               }
 
                               return CustomDataGrid.report(
@@ -341,10 +341,9 @@ class _ReportScreenState extends State<ReportScreen> {
                               leasingData = state.data;
                               if (state is AddLeasingData) {
                                 leasingData = state.newData;
-                                log('New Leasing length: ${leasingData.length}');
                                 tableHeight =
                                     260 + (50 * (leasingData.length - 3));
-                                log('Updated table height: $tableHeight');
+                                // log('Updated table height: $tableHeight');
                               }
 
                               log('Leasing length: ${state.data.length}');
@@ -384,30 +383,12 @@ class _ReportScreenState extends State<ReportScreen> {
                             builder: (context, state) {
                               tableHeight = 260;
                               salesmanData = state.salesDataList;
-                              /*if (state is SalesmanFetched) {
-                                salesmanData = state.fetchSalesList
-                                    .map(
-                                      (e) => SalesmanData(
-                                        e.userName,
-                                        e.tierLevel,
-                                        0,
-                                        0,
-                                        0,
-                                      ),
-                                    )
-                                    .toList();
-                                for (var data in salesmanData) {
-                                  log('Salesman fetched: ${data.name}, Tier: ${data.status}, SPK: ${data.spk}, STU: ${data.stu}, STU LM: ${data.stuLm}');
-                                }
-                              } else*/
                               if (state is SalesmanModified) {
                                 salesmanData = state.newData;
-                                log('Salesman modified length: ${salesmanData.length}');
                               }
-                              log('Salesman length: ${salesmanData.length}');
 
                               // ~:Set a dynamic table height:~
-                              if (salesmanData.length <= 7) {
+                              if (salesmanData.length <= 6) {
                                 tableHeight =
                                     260 + (50 * (salesmanData.length - 3));
                               }
@@ -493,20 +474,73 @@ class _ReportScreenState extends State<ReportScreen> {
               //     ),
               //   ),
               // ),
-              BlocBuilder<ReportBloc, ReportState>(
+              BlocConsumer<ReportBloc, ReportState>(
+                listener: (context, state) {
+                  if (state is ReportCreationSuccess) {
+                    log('Report created successfully');
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Laporan berhasil dibuat!'),
+                      ),
+                    );
+                    Navigator.pop(context);
+                  } else if (state is ReportCreationWarning) {
+                    log('Report creation warning: ${state.message}');
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(state.message),
+                      ),
+                    );
+                  } else if (state is ReportCreationError) {
+                    log('Report creation failed: ${state.message}');
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(state.message),
+                      ),
+                    );
+                  }
+                },
                 builder: (context, state) {
                   return CustomButton.primaryButton2(
                     context: context,
-                    text: 'Sign In',
-                    func: () => context.read<ReportBloc>().add(CreateReport(
-                          dealerName: dealerController.text,
-                          areaName: areaController.text,
-                          personInChange: personController.text,
-                          stuData: stuData,
-                          paymentData: paymentData,
-                          leasingData: leasingData,
-                          salesmanData: salesmanData,
-                        )),
+                    text: 'Buat',
+                    func: () {
+                      log('Dealer: ${dealerController.text}');
+                      log('Area: ${areaController.text}');
+                      log('PIC: ${personController.text}');
+                      log('');
+
+                      for (var data in stuData) {
+                        log('STU Data: ${data.type}, Result: ${data.result}, Target: ${data.target}, Ach: ${data.ach}, LM: ${data.lm}, Growth: ${data.growth}');
+                      }
+                      log('');
+
+                      for (var data in paymentData) {
+                        log('Payment Data: ${data.type}, Result: ${data.result}, Target: ${data.lm}, Growth: ${data.growth}%');
+                      }
+                      log('');
+
+                      for (var data in leasingData) {
+                        log('Leasing Data: ${data.type}, SPK: ${data.spk}, Opened: ${data.open}, Accepted: ${data.accept}, Rejected: ${data.reject}, Approval: ${data.approve}');
+                      }
+                      log('');
+
+                      for (var data in salesmanData) {
+                        log('Salesman Data: ${data.name}, Status: ${data.status}, SPK: ${data.spk}, STU: ${data.stu}, STU LM: ${data.stuLm}');
+                      }
+
+                      context.read<ReportBloc>().add(
+                            CreateReport(
+                              dealerName: dealerController.text,
+                              areaName: areaController.text,
+                              personInCharge: personController.text,
+                              stuData: stuData,
+                              paymentData: paymentData,
+                              leasingData: leasingData,
+                              salesmanData: salesmanData,
+                            ),
+                          );
+                    },
                     bgColor: ConstantColors.primaryColor1,
                     textStyle: TextThemes.subtitle,
                     shadowColor: ConstantColors.shadowColor,
