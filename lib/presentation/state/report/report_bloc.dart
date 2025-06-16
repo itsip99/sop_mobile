@@ -4,8 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sop_mobile/data/models/user.dart';
 import 'package:sop_mobile/data/repositories/report.dart';
 import 'package:sop_mobile/data/repositories/storage.dart';
-import 'package:sop_mobile/presentation/state/login/login_bloc.dart';
-import 'package:sop_mobile/presentation/state/login/login_state.dart';
 import 'package:sop_mobile/presentation/state/report/report_event.dart';
 import 'package:sop_mobile/presentation/state/report/report_state.dart';
 

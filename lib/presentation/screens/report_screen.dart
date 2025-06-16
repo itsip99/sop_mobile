@@ -383,7 +383,10 @@ class _ReportScreenState extends State<ReportScreen> {
                             builder: (context, state) {
                               tableHeight = 260;
                               salesmanData = state.salesDataList;
-                              if (state is SalesmanModified) {
+                              if (state is SalesmanFetched) {
+                                salesmanData = state.salesDataList;
+                                log('Salesman length: ${salesmanData.length}');
+                              } else if (state is SalesmanModified) {
                                 salesmanData = state.newData;
                               }
 

@@ -53,7 +53,7 @@ class SalesmanInsertDataSource extends DataGridSource {
   @override
   List<DataGridRow> get rows => _dataGridRows;
 
-  void buildDataGridRows() {
+  void buildDataGridRows() async {
     _dataGridRows = _salesmanData.map<DataGridRow>((SalesmanData salesman) {
       return DataGridRow(cells: [
         DataGridCell<String>(columnName: 'Nama', value: salesman.name),
@@ -64,18 +64,24 @@ class SalesmanInsertDataSource extends DataGridSource {
       ]);
     }).toList();
 
-    // log('DataGridRows built: ${_dataGridRows.length} rows');
+    log('DataGridRows built: ${_dataGridRows.length} rows');
+    for (var row in _dataGridRows) {
+      for (var cell in row.getCells()) {
+        log('Cell - Column: ${cell.columnName}, Value: ${cell.value}');
+      }
+    }
   }
 
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
+    log('Row length: ${row.getCells().length}');
     return DataGridRowAdapter(
       cells: row.getCells().asMap().entries.map<Widget>((entry) {
         // final int cellIndex = entry.key;
         final DataGridCell<dynamic> dataGridCell = entry.value;
         final String columnName = dataGridCell.columnName;
         // dynamic data = entry.value.value;
-        // log('Column: $columnName, Value: ${dataGridCell.value.toString()}');
+        log('Column: $columnName, Value: ${dataGridCell.value.toString()}');
 
         if (dataGridCell.value is int) {
           return Container(
