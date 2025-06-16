@@ -5,10 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sop_mobile/core/constant/colors.dart';
 import 'package:sop_mobile/core/constant/enum.dart';
+import 'package:sop_mobile/core/constant/variables.dart';
 import 'package:sop_mobile/core/helpers/formatter.dart';
 import 'package:sop_mobile/presentation/state/leasing/leasing_bloc.dart';
 import 'package:sop_mobile/presentation/state/leasing/leasing_event.dart';
 import 'package:sop_mobile/presentation/state/leasing/leasing_state.dart';
+import 'package:sop_mobile/presentation/state/login/login_bloc.dart';
+import 'package:sop_mobile/presentation/state/login/login_state.dart';
 import 'package:sop_mobile/presentation/state/payment/payment_bloc.dart';
 import 'package:sop_mobile/presentation/state/payment/payment_event.dart';
 import 'package:sop_mobile/presentation/state/payment/payment_state.dart';
@@ -39,8 +42,14 @@ class ReportScreen extends StatefulWidget {
 }
 
 class _ReportScreenState extends State<ReportScreen> {
-  final TextEditingController dealerController = TextEditingController();
+  final TextEditingController locationController = TextEditingController();
   final TextEditingController areaController = TextEditingController();
+
+  String _getCityNameFromBranchCode(String branchCode) {
+    const branchAreaType = StaticVariables.branchAreaType;
+    return branchAreaType[branchCode] ?? branchCode;
+  }
+
   final TextEditingController personController = TextEditingController();
 
   double tableHeight = 260;
@@ -232,28 +241,53 @@ class _ReportScreenState extends State<ReportScreen> {
                         spacing: 4,
                         children: [
                           // ~:Dealer Textfield:~
-                          CustomTextFormField(
-                            'your dealer',
-                            'Dealer',
-                            const Icon(Icons.house_siding_rounded),
-                            dealerController,
-                            isLabelFloat: true,
-                            inputFormatters: [Formatter.normalFormatter],
-                            borderRadius: 20,
+                          BlocBuilder<LoginBloc, LoginState>(
+                            builder: (context, state) {
+                              if (state is LoginSuccess) {
+                                // ~:Set the dealer controller text:~
+                                if (locationController.text.isEmpty) {
+                                  locationController.text =
+                                      state.getUserCreds.name;
+                                }
+                              }
+
+                              return CustomTextFormField(
+                                'your location',
+                                'Location',
+                                const Icon(Icons.garage_rounded),
+                                locationController,
+                                inputFormatters: [Formatter.normalFormatter],
+                                borderRadius: 20,
+                                isEnabled: false,
+                              );
+                            },
                           ),
 
-                          // ~:Dealer Textfield:~
-                          CustomTextFormField(
-                            'your area',
-                            'Area',
-                            const Icon(Icons.location_pin),
-                            areaController,
-                            isLabelFloat: true,
-                            inputFormatters: [Formatter.normalFormatter],
-                            borderRadius: 20,
+                          // ~:Area Textfield:~
+                          BlocBuilder<LoginBloc, LoginState>(
+                            builder: (context, state) {
+                              if (state is LoginSuccess) {
+                                // ~:Set the area controller text:~
+                                if (areaController.text.isEmpty) {
+                                  areaController.text =
+                                      '${state.getUserCreds.branch} ${_getCityNameFromBranchCode(state.getUserCreds.branch)}';
+                                }
+                              }
+
+                              return CustomTextFormField(
+                                'your area',
+                                'Area',
+                                const Icon(Icons.location_pin),
+                                areaController,
+                                isLabelFloat: true,
+                                inputFormatters: [Formatter.normalFormatter],
+                                borderRadius: 20,
+                                isEnabled: false,
+                              );
+                            },
                           ),
 
-                          // ~:Dealer Textfield:~
+                          // ~:PIC Textfield:~
                           CustomTextFormField(
                             'your PIC name',
                             'PIC',
@@ -431,52 +465,6 @@ class _ReportScreenState extends State<ReportScreen> {
               ),
 
               // ~:Create Button:~
-              // ElevatedButton(
-              //   onPressed: () {
-              //     log('Dealer: ${dealerController.text}');
-              //     log('Area: ${areaController.text}');
-              //     log('PIC: ${personController.text}');
-              //
-              //     for (var data in stuData) {
-              //       log('STU Data: ${data.type}, Result: ${data.result}, Target: ${data.target}, Ach: ${data.ach}, LM: ${data.lm}, Growth: ${data.growth}');
-              //     }
-              //
-              //     for (var data in paymentData) {
-              //       log('Payment Data: ${data.type}, Result: ${data.result}, Target: ${data.lm}, Growth: ${data.growth}%');
-              //     }
-              //
-              //     for (var data in leasingData) {
-              //       log('Leasing Data: ${data.type}, SPK: ${data.spk}, Opened: ${data.open}, Accepted: ${data.accept}, Rejected: ${data.reject}, Approval: ${data.approve}');
-              //     }
-              //
-              //     for (var data in salesmanData) {
-              //       log('Salesman Data: ${data.name}, Status: ${data.status}, SPK: ${data.spk}, STU: ${data.stu}, STU LM: ${data.stuLm}');
-              //     }
-              //   },
-              //   style: ElevatedButton.styleFrom(
-              //     backgroundColor: ConstantColors.primaryColor1,
-              //     padding: const EdgeInsets.symmetric(
-              //       vertical: 10,
-              //       horizontal: 20,
-              //     ),
-              //     shape: RoundedRectangleBorder(
-              //       borderRadius: BorderRadius.circular(20),
-              //     ),
-              //   ),
-              //   child: SizedBox(
-              //     width: MediaQuery.of(context).size.width,
-              //     height: 24,
-              //     child: BlocBuilder<ReportBloc, ReportState>(
-              //       builder: (context, state) {
-              //         return const Text(
-              //           'Buat',
-              //           style: TextThemes.subtitle,
-              //           textAlign: TextAlign.center,
-              //         );
-              //       },
-              //     ),
-              //   ),
-              // ),
               BlocConsumer<ReportBloc, ReportState>(
                 listener: (context, state) {
                   if (state is ReportCreationSuccess) {
@@ -508,8 +496,8 @@ class _ReportScreenState extends State<ReportScreen> {
                     context: context,
                     text: 'Buat',
                     func: () {
-                      log('Dealer: ${dealerController.text}');
-                      log('Area: ${areaController.text}');
+                      log('Dealer: ${locationController.text}');
+                      log('Area: ${areaController.text.split(' ')[1]}');
                       log('PIC: ${personController.text}');
                       log('');
 
@@ -534,8 +522,8 @@ class _ReportScreenState extends State<ReportScreen> {
 
                       context.read<ReportBloc>().add(
                             CreateReport(
-                              dealerName: dealerController.text,
-                              areaName: areaController.text,
+                              dealerName: locationController.text,
+                              areaName: areaController.text.split(' ')[1],
                               personInCharge: personController.text,
                               stuData: stuData,
                               paymentData: paymentData,

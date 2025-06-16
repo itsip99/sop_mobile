@@ -48,13 +48,14 @@ class SalesmanInsertDataSource extends DataGridSource {
   }
 
   List<SalesmanData> _salesmanData = [];
-  List<DataGridRow> _dataGridRows = [];
+  List<DataGridRow> dataGridRows = [];
 
   @override
-  List<DataGridRow> get rows => _dataGridRows;
+  List<DataGridRow> get rows => dataGridRows;
 
-  void buildDataGridRows() async {
-    _dataGridRows = _salesmanData.map<DataGridRow>((SalesmanData salesman) {
+  void buildDataGridRows() {
+    dataGridRows.clear();
+    dataGridRows.addAll(_salesmanData.map<DataGridRow>((SalesmanData salesman) {
       return DataGridRow(cells: [
         DataGridCell<String>(columnName: 'Nama', value: salesman.name),
         DataGridCell<String>(columnName: 'Status', value: salesman.status),
@@ -62,14 +63,18 @@ class SalesmanInsertDataSource extends DataGridSource {
         DataGridCell<int>(columnName: 'STU', value: salesman.stu),
         DataGridCell<int>(columnName: 'STU LM', value: salesman.stuLm),
       ]);
-    }).toList();
+    }));
 
-    log('DataGridRows built: ${_dataGridRows.length} rows');
-    for (var row in _dataGridRows) {
-      for (var cell in row.getCells()) {
-        log('Cell - Column: ${cell.columnName}, Value: ${cell.value}');
+    log('DataGridRows built: ${dataGridRows.length} rows');
+    // Only log in debug mode to avoid performance issues
+    assert(() {
+      for (var row in dataGridRows) {
+        for (var cell in row.getCells()) {
+          log('Cell - Column: ${cell.columnName}, Value: ${cell.value}');
+        }
       }
-    }
+      return true;
+    }());
   }
 
   @override
@@ -100,7 +105,7 @@ class SalesmanInsertDataSource extends DataGridSource {
               onChanged: (String newValue) {
                 int? parsedValue = int.tryParse(newValue);
                 // You can add logic here to update the underlying data model if needed
-                final rowIndex = _dataGridRows.indexOf(row);
+                final rowIndex = dataGridRows.indexOf(row);
                 // log('Row index: $rowIndex, Column: $columnName, New Value: $parsedValue');
                 if (newValue.isEmpty) parsedValue = 0;
 

@@ -42,10 +42,11 @@ class ReportBloc<BaseEvent, BaseState> extends Bloc<ReportEvent, ReportState> {
     }
 
     // ~:Basic Report Data Creation:~
-    if (event.dealerName.isEmpty &&
-        event.areaName.isEmpty &&
+    if (event.dealerName.isEmpty ||
+        event.areaName.isEmpty ||
         event.personInCharge.isEmpty) {
-      emit(ReportCreationWarning('Semua kolom wajib diisi.'));
+      log('Empty fields');
+      emit(ReportCreationWarning('Kolom PIC wajib diisi.'));
       return; // Exit current function if required fields are empty
     } else {
       basicReport = await ReportRepoImp().createBasicReport(
@@ -58,6 +59,7 @@ class ReportBloc<BaseEvent, BaseState> extends Bloc<ReportEvent, ReportState> {
     }
 
     // ~:Report STU Data Creation:~
+    log('STU Data: ${event.stuData.length}');
     if (event.stuData.isEmpty) {
       emit(ReportCreationWarning('Data STU tidak ditemukan.'));
       return; // Exit current function if required fields are empty
@@ -71,12 +73,9 @@ class ReportBloc<BaseEvent, BaseState> extends Bloc<ReportEvent, ReportState> {
         ));
       }
 
-      for (int i = 0; i < reportSTU.length; i++) {
-        log(reportSTU[i]['status']);
-      }
-
       isStuSuccess = reportSTU.every((item) => item['status'] == 'success');
       if (!isStuSuccess) {
+        log('Gagal membuat semua laporan STU.');
         emit(ReportCreationError('Gagal membuat semua laporan STU.'));
         return;
       }
@@ -99,6 +98,7 @@ class ReportBloc<BaseEvent, BaseState> extends Bloc<ReportEvent, ReportState> {
       isPaymentSuccess =
           reportPayment.every((item) => item['status'] == 'success');
       if (!isPaymentSuccess) {
+        log('Gagal membuat semua laporan Payment.');
         emit(ReportCreationError('Gagal membuat semua laporan Payment.'));
         return;
       }

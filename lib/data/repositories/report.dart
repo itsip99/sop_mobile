@@ -116,8 +116,11 @@ class ReportRepoImp extends ReportRepo {
     if (response.statusCode <= 200) {
       log('Response: ${response.statusCode}');
       final res = jsonDecode(response.body);
-      log("${res['Msg']}, ${res['Code']}");
-      if (res['Msg'] == 'Sukses' && res['Code'] == '100') {
+      log("Full Response: $res");
+      log("Result Msg: ${res['Msg']}, Code: ${res['Code']}");
+      log("Data[0] ResultMessage: ${res['Data']?[0]?['ResultMessage']}");
+      if (res['Msg'] == 'Sukses' &&
+          (res['Code'] == '100' || res['Code'] == '200')) {
         log('Success');
         if (res['Data'][0]['ResultMessage'] != null &&
             res['Data'][0]['ResultMessage'] == 'SUKSES') {
