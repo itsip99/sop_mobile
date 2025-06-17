@@ -121,14 +121,15 @@ class ReportRepoImp extends ReportRepo {
       log("Data[0] ResultMessage: ${res['Data']?[0]?['ResultMessage']}");
       if (res['Msg'] == 'Sukses' &&
           (res['Code'] == '100' || res['Code'] == '200')) {
-        log('Success');
         if (res['Data'][0]['ResultMessage'] != null &&
             res['Data'][0]['ResultMessage'] == 'SUKSES') {
+          log('Success');
           return {
             'status': 'success',
             'data': 'Laporan STU berhasil dibuat.',
           };
         } else {
+          log('Warn');
           return {
             'status': 'warn',
             'data': res['Data'][0]['ResultMessage'],
@@ -290,6 +291,7 @@ class ReportRepoImp extends ReportRepo {
 
   @override
   Future<Map<String, dynamic>> createReportSalesman(
+    String userId,
     String username,
     String date,
     SalesmanData salesmanData,
@@ -302,15 +304,16 @@ class ReportRepoImp extends ReportRepo {
     );
 
     Map body = {
-      "Jenis": "SUBDEALER SALESMAN STU",
-      "Mode": "1",
-      "Data": {
-        "CustomerID": username,
-        "TransDate": date,
-        "Memo": '${salesmanData.name} - ${salesmanData.status}',
-        "ResultSTU": salesmanData.spk,
-        "TargetSTU": salesmanData.stu,
-        "LMSTU": salesmanData.stuLm,
+      'Jenis': 'SUBDEALER SPK',
+      'Mode': '1',
+      'Data': {
+        'CustomerID': username,
+        'TransDate': date,
+        'KTPSales': userId,
+        'StatusSM': salesmanData.status,
+        'SPK': salesmanData.spk,
+        'STU': salesmanData.stu,
+        'STULM': salesmanData.stuLm,
         "Line": index,
       }
     };

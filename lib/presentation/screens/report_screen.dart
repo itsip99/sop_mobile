@@ -7,6 +7,7 @@ import 'package:sop_mobile/core/constant/colors.dart';
 import 'package:sop_mobile/core/constant/enum.dart';
 import 'package:sop_mobile/core/constant/variables.dart';
 import 'package:sop_mobile/core/helpers/formatter.dart';
+import 'package:sop_mobile/data/models/sales.dart';
 import 'package:sop_mobile/presentation/state/leasing/leasing_bloc.dart';
 import 'package:sop_mobile/presentation/state/leasing/leasing_event.dart';
 import 'package:sop_mobile/presentation/state/leasing/leasing_state.dart';
@@ -57,6 +58,7 @@ class _ReportScreenState extends State<ReportScreen> {
   List<PaymentData> paymentData = [];
   List<LeasingData> leasingData = [];
   List<SalesmanData> salesmanData = [];
+  List<SalesModel> salesData = [];
 
   void editStuValue(
     StuBloc stuBloc,
@@ -417,6 +419,7 @@ class _ReportScreenState extends State<ReportScreen> {
                             builder: (context, state) {
                               tableHeight = 260;
                               salesmanData = state.salesDataList;
+                              salesData = state.fetchSalesList;
                               if (state is SalesmanFetched) {
                                 salesmanData = state.salesDataList;
                                 log('Salesman length: ${salesmanData.length}');
@@ -501,6 +504,7 @@ class _ReportScreenState extends State<ReportScreen> {
                       log('PIC: ${personController.text}');
                       log('');
 
+                      log('STU Data length (screen): ${stuData.length}');
                       for (var data in stuData) {
                         log('STU Data: ${data.type}, Result: ${data.result}, Target: ${data.target}, Ach: ${data.ach}, LM: ${data.lm}, Growth: ${data.growth}');
                       }
@@ -523,12 +527,13 @@ class _ReportScreenState extends State<ReportScreen> {
                       context.read<ReportBloc>().add(
                             CreateReport(
                               dealerName: locationController.text,
-                              areaName: areaController.text.split(' ')[1],
+                              areaName: areaController.text.split(' ')[0],
                               personInCharge: personController.text,
                               stuData: stuData,
                               paymentData: paymentData,
                               leasingData: leasingData,
                               salesmanData: salesmanData,
+                              salesData: salesData,
                             ),
                           );
                     },

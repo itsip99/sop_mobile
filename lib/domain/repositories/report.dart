@@ -35,6 +35,7 @@ abstract class ReportRepo {
   );
 
   Future<Map<String, dynamic>> createReportSalesman(
+    String userId,
     String username,
     String date,
     SalesmanData leasingData,

@@ -22,10 +22,10 @@ class ReportBloc<BaseEvent, BaseState> extends Bloc<ReportEvent, ReportState> {
 
     // ~:Declare local variables for this function:~
     Map<String, dynamic> basicReport = {};
-    List<Map<String, dynamic>> reportSTU = [{}];
-    List<Map<String, dynamic>> reportPayment = [{}];
-    List<Map<String, dynamic>> reportLeasing = [{}];
-    List<Map<String, dynamic>> reportSalesman = [{}];
+    List<Map<String, dynamic>> reportSTU = [];
+    List<Map<String, dynamic>> reportPayment = [];
+    List<Map<String, dynamic>> reportLeasing = [];
+    List<Map<String, dynamic>> reportSalesman = [];
     bool isStuSuccess = false;
     bool isPaymentSuccess = false;
     bool isLeasingSuccess = false;
@@ -74,6 +74,7 @@ class ReportBloc<BaseEvent, BaseState> extends Bloc<ReportEvent, ReportState> {
       }
 
       isStuSuccess = reportSTU.every((item) => item['status'] == 'success');
+      log('STU Success: $isStuSuccess');
       if (!isStuSuccess) {
         log('Gagal membuat semua laporan STU.');
         emit(ReportCreationError('Gagal membuat semua laporan STU.'));
@@ -133,6 +134,10 @@ class ReportBloc<BaseEvent, BaseState> extends Bloc<ReportEvent, ReportState> {
     } else {
       for (int i = 0; i < event.salesmanData.length; i++) {
         reportSalesman.add(await ReportRepoImp().createReportSalesman(
+          event.salesData
+              .where((e) => e.userName == event.salesmanData[i].name)
+              .first
+              .id,
           userCreds.username,
           DateTime.now().toIso8601String().substring(0, 10),
           event.salesmanData[i],
