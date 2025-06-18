@@ -32,6 +32,8 @@ import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_leas
 import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_payment.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_salesman.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_stu.dart';
+import 'package:sop_mobile/presentation/widgets/loading.dart';
+import 'package:sop_mobile/presentation/widgets/snackbar.dart';
 import 'package:sop_mobile/presentation/widgets/textformfield.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
@@ -124,13 +126,18 @@ class _ReportScreenState extends State<ReportScreen> {
     }
   }
 
-  void editSalesmanValue(
+  Future<void> editSalesmanValue(
     SalesmanBloc salesmanBloc,
     int rowIndex,
     String columnName,
     int newValue,
-  ) {
-    log('Column name: $columnName');
+  ) async {
+    log('Editing salesman at row $rowIndex, column $columnName: $newValue');
+    // Add validation for row index
+    if (rowIndex < 0) {
+      log('Invalid row index: $rowIndex');
+      return;
+    }
     log('Row index: $rowIndex');
     log('New value: $newValue');
     if (columnName == 'SPK') {
@@ -420,12 +427,22 @@ class _ReportScreenState extends State<ReportScreen> {
                               tableHeight = 260;
                               salesmanData = state.salesDataList;
                               salesData = state.fetchSalesList;
-                              if (state is SalesmanFetched) {
+                              if (state is SalesmanLoading) {
+                                return Loading.platformIndicator(
+                                  iosRadius: 13,
+                                  iosCircleColor: ConstantColors.primaryColor3,
+                                  androidWidth: 28,
+                                  androidHeight: 28,
+                                  androidStrokeWidth: 3.5,
+                                  androidCircleColor:
+                                      ConstantColors.primaryColor3,
+                                );
+                              } else if (state is SalesmanFetched) {
                                 salesmanData = state.salesDataList;
-                                log('Salesman length: ${salesmanData.length}');
                               } else if (state is SalesmanModified) {
                                 salesmanData = state.newData;
                               }
+                              log('Salesman length: ${salesmanData.length}');
 
                               // ~:Set a dynamic table height:~
                               if (salesmanData.length <= 6) {
@@ -472,25 +489,17 @@ class _ReportScreenState extends State<ReportScreen> {
                 listener: (context, state) {
                   if (state is ReportCreationSuccess) {
                     log('Report created successfully');
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Laporan berhasil dibuat!'),
-                      ),
+                    CustomSnackbar.showSnackbar(
+                      context,
+                      'Laporan berhasil dibuat!',
                     );
                     Navigator.pop(context);
-                  } else if (state is ReportCreationWarning) {
-                    log('Report creation warning: ${state.message}');
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(state.message),
-                      ),
-                    );
-                  } else if (state is ReportCreationError) {
-                    log('Report creation failed: ${state.message}');
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(state.message),
-                      ),
+                  } else if (state is ReportCreationWarning ||
+                      state is ReportCreationError) {
+                    log('Report creation warning / error: ${state.message}');
+                    CustomSnackbar.showSnackbar(
+                      context,
+                      state.message,
                     );
                   }
                 },
@@ -499,30 +508,30 @@ class _ReportScreenState extends State<ReportScreen> {
                     context: context,
                     text: 'Buat',
                     func: () {
-                      log('Dealer: ${locationController.text}');
-                      log('Area: ${areaController.text.split(' ')[1]}');
-                      log('PIC: ${personController.text}');
-                      log('');
-
-                      log('STU Data length (screen): ${stuData.length}');
-                      for (var data in stuData) {
-                        log('STU Data: ${data.type}, Result: ${data.result}, Target: ${data.target}, Ach: ${data.ach}, LM: ${data.lm}, Growth: ${data.growth}');
-                      }
-                      log('');
-
-                      for (var data in paymentData) {
-                        log('Payment Data: ${data.type}, Result: ${data.result}, Target: ${data.lm}, Growth: ${data.growth}%');
-                      }
-                      log('');
-
-                      for (var data in leasingData) {
-                        log('Leasing Data: ${data.type}, SPK: ${data.spk}, Opened: ${data.open}, Accepted: ${data.accept}, Rejected: ${data.reject}, Approval: ${data.approve}');
-                      }
-                      log('');
-
-                      for (var data in salesmanData) {
-                        log('Salesman Data: ${data.name}, Status: ${data.status}, SPK: ${data.spk}, STU: ${data.stu}, STU LM: ${data.stuLm}');
-                      }
+                      // log('Dealer: ${locationController.text}');
+                      // log('Area: ${areaController.text.split(' ')[1]}');
+                      // log('PIC: ${personController.text}');
+                      // log('');
+                      //
+                      // log('STU Data length (screen): ${stuData.length}');
+                      // for (var data in stuData) {
+                      //   log('STU Data: ${data.type}, Result: ${data.result}, Target: ${data.target}, Ach: ${data.ach}, LM: ${data.lm}, Growth: ${data.growth}');
+                      // }
+                      // log('');
+                      //
+                      // for (var data in paymentData) {
+                      //   log('Payment Data: ${data.type}, Result: ${data.result}, Target: ${data.lm}, Growth: ${data.growth}%');
+                      // }
+                      // log('');
+                      //
+                      // for (var data in leasingData) {
+                      //   log('Leasing Data: ${data.type}, SPK: ${data.spk}, Opened: ${data.open}, Accepted: ${data.accept}, Rejected: ${data.reject}, Approval: ${data.approve}');
+                      // }
+                      // log('');
+                      //
+                      // for (var data in salesmanData) {
+                      //   log('Salesman Data: ${data.name}, Status: ${data.status}, SPK: ${data.spk}, STU: ${data.stu}, STU LM: ${data.stuLm}');
+                      // }
 
                       context.read<ReportBloc>().add(
                             CreateReport(

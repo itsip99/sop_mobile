@@ -24,7 +24,6 @@ import 'package:sop_mobile/presentation/state/route/route_bloc.dart';
 import 'package:sop_mobile/presentation/state/route/route_event.dart';
 import 'package:sop_mobile/presentation/state/salesman/salesman_bloc.dart';
 import 'package:sop_mobile/presentation/state/salesman/salesman_event.dart';
-import 'package:sop_mobile/presentation/state/salesman/salesman_state.dart';
 import 'package:sop_mobile/presentation/state/stu/stu_bloc.dart';
 import 'package:sop_mobile/presentation/state/stu/stu_event.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
@@ -33,6 +32,7 @@ import 'package:sop_mobile/presentation/widgets/card.dart';
 import 'package:sop_mobile/presentation/widgets/filter.dart';
 import 'package:sop_mobile/presentation/widgets/loading.dart';
 import 'package:sop_mobile/presentation/widgets/refresh.dart';
+import 'package:sop_mobile/presentation/widgets/snackbar.dart';
 import 'package:sop_mobile/routes.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -125,34 +125,28 @@ class _HomeScreenState extends State<HomeScreen> {
                   const Divider(
                     height: 0.5,
                   ),
-                  BlocBuilder<SalesmanBloc, SalesmanState>(
-                      builder: (context, state) {
-                    return DefaultTextStyle(
-                      style: TextThemes.normalTextButton,
-                      child: CustomButton.normalButton(
-                        context: context,
-                        text: 'Daily Report',
-                        func: () async {
-                          routeBloc.add(RoutePush(ConstantRoutes.report));
+                  DefaultTextStyle(
+                    style: TextThemes.normalTextButton,
+                    child: CustomButton.normalButton(
+                      context: context,
+                      text: 'Daily Report',
+                      func: () {
+                        routeBloc.add(RoutePush(ConstantRoutes.report));
 
-                          // ~:Reset Table Data:~
-                          context.read<StuBloc>().add(ResetStuData());
-                          context.read<PaymentBloc>().add(ResetPaymentData());
-                          context.read<LeasingBloc>().add(ResetLeasingData());
-                          // context.read<SalesmanBloc>().add(FetchSalesman());
-                          if (state is! SalesmanFetched) {
-                            log('Salesman data is empty, fetching...');
-                            context.read<SalesmanBloc>().add(FetchSalesman());
-                          }
-                          context.read<ReportBloc>().add(InitiateReport());
+                        // ~:Reset Table Data:~
+                        context.read<StuBloc>().add(ResetStuData());
+                        context.read<PaymentBloc>().add(ResetPaymentData());
+                        context.read<LeasingBloc>().add(ResetLeasingData());
+                        log('Salesman data is empty, fetching...');
+                        context.read<SalesmanBloc>().add(FetchSalesman());
+                        context.read<ReportBloc>().add(InitiateReport());
 
-                          Navigator.pushNamed(context, ConstantRoutes.report);
-                          panelController.close();
-                        },
-                        bgColor: Colors.transparent,
-                      ),
-                    );
-                  }),
+                        Navigator.pushNamed(context, ConstantRoutes.report);
+                        panelController.close();
+                      },
+                      bgColor: Colors.transparent,
+                    ),
+                  ),
                   const Divider(
                     height: 0.5,
                   ),
@@ -259,11 +253,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   if (state is LogoutSuccess) {
                     Navigator.pushReplacementNamed(context, '/welcome');
                   } else if (state is LogoutFailure) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(state.getLogoutFailure),
-                        backgroundColor: ConstantColors.primaryColor3,
-                      ),
+                    CustomSnackbar.showSnackbar(
+                      context,
+                      state.getLogoutFailure,
+                      backgroundColor: ConstantColors.primaryColor3,
                     );
                   }
                 },

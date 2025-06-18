@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:sop_mobile/data/models/report.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
@@ -8,7 +10,7 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 class StuDataSource extends DataGridSource {
   /// Creates the employee data source class with required details.
   StuDataSource({required List<StuModel> stuData}) {
-    print('STU Data Source: ${stuData.length}');
+    log('STU Data Source: ${stuData.length}');
     _stuData = stuData.map<DataGridRow>((data) {
       final stuData = DataGridRow(
         cells: [

@@ -1,7 +1,5 @@
 import 'dart:developer';
-import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sop_mobile/core/constant/colors.dart';
@@ -13,6 +11,7 @@ import 'package:sop_mobile/presentation/state/login/login_event.dart';
 import 'package:sop_mobile/presentation/state/login/login_state.dart';
 import 'package:sop_mobile/presentation/state/route/route_bloc.dart';
 import 'package:sop_mobile/presentation/state/route/route_event.dart';
+import 'package:sop_mobile/presentation/widgets/loading.dart';
 import 'package:sop_mobile/routes.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -79,24 +78,16 @@ class _SplashScreenState extends State<SplashScreen> {
                 width: 150,
                 height: 150,
               ),
-              Builder(
-                builder: (context) {
-                  if (Platform.isIOS) {
-                    return const CupertinoActivityIndicator(
-                      radius: 13,
-                    );
-                  } else {
-                    return const SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 3.5,
-                        color: Colors.black,
-                      ),
-                    );
-                  }
-                },
-              )
+              Builder(builder: (context) {
+                return Loading.platformIndicator(
+                  iosRadius: 13,
+                  iosCircleColor: ConstantColors.primaryColor3,
+                  androidWidth: 28,
+                  androidHeight: 28,
+                  androidStrokeWidth: 3.5,
+                  androidCircleColor: ConstantColors.primaryColor3,
+                );
+              })
             ],
           ),
         ),

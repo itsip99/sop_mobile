@@ -1,4 +1,3 @@
-import 'package:sop_mobile/data/models/login.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_leasing.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_payment.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_salesman.dart';

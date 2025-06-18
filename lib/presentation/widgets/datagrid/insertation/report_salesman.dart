@@ -51,11 +51,18 @@ class SalesmanInsertDataSource extends DataGridSource {
   List<DataGridRow> dataGridRows = [];
 
   @override
-  List<DataGridRow> get rows => dataGridRows;
+  List<DataGridRow> get rows {
+    log('Accessing rows getter, current row count: ${dataGridRows.length}');
+    return dataGridRows;
+  }
 
   void buildDataGridRows() {
+    log('Starting buildDataGridRows with ${_salesmanData.length} salesman items');
     dataGridRows.clear();
-    dataGridRows.addAll(_salesmanData.map<DataGridRow>((SalesmanData salesman) {
+    dataGridRows.addAll(_salesmanData.asMap().entries.map<DataGridRow>((entry) {
+      final index = entry.key;
+      final salesman = entry.value;
+      log('Processing salesman at index $index: ${salesman.name}');
       return DataGridRow(cells: [
         DataGridCell<String>(columnName: 'Nama', value: salesman.name),
         DataGridCell<String>(columnName: 'Status', value: salesman.status),
@@ -66,11 +73,14 @@ class SalesmanInsertDataSource extends DataGridSource {
     }));
 
     log('DataGridRows built: ${dataGridRows.length} rows');
-    // Only log in debug mode to avoid performance issues
+
+    // Log all rows and cells in debug mode
     assert(() {
-      for (var row in dataGridRows) {
+      for (int i = 0; i < dataGridRows.length; i++) {
+        final row = dataGridRows[i];
+        log('Row $i:');
         for (var cell in row.getCells()) {
-          log('Cell - Column: ${cell.columnName}, Value: ${cell.value}');
+          log('  - ${cell.columnName}: ${cell.value}');
         }
       }
       return true;

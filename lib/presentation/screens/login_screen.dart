@@ -11,6 +11,7 @@ import 'package:sop_mobile/presentation/state/login/login_state.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
 import 'package:sop_mobile/presentation/widgets/buttons.dart';
 import 'package:sop_mobile/presentation/widgets/logo.dart';
+import 'package:sop_mobile/presentation/widgets/snackbar.dart';
 import 'package:sop_mobile/presentation/widgets/text.dart';
 import 'package:sop_mobile/presentation/widgets/textformfield.dart';
 
@@ -204,10 +205,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                   );
                                 } else if (state is LoginFailure) {
                                   log('Login Failed: ${state.error}');
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(state.error),
-                                    ),
+                                  CustomSnackbar.showSnackbar(
+                                    context,
+                                    state.error,
+                                    backgroundColor:
+                                        ConstantColors.primaryColor3,
                                   );
                                   Navigator.pushReplacementNamed(
                                     context,

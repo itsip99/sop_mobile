@@ -4,10 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sop_mobile/core/constant/enum.dart';
 import 'package:sop_mobile/data/models/home.dart';
 import 'package:sop_mobile/data/repositories/filter.dart';
+import 'package:sop_mobile/domain/repositories/filter.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_event.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_state.dart';
 
 class FilterBloc<BaseEvent, BaseState> extends Bloc<FilterEvent, FilterState> {
+  FilterRepo? filterRepo;
+
   FilterBloc() : super(FilterInitial()) {
     on<FilterAdded>(addFilterHandler);
     on<FilterRemoved>(removeFilterHandler);
@@ -32,6 +35,13 @@ class FilterBloc<BaseEvent, BaseState> extends Bloc<FilterEvent, FilterState> {
         // state.activeFilter.contains(FilterType.salesman),
         event.date,
       );
+
+      // HomeModel res = await filterRepo!.dataPreprocessing(
+      //   state.activeFilter.contains(FilterType.briefing),
+      //   state.activeFilter.contains(FilterType.report),
+      //   // state.activeFilter.contains(FilterType.salesman),
+      //   event.date,
+      // );
 
       if (res.briefingData.isNotEmpty ||
           res.reportData.isNotEmpty ||
