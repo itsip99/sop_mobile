@@ -8,10 +8,12 @@ import 'package:sop_mobile/domain/repositories/filter.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_event.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_state.dart';
 
-class FilterBloc<BaseEvent, BaseState> extends Bloc<FilterEvent, FilterState> {
-  FilterRepo? filterRepo;
+class FilterBloc extends Bloc<FilterEvent, FilterState> {
+  final FilterRepo filterRepo;
 
-  FilterBloc() : super(FilterInitial()) {
+  FilterBloc({FilterRepo? filterRepo})
+      : filterRepo = filterRepo ?? FilterRepoImp(),
+        super(FilterInitial()) {
     on<FilterAdded>(addFilterHandler);
     on<FilterRemoved>(removeFilterHandler);
     on<FilterModified>(modifyFilterHandler);
@@ -29,7 +31,7 @@ class FilterBloc<BaseEvent, BaseState> extends Bloc<FilterEvent, FilterState> {
     try {
       emit(FilterLoading(state.activeFilter));
       log('Data retrieval started');
-      HomeModel res = await FilterRepoImp().dataPreprocessing(
+      HomeModel res = await filterRepo.dataPreprocessing(
         state.activeFilter.contains(FilterType.briefing),
         state.activeFilter.contains(FilterType.report),
         // state.activeFilter.contains(FilterType.salesman),
@@ -74,7 +76,7 @@ class FilterBloc<BaseEvent, BaseState> extends Bloc<FilterEvent, FilterState> {
     try {
       log('Deactivate Filter: ${state.activeFilter}');
       emit(FilterLoading(state.activeFilter));
-      HomeModel res = await FilterRepoImp().dataPreprocessing(
+      HomeModel res = await filterRepo.dataPreprocessing(
         state.activeFilter.contains(FilterType.briefing),
         state.activeFilter.contains(FilterType.report),
         // state.activeFilter.contains(FilterType.salesman),
@@ -106,7 +108,7 @@ class FilterBloc<BaseEvent, BaseState> extends Bloc<FilterEvent, FilterState> {
     try {
       emit(FilterLoading(state.activeFilter));
       log('Data retrieval completed');
-      HomeModel res = await FilterRepoImp().dataPreprocessing(
+      HomeModel res = await filterRepo.dataPreprocessing(
         state.activeFilter.contains(FilterType.briefing),
         state.activeFilter.contains(FilterType.report),
         // state.activeFilter.contains(FilterType.salesman),

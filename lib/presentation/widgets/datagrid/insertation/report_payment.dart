@@ -5,13 +5,15 @@ import 'package:flutter/services.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-class PaymentData {
-  PaymentData(this.type, this.result, this.lm, this.growth);
+import 'package:equatable/equatable.dart';
 
-  String type;
-  int result;
-  int lm;
-  String growth;
+class PaymentData extends Equatable {
+  const PaymentData(this.type, this.result, this.lm, this.growth);
+
+  final String type;
+  final int result;
+  final int lm;
+  final String growth;
 
   // Add a copyWith method for easier immutable updates
   PaymentData copyWith({
@@ -27,6 +29,9 @@ class PaymentData {
       growth ?? this.growth,
     );
   }
+
+  @override
+  List<Object?> get props => [type, result, lm, growth];
 }
 
 // DataGridSource implementation for the STU table
@@ -95,19 +100,20 @@ class PaymentInsertDataSource extends DataGridSource {
                 // You can add logic here to update the underlying data model if needed
                 final rowIndex = _dataGridRows.indexOf(row);
                 if (rowIndex != -1) {
+                  PaymentData oldData = _paymentData[rowIndex];
+                  PaymentData newData;
                   switch (cellIndex) {
                     case 1:
-                      _paymentData[rowIndex].result = parsedValue ?? 0;
+                      newData = oldData.copyWith(result: parsedValue ?? 0);
                       break;
                     case 2:
-                      _paymentData[rowIndex].lm = parsedValue ?? 0;
-                      break;
-                    case 3:
-                      _paymentData[rowIndex].growth = newValue;
+                      newData = oldData.copyWith(lm: parsedValue ?? 0);
                       break;
                     default:
+                      newData = oldData; // Should not happen for editable cells
                       break;
                   }
+                  _paymentData[rowIndex] = newData;
                 }
 
                 if (parsedValue != null && onCellValueEdited != null) {

@@ -208,8 +208,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   CustomSnackbar.showSnackbar(
                                     context,
                                     state.error,
-                                    backgroundColor:
-                                        ConstantColors.primaryColor3,
+                                    backgroundColor: ConstantColors.shadowColor,
                                   );
                                   Navigator.pushReplacementNamed(
                                     context,

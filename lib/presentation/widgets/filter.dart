@@ -8,6 +8,7 @@ import 'package:sop_mobile/presentation/state/filter/filter_bloc.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_event.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_state.dart';
 import 'package:sop_mobile/presentation/widgets/filter_button.dart';
+import 'package:sop_mobile/presentation/widgets/date.dart';
 
 class Filter {
   static Future<void> onActPressed(
@@ -98,7 +99,7 @@ class Filter {
                       final cubit = context.read<DateCubit>();
 
                       return FilterButton.dateButton(
-                        () => cubit.setDate(context, state),
+                        () => DatePicker.single(context),
                         cubit.getDate(),
                       );
                     },

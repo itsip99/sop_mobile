@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sop_mobile/data/models/login.dart';
 import 'package:sop_mobile/data/models/user.dart';
@@ -9,13 +11,15 @@ import 'package:sop_mobile/presentation/state/login/login_event.dart';
 import 'package:sop_mobile/presentation/state/login/login_state.dart';
 
 class LoginBloc<BaseEvent, BaseState> extends Bloc<LoginEvent, LoginState> {
-  LoginRepo? loginRepo;
-  StorageRepo? storageRepo;
+  final LoginRepo loginRepo;
+  final StorageRepo storageRepo;
 
-  LoginBloc({
-    this.loginRepo,
-    this.storageRepo,
-  }) : super(LoginInitial()) {
+  LoginBloc(
+    LoginRepo? loginRepo,
+    StorageRepo? storageRepo,
+  )   : loginRepo = loginRepo ?? LoginRepoImp(),
+        storageRepo = storageRepo ?? StorageRepoImp(),
+        super(LoginInitial()) {
     on<LoginButtonPressed>(loginHandler);
     on<LogoutButtonPressed>(logoutHandler);
   }
@@ -26,17 +30,12 @@ class LoginBloc<BaseEvent, BaseState> extends Bloc<LoginEvent, LoginState> {
   ) async {
     emit(LoginLoading());
     try {
-      // ~:Secure Storage Simulation:~
-      UserCredsModel userCredentials =
-          await StorageRepoImp().getUserCredentials();
-
-      // ~:Unit Test Passed:~
-      // UserCredsModel userCredentials = await storageRepo!.getUserCredentials();
+      UserCredsModel userCredentials = await storageRepo.getUserCredentials();
+      log('User credentials: ${userCredentials.username}, ${userCredentials.password}');
 
       if (userCredentials.username != '' && userCredentials.password != '') {
-        // ~:Network Call Simulation:~
-        Map<String, dynamic> user = await LoginRepoImp()
-            .login(userCredentials.username, userCredentials.password);
+        Map<String, dynamic> user = await loginRepo.login(
+            userCredentials.username, userCredentials.password);
 
         // ~:Unit Test Passed:~
         // Map<String, dynamic> user = await loginRepo!
@@ -50,22 +49,22 @@ class LoginBloc<BaseEvent, BaseState> extends Bloc<LoginEvent, LoginState> {
           emit(LoginFailure((user['data'] as LoginModel).memo));
         }
       } else {
-        // ~:Network Call Simulation:~
         Map<String, dynamic> user =
-            await LoginRepoImp().login(event.username, event.password);
+            await loginRepo.login(event.username, event.password);
 
         // ~:Unit Test Passed:~
         // Map<String, dynamic> user =
         //     await loginRepo!.login(event.username, event.password);
 
         if (event.username.isEmpty || event.password.isEmpty) {
+          log('Username or password cannot be empty');
           emit(LoginFailure("Username or password cannot be empty"));
           return;
         } else {
           if (user['status'] == 'success') {
-            // ~:Save user credentials:~
-            await StorageRepoImp()
-                .saveUserCredentials(event.username, event.password);
+            log('User logged in successfully');
+            await storageRepo.saveUserCredentials(
+                event.username, event.password);
 
             // ~:Unit Test Passed:~
             // await storageRepo!
@@ -74,6 +73,7 @@ class LoginBloc<BaseEvent, BaseState> extends Bloc<LoginEvent, LoginState> {
             // ~:Emit success state with user data:~
             emit(LoginSuccess(user['data'] as LoginModel));
           } else {
+            log('User login failed');
             // ~:Emit failure state with an error message:~
             emit(LoginFailure((user['data'] as LoginModel).memo));
           }
@@ -81,6 +81,7 @@ class LoginBloc<BaseEvent, BaseState> extends Bloc<LoginEvent, LoginState> {
       }
     } catch (e) {
       // ~:Emit failure state with an error message:~
+      log(e.toString());
       emit(LoginFailure(e.toString()));
     }
   }
@@ -93,8 +94,7 @@ class LoginBloc<BaseEvent, BaseState> extends Bloc<LoginEvent, LoginState> {
     // ~:Emit success state with a dummy token:~
     emit(LoginInitial());
 
-    // ~:Network Call Simulation:~
-    await StorageRepoImp().deleteUserCredentials();
+    await storageRepo.deleteUserCredentials();
 
     // ~:Unit Test Passed:~
     // await storageRepo!.deleteUserCredentials();

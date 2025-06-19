@@ -1,3 +1,5 @@
+import 'package:equatable/equatable.dart';
+
 class ReportModel {
   final String date;
   final String userId;
@@ -44,20 +46,23 @@ class ReportModel {
   }
 }
 
-class PaymentModel {
+class PaymentModel extends Equatable {
   final String payment;
   final int result;
   final int lmPayment;
   final int flag;
   final int line;
 
-  PaymentModel({
+  const PaymentModel({
     required this.payment,
     required this.result,
     required this.lmPayment,
     required this.flag,
     required this.line,
   });
+
+  @override
+  List<Object?> get props => [payment, result, lmPayment, flag, line];
 
   factory PaymentModel.fromJson(Map<String, dynamic> json) {
     return PaymentModel(

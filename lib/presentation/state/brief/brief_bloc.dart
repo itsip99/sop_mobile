@@ -1,10 +1,15 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sop_mobile/data/repositories/brief.dart';
+import 'package:sop_mobile/domain/repositories/brief.dart';
 import 'package:sop_mobile/presentation/state/brief/brief_event.dart';
 import 'package:sop_mobile/presentation/state/brief/brief_state.dart';
 
 class BriefBloc<BaseEvent, BaseState> extends Bloc<BriefEvent, BriefState> {
-  BriefBloc() : super(BriefInitial()) {
+  final BriefRepo briefRepo;
+
+  BriefBloc({BriefRepo? briefRepo})
+      : briefRepo = briefRepo ?? BriefRepoImp(),
+        super(BriefInitial()) {
     on<BriefCreation>(createBriefReport);
   }
 
@@ -18,7 +23,7 @@ class BriefBloc<BaseEvent, BaseState> extends Bloc<BriefEvent, BriefState> {
           event.desc.isNotEmpty &&
           event.img.isNotEmpty) {
         // Simulate a network call
-        Map<String, dynamic> user = await BriefRepoImp().createBriefingReport(
+        Map<String, dynamic> user = await briefRepo.createBriefingReport(
           event.username,
           event.branch,
           event.shop,

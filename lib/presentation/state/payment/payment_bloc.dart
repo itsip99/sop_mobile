@@ -5,12 +5,11 @@ import 'package:sop_mobile/presentation/state/payment/payment_event.dart';
 import 'package:sop_mobile/presentation/state/payment/payment_state.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_payment.dart';
 
-class PaymentBloc<BaseEvent, BaseState>
-    extends Bloc<PaymentEvent, PaymentState> {
+class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
   PaymentBloc()
       : super(PaymentInitial([
-          PaymentData('Cash', 0, 0, '0.0'),
-          PaymentData('Credit', 0, 0, '0.0'),
+          const PaymentData('Cash', 0, 0, '0.0'),
+          const PaymentData('Credit', 0, 0, '0.0'),
         ])) {
     on<ResetPaymentData>(resetData);
     on<PaymentDataModified>(onPaymentDataModify);
@@ -21,8 +20,8 @@ class PaymentBloc<BaseEvent, BaseState>
     Emitter<PaymentState> emit,
   ) async {
     emit(PaymentInitial([
-      PaymentData('Cash', 0, 0, '0.0'),
-      PaymentData('Credit', 0, 0, '0.0'),
+      const PaymentData('Cash', 0, 0, '0.0'),
+      const PaymentData('Credit', 0, 0, '0.0'),
     ]));
   }
 
