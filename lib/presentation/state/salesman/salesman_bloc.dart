@@ -3,15 +3,19 @@ import 'dart:developer';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sop_mobile/data/models/sales.dart';
 import 'package:sop_mobile/data/models/user.dart';
-import 'package:sop_mobile/data/repositories/sales.dart';
-import 'package:sop_mobile/data/repositories/storage.dart';
+import 'package:sop_mobile/domain/repositories/sales.dart';
+import 'package:sop_mobile/domain/repositories/storage.dart';
 import 'package:sop_mobile/presentation/state/salesman/salesman_event.dart';
 import 'package:sop_mobile/presentation/state/salesman/salesman_state.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_salesman.dart';
 
 class SalesmanBloc<BaseEvent, BaseState>
     extends Bloc<SalesmanEvent, SalesmanState> {
-  SalesmanBloc() : super(SalesmanInitial([], [], [])) {
+  final SalesRepo salesRepo;
+  final StorageRepo storageRepo;
+
+  SalesmanBloc({required this.salesRepo, required this.storageRepo})
+      : super(SalesmanInitial([], [], [])) {
     on<ResetSalesman>(
       (event, emit) => emit(SalesmanInitial([], [], event.salesDraftList)),
     );
@@ -43,12 +47,12 @@ class SalesmanBloc<BaseEvent, BaseState>
     try {
       // ~:Secure Storage Simulation:~
       UserCredsModel userCredentials =
-          await StorageRepoImp().getUserCredentials();
+          await storageRepo.getUserCredentials();
 
       if (userCredentials.username != '') {
         // ~:Network Call Simulation:~
         Map<String, dynamic> result =
-            await SalesRepoImp().fetchSalesman(userCredentials.username);
+            await salesRepo.fetchSalesman(userCredentials.username);
 
         if (result['status'] == 'success') {
           List<SalesmanData> salesDataList =
@@ -90,11 +94,11 @@ class SalesmanBloc<BaseEvent, BaseState>
     try {
       // ~:Secure Storage Simulation:~
       UserCredsModel userCredentials =
-          await StorageRepoImp().getUserCredentials();
+          await storageRepo.getUserCredentials();
 
       if (userCredentials.username != '') {
         // ~:Network Call Simulation:~
-        Map<String, dynamic> result = await SalesRepoImp().addSalesman(
+        Map<String, dynamic> result = await salesRepo.addSalesman(
           userCredentials.username,
           event.id,
           event.name,

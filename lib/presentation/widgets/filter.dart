@@ -39,9 +39,10 @@ class Filter {
   }
 
   static Widget type1(BuildContext context) {
+    final isTablet = MediaQuery.of(context).size.shortestSide >= 600;
     return SizedBox(
       width: MediaQuery.of(context).size.width,
-      height: (MediaQuery.of(context).size.height < 800) ? 50 : 100,
+      height: isTablet ? 100 : 50, // Taller on tablets, shorter on phones
       child: Row(
         children: [
           // ~:Filter Icon:~

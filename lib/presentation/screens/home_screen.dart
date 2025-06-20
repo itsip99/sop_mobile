@@ -198,7 +198,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 // ~:Profile Image:~
                 CircleAvatar(
                   backgroundColor: ConstantColors.primaryColor2,
-                  radius: (MediaQuery.of(context).size.width < 800) ? 30 : 50,
+                  radius: MediaQuery.of(context).size.shortestSide >= 600
+                      ? 50
+                      : 30, // Larger on tablets
                   child: Padding(
                     padding: const EdgeInsets.all(8),
                     child: Image.asset(
@@ -284,26 +286,30 @@ class _HomeScreenState extends State<HomeScreen> {
               color: ConstantColors.primaryColor2,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(
-                  (MediaQuery.of(context).size.width < 800) ? 25 : 45,
+                  MediaQuery.of(context).size.shortestSide >= 600
+                      ? 45
+                      : 25, // Larger radius on tablets
                 ),
                 topRight: Radius.circular(
-                  (MediaQuery.of(context).size.width < 800) ? 25 : 45,
+                  MediaQuery.of(context).size.shortestSide >= 600
+                      ? 45
+                      : 25, // Larger radius on tablets
                 ),
               ),
             ),
             padding: EdgeInsets.symmetric(
-              horizontal: (MediaQuery.of(context).size.width < 800) ? 15 : 45,
-              vertical: (MediaQuery.of(context).size.height < 800) ? 10 : 30,
+              horizontal:
+                  MediaQuery.of(context).size.shortestSide >= 600 ? 45 : 15,
+              vertical:
+                  MediaQuery.of(context).size.shortestSide >= 600 ? 30 : 10,
             ),
             child: Column(
+              spacing: 12,
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // ~:Filter Section:~
                 Filter.type1(context),
-
-                // ~:Divider:~
-                const SizedBox(height: 12),
 
                 // ~:Acts Section:~
                 Expanded(

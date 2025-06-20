@@ -50,14 +50,17 @@ class LeasingInsertDataSource extends DataGridSource {
       onCellValueEdited;
 
   LeasingInsertDataSource(List<LeasingData> data, {this.onCellValueEdited}) {
-    // _stuData = [
-    //   LeasingData('BAF', 0, 0, 0, 0, 0),
-    //   LeasingData('Adira', 0, 0, 0, 0, 0),
-    //   LeasingData('SOF', 0, 0, 0, 0, 0),
-    // ];
     log('Data Source length: ${data.length}');
-    _leasingData = data;
+    _leasingData = List<LeasingData>.from(data);
     buildDataGridRows();
+  }
+
+  // Method to update data and refresh the grid
+  void updateData(List<LeasingData> newData) {
+    log('Updating data source with ${newData.length} items');
+    _leasingData = List<LeasingData>.from(newData);
+    buildDataGridRows();
+    notifyListeners();
   }
 
   // Method to add a new empty row
@@ -81,6 +84,7 @@ class LeasingInsertDataSource extends DataGridSource {
         DataGridCell<double>(columnName: 'Approval', value: data.approve),
       ]);
     }).toList();
+    notifyListeners(); // Notify listeners after building rows
   }
 
   @override

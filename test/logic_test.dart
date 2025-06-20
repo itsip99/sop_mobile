@@ -6,10 +6,13 @@ import 'package:sop_mobile/core/helpers/formatter.dart';
 import 'package:sop_mobile/data/models/briefing.dart';
 import 'package:sop_mobile/data/models/home.dart';
 import 'package:sop_mobile/data/models/report.dart';
+import 'package:sop_mobile/data/models/sales.dart';
 import 'package:sop_mobile/data/models/user.dart';
 import 'package:sop_mobile/domain/repositories/brief.dart';
 import 'package:sop_mobile/domain/repositories/filter.dart';
 import 'package:sop_mobile/domain/repositories/login.dart';
+import 'package:sop_mobile/domain/repositories/report.dart';
+import 'package:sop_mobile/domain/repositories/sales.dart';
 import 'package:sop_mobile/domain/repositories/storage.dart';
 import 'package:sop_mobile/presentation/state/brief/brief_bloc.dart';
 import 'package:sop_mobile/presentation/state/brief/brief_event.dart';
@@ -28,7 +31,20 @@ import 'package:sop_mobile/presentation/state/login/login_state.dart';
 import 'package:sop_mobile/presentation/state/payment/payment_bloc.dart';
 import 'package:sop_mobile/presentation/state/payment/payment_event.dart';
 import 'package:sop_mobile/presentation/state/payment/payment_state.dart';
+import 'package:sop_mobile/presentation/state/report/report_bloc.dart';
+import 'package:sop_mobile/presentation/state/report/report_event.dart';
+import 'package:sop_mobile/presentation/state/report/report_state.dart';
+import 'package:sop_mobile/presentation/state/salesman/salesman_bloc.dart';
+import 'package:sop_mobile/presentation/state/salesman/salesman_event.dart';
+import 'package:sop_mobile/presentation/state/salesman/salesman_state.dart';
+import 'package:sop_mobile/presentation/state/stu/stu_bloc.dart';
+import 'package:sop_mobile/presentation/state/stu/stu_event.dart';
+import 'package:sop_mobile/presentation/state/stu/stu_state.dart';
+
+import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_leasing.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_payment.dart';
+import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_salesman.dart';
+import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_stu.dart';
 
 class MockBriefRepo extends Mock implements BriefRepo {}
 
@@ -36,9 +52,38 @@ class MockFilterRepo extends Mock implements FilterRepo {}
 
 class MockLoginRepo extends Mock implements LoginRepo {}
 
+class MockReportRepo extends Mock implements ReportRepo {}
+
+class MockSalesRepo extends Mock implements SalesRepo {}
+
 class MockStorageRepo extends Mock implements StorageRepo {}
 
+// Fakes for Fallback Registration
+class FakeStuData extends Fake implements StuData {}
+
+class FakePaymentData extends Fake implements PaymentData {}
+
+class FakeLeasingData extends Fake implements LeasingData {}
+
+class FakeSalesmanData extends Fake implements SalesmanData {}
+
+class FakeSalesModel extends Fake implements SalesModel {}
+
 void main() {
+  // Register fallback values for custom types
+  setUpAll(() {
+    registerFallbackValue(FakeStuData());
+    registerFallbackValue(FakePaymentData());
+    registerFallbackValue(FakeLeasingData());
+    registerFallbackValue(FakeSalesmanData());
+    registerFallbackValue(FakeSalesModel());
+    registerFallbackValue(FakeStuData());
+    registerFallbackValue(FakeStuData());
+    registerFallbackValue(FakeStuData());
+    registerFallbackValue(FakeStuData());
+    registerFallbackValue(FakeStuData());
+    registerFallbackValue(FakeStuData());
+  });
   // Run the counter cubit tests
   group('CounterCubit', () {
     late CounterCubit counterCubit;
@@ -199,6 +244,206 @@ void main() {
       const date = '2025-07-20';
       dateCubit.setDate(date);
       expect(dateCubit.getDate(), date);
+    });
+  });
+
+  group('SalesmanBloc', () {
+    late SalesmanBloc salesmanBloc;
+    late MockSalesRepo mockSalesRepo;
+    late MockStorageRepo mockStorageRepo;
+
+    setUp(() {
+      mockSalesRepo = MockSalesRepo();
+      mockStorageRepo = MockStorageRepo();
+      salesmanBloc = SalesmanBloc(
+        salesRepo: mockSalesRepo,
+        storageRepo: mockStorageRepo,
+      );
+    });
+
+    final tSalesmanList = [
+      SalesModel(id: '1', userName: 'sales1', tierLevel: '1', userId: 'user1'),
+      SalesModel(id: '2', userName: 'sales2', tierLevel: '2', userId: 'user2'),
+    ];
+    final tSalesmanDataList = tSalesmanList
+        .map((e) => SalesmanData(e.userName, e.tierLevel, 0, 0, 0))
+        .toList();
+    final tUserCreds =
+        UserCredsModel(username: 'testuser', password: 'password');
+
+    test('initial state is SalesmanInitial', () {
+      expect(salesmanBloc.state, SalesmanInitial([], [], []));
+    });
+
+    group('FetchSalesman', () {
+      blocTest<SalesmanBloc, SalesmanState>(
+        'emits [SalesmanLoading, SalesmanFetched] when successful',
+        setUp: () {
+          when(() => mockStorageRepo.getUserCredentials())
+              .thenAnswer((_) async => tUserCreds);
+          when(() => mockSalesRepo.fetchSalesman(any())).thenAnswer(
+              (_) async => {'status': 'success', 'data': tSalesmanList});
+        },
+        build: () => salesmanBloc,
+        act: (bloc) => bloc.add(FetchSalesman()),
+        expect: () => [
+          SalesmanLoading(SalesmanInitial([], [], [])),
+          isA<SalesmanFetched>()
+              .having((s) => s.fetchSalesList, 'fetchSalesList', tSalesmanList)
+              .having((s) => s.salesDataList.length, 'salesDataList length',
+                  tSalesmanDataList.length),
+        ],
+      );
+
+      blocTest<SalesmanBloc, SalesmanState>(
+        'emits [SalesmanLoading, SalesmanError] when user credentials not found',
+        setUp: () {
+          when(() => mockStorageRepo.getUserCredentials()).thenAnswer(
+              (_) async => UserCredsModel(username: '', password: ''));
+        },
+        build: () => salesmanBloc,
+        act: (bloc) => bloc.add(FetchSalesman()),
+        expect: () => [
+          SalesmanLoading(SalesmanInitial([], [], [])),
+          SalesmanError('User credentials not found'),
+        ],
+      );
+
+      blocTest<SalesmanBloc, SalesmanState>(
+        'emits [SalesmanLoading, SalesmanError] when repository returns an error status',
+        setUp: () {
+          when(() => mockStorageRepo.getUserCredentials())
+              .thenAnswer((_) async => tUserCreds);
+          when(() => mockSalesRepo.fetchSalesman(any())).thenAnswer(
+              (_) async => {'status': 'error', 'data': 'Something went wrong'});
+        },
+        build: () => salesmanBloc,
+        act: (bloc) => bloc.add(FetchSalesman()),
+        expect: () => [
+          SalesmanLoading(SalesmanInitial([], [], [])),
+          SalesmanError('Something went wrong'),
+        ],
+      );
+    });
+
+    group('AddSalesman', () {
+      blocTest<SalesmanBloc, SalesmanState>(
+        'emits [SalesmanLoading, SalesmanAdded] when successful',
+        setUp: () {
+          when(() => mockStorageRepo.getUserCredentials())
+              .thenAnswer((_) async => tUserCreds);
+          when(() => mockSalesRepo.addSalesman(any(), any(), any(), any()))
+              .thenAnswer((_) async => {'status': 'success'});
+        },
+        build: () => salesmanBloc,
+        act: (bloc) => bloc.add(AddSalesman('3', 'sales3', '3')),
+        expect: () => [
+          SalesmanLoading(SalesmanInitial([], [], [])),
+          SalesmanAdded(),
+        ],
+      );
+    });
+
+    group('ModifySalesman', () {
+      final initialState = SalesmanFetched(
+        SalesmanInitial([], [], []),
+        tSalesmanList,
+        tSalesmanDataList,
+      );
+
+      blocTest<SalesmanBloc, SalesmanState>(
+        'emits [SalesmanModified] with updated data',
+        build: () => salesmanBloc,
+        seed: () => initialState,
+        act: (bloc) => bloc.add(ModifySalesman(rowIndex: 0, newSpkValue: 10)),
+        expect: () => [
+          isA<SalesmanModified>().having(
+            (s) => s.salesDataList[0].spk,
+            'updated spk value',
+            10,
+          ),
+        ],
+      );
+    });
+  });
+
+  group('StuBloc', () {
+    late StuBloc stuBloc;
+
+    setUp(() {
+      stuBloc = StuBloc();
+    });
+
+    test('initial state is StuInitial with an empty data list', () {
+      // The StuBloc constructor calls super(StuInitial([])),
+      // so the very first state should be StuInitial with an empty list.
+      expect(stuBloc.state, isA<StuInitial>());
+      expect(stuBloc.state.data, isEmpty);
+    });
+
+    blocTest<StuBloc, StuState>(
+      'emits [StuInitial] when ResetStuData is added',
+      build: () => stuBloc,
+      act: (bloc) => bloc.add(ResetStuData()),
+      expect: () => [
+        isA<StuInitial>()
+            .having((s) => s.data.length, 'data length', 3)
+            .having((s) => s.data[0].type, 'item 0 type', 'MAXI'),
+      ],
+    );
+
+    group('Modify Events', () {
+      final seedState = StuInitial([
+        StuData('MAXI', 10, 20, '50.0', 5, '200.0'),
+      ]);
+
+      blocTest<StuBloc, StuState>(
+        'ModifyStuData emits [StuDataModified] with correctly calculated rates',
+        build: () => stuBloc,
+        seed: () => seedState,
+        act: (bloc) => bloc.add(ModifyStuData(
+          rowIndex: 0,
+          newResultValue: 15,
+          newTargetValue: 25,
+          newLmValue: 10,
+        )),
+        expect: () => [
+          isA<StuDataModified>()
+              .having((s) => s.data.first.result, 'result', 15)
+              .having((s) => s.data.first.target, 'target', 25)
+              .having((s) => s.data.first.lm, 'lm', 10)
+              .having((s) => s.data.first.growth, 'growth', '150.0'),
+        ],
+      );
+
+      blocTest<StuBloc, StuState>(
+        'ModifyStuTargetData emits [StuDataModified] with updated target',
+        build: () => stuBloc,
+        seed: () => seedState,
+        act: (bloc) => bloc.add(ModifyStuTargetData(
+          rowIndex: 0,
+          newTargetValue: 40,
+        )),
+        expect: () => [
+          isA<StuDataModified>()
+              .having((s) => s.data.first.target, 'target', 40),
+        ],
+      );
+
+      blocTest<StuBloc, StuState>(
+        'ModifyStuLmData emits [StuDataModified] with updated lm and growth rate',
+        build: () => stuBloc,
+        seed: () => seedState,
+        act: (bloc) => bloc.add(ModifyStuLmData(
+          rowIndex: 0,
+          newLmValue: 8,
+        )),
+        expect: () => [
+          isA<StuDataModified>()
+              .having((s) => s.data.first.lm, 'lm', 8)
+              .having((s) => s.data.first.growth, 'growth', '125.0'),
+        ],
+      );
     });
   });
 
@@ -480,13 +725,13 @@ void main() {
   group('BriefingBloc', () {
     // Declare variables for the mock repository and the event we'll use
     late MockBriefRepo mockBriefRepo;
-    late BriefBloc briefBloc;
+    // late BriefBloc briefBloc;
 
     // This runs before each test, setting up our variables
     setUp(() {
       mockBriefRepo = MockBriefRepo();
       // Create a standard, valid event to use in most tests
-      briefBloc = BriefBloc(briefRepo: mockBriefRepo);
+      // briefBloc = BriefBloc(briefRepo: mockBriefRepo);
     });
 
     // Test 1: Check the initial state of the Bloc
@@ -699,6 +944,168 @@ void main() {
           const PaymentData('Cash', 100, 50, '200.0'),
           const PaymentData('Credit', 0, 0, '0.0'),
         ]),
+      ],
+    );
+  });
+
+  group('ReportBloc', () {
+    late ReportBloc reportBloc;
+    late MockReportRepo mockReportRepo;
+    late MockStorageRepo mockStorageRepo;
+
+    setUp(() {
+      mockReportRepo = MockReportRepo();
+      mockStorageRepo = MockStorageRepo();
+      reportBloc = ReportBloc(
+        reportRepo: mockReportRepo,
+        storageRepo: mockStorageRepo,
+      );
+    });
+
+    tearDown(() {
+      reportBloc.close();
+    });
+
+    test('initial state is ReportInitial', () {
+      expect(reportBloc.state, isA<ReportInitial>());
+    });
+
+    blocTest<ReportBloc, ReportState>(
+      'emits [ReportInitial] when InitiateReport is added',
+      build: () => reportBloc,
+      act: (bloc) => bloc.add(InitiateReport()),
+      expect: () => [
+        isA<ReportInitial>(),
+      ],
+    );
+
+    blocTest<ReportBloc, ReportState>(
+      'emits [ReportLoading, ReportCreationWarning] when CreateReport is added with empty fields',
+      setUp: () {
+        when(() => mockStorageRepo.getUserCredentials()).thenAnswer(
+          (_) async =>
+              UserCredsModel(username: 'testuser', password: 'password'),
+        );
+      },
+      build: () => reportBloc,
+      act: (bloc) => bloc.add(CreateReport(
+        dealerName: '',
+        areaName: '',
+        personInCharge: '',
+        stuData: [],
+        paymentData: [],
+        leasingData: [],
+        salesmanData: [],
+        salesData: [],
+      )),
+      expect: () => [
+        isA<ReportLoading>(),
+        isA<ReportCreationWarning>()
+            .having((e) => e.message, 'message', 'Kolom PIC wajib diisi.'),
+      ],
+    );
+
+    blocTest<ReportBloc, ReportState>(
+      'emits [ReportLoading, ReportCreationError] when CreateReport is added with no user credentials',
+      setUp: () {
+        when(() => mockStorageRepo.getUserCredentials()).thenAnswer(
+          (_) async => UserCredsModel(username: '', password: ''),
+        );
+      },
+      build: () => reportBloc,
+      act: (bloc) => bloc.add(CreateReport(
+        dealerName: 'test',
+        areaName: 'test',
+        personInCharge: 'test',
+        stuData: const [],
+        paymentData: const [],
+        leasingData: const [],
+        salesmanData: const [],
+        salesData: const [],
+      )),
+      expect: () => [
+        isA<ReportLoading>(),
+        isA<ReportCreationError>().having(
+            (e) => e.message, 'message', 'Informasi pengguna tidak ditemukan.'),
+      ],
+    );
+
+    blocTest<ReportBloc, ReportState>(
+      'emits [ReportLoading, ReportCreationSuccess] when CreateReport is added successfully',
+      setUp: () {
+        when(() => mockStorageRepo.getUserCredentials()).thenAnswer(
+          (_) async =>
+              UserCredsModel(username: 'testuser', password: 'password'),
+        );
+        when(() => mockReportRepo.createBasicReport(
+            any(), any(), any(), any(), any())).thenAnswer(
+          (_) async => {'status': 'success'},
+        );
+        when(
+          () => mockReportRepo.createReportSTU(
+            any(),
+            any(),
+            any(that: isA<StuData>()),
+            any(),
+          ),
+        ).thenAnswer(
+          (_) async => {'status': 'success'},
+        );
+        when(
+          () => mockReportRepo.createReportPayment(
+            any(),
+            any(),
+            any(that: isA<PaymentData>()),
+            any(),
+          ),
+        ).thenAnswer(
+          (_) async => {'status': 'success'},
+        );
+        when(
+          () => mockReportRepo.createReportLeasing(
+            any(),
+            any(),
+            any(that: isA<LeasingData>()),
+            any(),
+          ),
+        ).thenAnswer(
+          (_) async => {'status': 'success'},
+        );
+        when(
+          () => mockReportRepo.createReportSalesman(
+            any(),
+            any(),
+            any(),
+            any(that: isA<SalesmanData>()),
+            any(),
+          ),
+        ).thenAnswer(
+          (_) async => {'status': 'success'},
+        );
+      },
+      build: () => reportBloc,
+      act: (bloc) => bloc.add(CreateReport(
+        dealerName: 'test',
+        areaName: '00',
+        personInCharge: 'John',
+        stuData: [StuData('MAXI', 0, 0, '0.0', 0, '0.0')],
+        paymentData: [const PaymentData('Cash', 0, 0, '0.0')],
+        leasingData: [LeasingData('BAF', 0, 0, 0, 0, 0.0)],
+        salesmanData: [SalesmanData('Joe', 'Gold', 0, 0, 0)],
+        salesData: [
+          // Ensure the userName matches the salesman's name and provide an ID
+          SalesModel(
+            id: '',
+            userName: 'Joe',
+            tierLevel: 'Gold',
+            userId: '',
+          )
+        ],
+      )),
+      expect: () => [
+        isA<ReportLoading>(),
+        isA<ReportCreationSuccess>()
+            .having((e) => e.message, 'message', 'Laporan berhasil dibuat.'),
       ],
     );
   });

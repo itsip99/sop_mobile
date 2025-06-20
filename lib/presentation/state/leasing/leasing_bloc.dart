@@ -35,6 +35,7 @@ class LeasingBloc<BaseEvent, BaseState>
     LeasingDataAdded event,
     Emitter<LeasingState> emit,
   ) async {
+    // emit(LeasingLoading(state.data));
     log('Current data length: ${state.data.length}');
 
     // Create a NEW list based on the current state's data

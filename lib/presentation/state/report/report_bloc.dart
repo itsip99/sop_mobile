@@ -2,13 +2,17 @@ import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sop_mobile/data/models/user.dart';
-import 'package:sop_mobile/data/repositories/report.dart';
-import 'package:sop_mobile/data/repositories/storage.dart';
+import 'package:sop_mobile/domain/repositories/report.dart';
+import 'package:sop_mobile/domain/repositories/storage.dart';
 import 'package:sop_mobile/presentation/state/report/report_event.dart';
 import 'package:sop_mobile/presentation/state/report/report_state.dart';
 
 class ReportBloc<BaseEvent, BaseState> extends Bloc<ReportEvent, ReportState> {
-  ReportBloc() : super(ReportInitial('')) {
+  final ReportRepo reportRepo;
+  final StorageRepo storageRepo;
+
+  ReportBloc({required this.reportRepo, required this.storageRepo})
+      : super(ReportInitial('')) {
     on<InitiateReport>((event, emit) => emit(ReportInitial('')));
     on<CreateReport>(onCreateReport);
   }
@@ -32,7 +36,7 @@ class ReportBloc<BaseEvent, BaseState> extends Bloc<ReportEvent, ReportState> {
     bool isSalesmanSuccess = false;
 
     // ~:Secure Storage Simulation:~
-    UserCredsModel userCreds = await StorageRepoImp().getUserCredentials();
+    UserCredsModel userCreds = await storageRepo.getUserCredentials();
     // String branchArea = ;
 
     // ~:Get User Credentials:~
@@ -49,7 +53,7 @@ class ReportBloc<BaseEvent, BaseState> extends Bloc<ReportEvent, ReportState> {
       emit(ReportCreationWarning('Kolom PIC wajib diisi.'));
       return; // Exit current function if required fields are empty
     } else {
-      basicReport = await ReportRepoImp().createBasicReport(
+      basicReport = await reportRepo.createBasicReport(
         userCreds.username,
         DateTime.now().toIso8601String().substring(0, 10),
         event.dealerName,
@@ -65,7 +69,7 @@ class ReportBloc<BaseEvent, BaseState> extends Bloc<ReportEvent, ReportState> {
       return; // Exit current function if required fields are empty
     } else {
       for (int i = 0; i < event.stuData.length; i++) {
-        reportSTU.add(await ReportRepoImp().createReportSTU(
+        reportSTU.add(await reportRepo.createReportSTU(
           userCreds.username,
           DateTime.now().toIso8601String().substring(0, 10),
           event.stuData[i],
@@ -88,7 +92,7 @@ class ReportBloc<BaseEvent, BaseState> extends Bloc<ReportEvent, ReportState> {
       return; // Exit current function if required fields are empty
     } else {
       for (int i = 0; i < event.paymentData.length; i++) {
-        reportPayment.add(await ReportRepoImp().createReportPayment(
+        reportPayment.add(await reportRepo.createReportPayment(
           userCreds.username,
           DateTime.now().toIso8601String().substring(0, 10),
           event.paymentData[i],
@@ -111,7 +115,7 @@ class ReportBloc<BaseEvent, BaseState> extends Bloc<ReportEvent, ReportState> {
       return; // Exit current function if required fields are empty
     } else {
       for (int i = 0; i < event.leasingData.length; i++) {
-        reportLeasing.add(await ReportRepoImp().createReportLeasing(
+        reportLeasing.add(await reportRepo.createReportLeasing(
           userCreds.username,
           DateTime.now().toIso8601String().substring(0, 10),
           event.leasingData[i],
@@ -133,7 +137,7 @@ class ReportBloc<BaseEvent, BaseState> extends Bloc<ReportEvent, ReportState> {
       return; // Exit current function if required fields are empty
     } else {
       for (int i = 0; i < event.salesmanData.length; i++) {
-        reportSalesman.add(await ReportRepoImp().createReportSalesman(
+        reportSalesman.add(await reportRepo.createReportSalesman(
           event.salesData
               .where((e) => e.userName == event.salesmanData[i].name)
               .first

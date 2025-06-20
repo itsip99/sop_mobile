@@ -119,10 +119,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 padding: EdgeInsets.fromLTRB(
-                  (MediaQuery.of(context).size.width < 800) ? 20 : 60,
-                  (MediaQuery.of(context).size.height < 800) ? 25 : 75,
-                  (MediaQuery.of(context).size.width < 800) ? 20 : 60,
-                  (MediaQuery.of(context).size.height < 800) ? 15 : 45,
+                  MediaQuery.of(context).size.shortestSide >= 600 ? 60 : 20,
+                  MediaQuery.of(context).size.shortestSide >= 600 ? 75 : 25,
+                  MediaQuery.of(context).size.shortestSide >= 600 ? 60 : 20,
+                  MediaQuery.of(context).size.shortestSide >= 600 ? 45 : 15,
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

@@ -45,11 +45,12 @@ class LoginRepoImp implements LoginRepo {
         return {
           'status': 'fail',
           'data': LoginModel(
+            branch: '',
+            branchName: '',
+            shop: '',
             id: '',
             name: '',
             memo: LoginModel.fromJson(res['Data'][0]).memo,
-            branch: '',
-            shop: '',
             data: [],
           ),
         };
@@ -59,11 +60,12 @@ class LoginRepoImp implements LoginRepo {
       return {
         'status': 'fail',
         'data': LoginModel(
+          branch: '',
+          branchName: '',
+          shop: '',
           id: '',
           name: '',
           memo: response.statusCode.toString(),
-          branch: '',
-          shop: '',
           data: [],
         ),
       };

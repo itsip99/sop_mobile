@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sop_mobile/core/constant/colors.dart';
 import 'package:sop_mobile/core/constant/enum.dart';
-import 'package:sop_mobile/core/constant/variables.dart';
 import 'package:sop_mobile/core/helpers/formatter.dart';
 import 'package:sop_mobile/data/models/sales.dart';
 import 'package:sop_mobile/presentation/state/leasing/leasing_bloc.dart';
@@ -47,15 +46,11 @@ class ReportScreen extends StatefulWidget {
 class _ReportScreenState extends State<ReportScreen> {
   final TextEditingController locationController = TextEditingController();
   final TextEditingController areaController = TextEditingController();
-
-  String _getCityNameFromBranchCode(String branchCode) {
-    const branchAreaType = StaticVariables.branchAreaType;
-    return branchAreaType[branchCode] ?? branchCode;
-  }
-
   final TextEditingController personController = TextEditingController();
 
+  late LeasingInsertDataSource _leasingDataSource;
   double tableHeight = 260;
+
   List<StuData> stuData = [];
   List<PaymentData> paymentData = [];
   List<LeasingData> leasingData = [];
@@ -162,9 +157,22 @@ class _ReportScreenState extends State<ReportScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final leasingBloc = context.read<LeasingBloc>();
+  void initState() {
+    super.initState();
+    // Initialize data source with initial empty data
+    _leasingDataSource = LeasingInsertDataSource(
+      [],
+      onCellValueEdited: (rowIndex, columnName, newValue) => editLeasingValue(
+        context.read<LeasingBloc>(),
+        rowIndex,
+        columnName,
+        newValue,
+      ),
+    );
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
@@ -279,7 +287,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                 // ~:Set the area controller text:~
                                 if (areaController.text.isEmpty) {
                                   areaController.text =
-                                      '${state.getUserCreds.branch} ${_getCityNameFromBranchCode(state.getUserCreds.branch)}';
+                                      '${state.getUserCreds.branch} ${state.getUserCreds.branchName}';
                                 }
                               }
 
@@ -382,27 +390,22 @@ class _ReportScreenState extends State<ReportScreen> {
                             builder: (context, state) {
                               tableHeight = 260;
                               leasingData = state.data;
+
                               if (state is AddLeasingData) {
                                 leasingData = state.newData;
                                 tableHeight =
                                     260 + (50 * (leasingData.length - 3));
-                                // log('Updated table height: $tableHeight');
+                                // Update the existing data source with new data
+                                _leasingDataSource.updateData(leasingData);
+                              } else if (state is LeasingInitial) {
+                                // Handle initial state
+                                _leasingDataSource.updateData(leasingData);
                               }
 
                               log('Leasing length: ${state.data.length}');
                               return CustomDataGrid.report(
                                 context,
-                                LeasingInsertDataSource(
-                                  leasingData,
-                                  onCellValueEdited:
-                                      (rowIndex, columnName, newValue) =>
-                                          editLeasingValue(
-                                    leasingBloc,
-                                    rowIndex,
-                                    columnName,
-                                    newValue,
-                                  ),
-                                ),
+                                _leasingDataSource,
                                 LeasingType.values
                                     .map((e) => e.name.toString())
                                     .toList(),
@@ -412,11 +415,13 @@ class _ReportScreenState extends State<ReportScreen> {
                                     const BouncingScrollPhysics(),
                                 verticalScrollPhysics:
                                     const AlwaysScrollableScrollPhysics(),
-                                enableAddRow: true,
-                                addFunction: () async {
-                                  log('Add New Row');
-                                  leasingBloc.add(LeasingDataAdded());
-                                },
+                                // enableAddRow: true,
+                                // addFunction: () async {
+                                //   log('Add New Row');
+                                //   context
+                                //       .read<LeasingBloc>()
+                                //       .add(LeasingDataAdded());
+                                // },
                               );
                             },
                           ),

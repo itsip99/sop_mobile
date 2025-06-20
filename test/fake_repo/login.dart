@@ -15,11 +15,12 @@ class FakeLoginRepo implements LoginRepo {
       return {
         'status': 'success',
         'data': LoginModel(
+          branch: '',
+          branchName: '',
+          shop: '',
           id: '',
           name: '',
           memo: 'Login successful',
-          branch: '',
-          shop: '',
           data: [],
         ),
       };
@@ -28,11 +29,12 @@ class FakeLoginRepo implements LoginRepo {
       return {
         'status': 'fail',
         'data': LoginModel(
+          branch: '',
+          branchName: '',
+          shop: '',
           id: '',
           name: '',
           memo: 'Invalid credentials',
-          branch: '',
-          shop: '',
           data: [],
         ),
       };
@@ -44,11 +46,12 @@ class FakeLoginRepo implements LoginRepo {
     return {
       'status': 'success',
       'data': LoginModel(
+        branch: '',
+        branchName: '',
+        shop: '',
         id: '',
         name: '',
         memo: 'Logout successful',
-        branch: '',
-        shop: '',
         data: [],
       ),
     };

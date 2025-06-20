@@ -1,4 +1,5 @@
 class StaticVariables {
+  // ~:Unused Static Variable:~
   static const Map<String, String> branchAreaType = {
     '02': 'Malang',
     '03': 'Jember',

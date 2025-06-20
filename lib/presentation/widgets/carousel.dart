@@ -20,9 +20,9 @@ class CustomCarousel {
         Image.asset(
           imgPath,
           fit: BoxFit.contain,
-          height: (MediaQuery.of(context).size.height < 800)
-              ? 300
-              : MediaQuery.of(context).size.height * 0.45,
+          height: MediaQuery.of(context).size.shortestSide >= 600
+              ? MediaQuery.of(context).size.height * 0.45 // Taller on tablets
+              : 300, // Shorter on phones
         ),
 
         // ~:Welcome Text:~

@@ -1,6 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:sop_mobile/data/repositories/login.dart';
+import 'package:sop_mobile/data/repositories/report.dart';
+import 'package:sop_mobile/data/repositories/sales.dart';
 import 'package:sop_mobile/data/repositories/storage.dart';
 import 'package:sop_mobile/presentation/screens/report_screen.dart';
 import 'package:sop_mobile/presentation/state/brief/brief_bloc.dart';
@@ -48,7 +50,10 @@ class StateManager {
         create: (context) => BriefBloc(),
       ),
       BlocProvider<SalesmanBloc>(
-        create: (context) => SalesmanBloc(),
+        create: (context) => SalesmanBloc(
+          salesRepo: SalesRepoImp(),
+          storageRepo: StorageRepoImp(),
+        ),
       ),
       BlocProvider<PermissionBloc>(
         create: (context) => PermissionBloc(),
@@ -75,7 +80,10 @@ class StateManager {
         child: const ReportScreen(),
       ),
       BlocProvider<ReportBloc>(
-        create: (context) => ReportBloc(),
+        create: (context) => ReportBloc(
+          reportRepo: ReportRepoImp(),
+          storageRepo: StorageRepoImp(),
+        ),
         child: const ReportScreen(),
       ),
     ];
