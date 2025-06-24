@@ -14,7 +14,7 @@ class CustomCarousel {
     required String subtitle,
   }) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         // ~:Welcome Image:~
         Image.asset(
@@ -53,9 +53,12 @@ class CustomCarousel {
     final PageController carouselController = PageController();
 
     return Column(
+      spacing: MediaQuery.of(context).size.height * 0.05,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         // ~:Welcome Carousel:~
-        Expanded(
+        SizedBox(
+          height: MediaQuery.of(context).size.height * 0.5,
           child: BlocBuilder<CarouselBloc, CarouselState>(
             builder: (context, state) {
               return PageView(

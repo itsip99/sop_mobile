@@ -158,7 +158,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // ~:Email TextField:~
+                                // ~:Username TextField:~
                                 CustomTextFormField(
                                   'your username',
                                   'Username',
@@ -260,11 +260,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(
                       width: MediaQuery.of(context).size.width,
                       height: 45,
-                      child: Wrap(
-                        direction: Axis.vertical,
-                        alignment: WrapAlignment.center,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        runAlignment: WrapAlignment.center,
+                      child: Column(
+                        spacing: 4,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           // ~:Footer Title~:
                           CustomText.footer(
@@ -274,11 +272,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           // ~:Footer Button:~
                           CustomText.footerButton(
                             text: 'Sign Up',
-                            // pressedFunc: () => Navigator.pushReplacementNamed(
-                            //   context,
-                            //   '/register',
-                            // ),
-                            pressedFunc: () {},
+                            pressedFunc: () => Navigator.pushReplacementNamed(
+                              context,
+                              '/register',
+                            ),
                           ),
                         ],
                       ),

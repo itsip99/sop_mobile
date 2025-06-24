@@ -9,11 +9,24 @@ import 'package:sop_mobile/routes.dart';
 final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.black,
     // Adjust for icon visibility
     statusBarBrightness: Brightness.light,
   ));
+
+  // --- FIX: Add these lines to enable edge-to-edge display ---
+  // This tells the app to draw behind the status and navigation bars.
+  // SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+
+  // This makes the navigation bar transparent, so your app's content shows through.
+  // SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+  //   systemNavigationBarColor: Colors.transparent,
+  //   systemNavigationBarDividerColor: Colors.transparent,
+  // ));
+  // --- End of Fix ---
 
   runApp(const MyApp());
 }
@@ -28,19 +41,24 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitUp,
     ]);
 
-    return MediaQuery(
-      data: MediaQuery.of(context).copyWith(
-        textScaler: const TextScaler.linear(1.0),
-      ),
-      child: MultiBlocProvider(
-        providers: StateManager.getBlocProviders(),
-        child: MaterialApp(
-          title: 'SOP Mobile',
-          scrollBehavior: MyCustomScrollBehavior(),
-          debugShowCheckedModeBanner: false,
-          navigatorKey: navigatorKey,
-          initialRoute: ConstantRoutes.init,
-          routes: ConstantRoutes.maps,
+    return SafeArea(
+      top: false,
+      left: false,
+      right: false,
+      child: MediaQuery(
+        data: MediaQuery.of(context).copyWith(
+          textScaler: const TextScaler.linear(1.0),
+        ),
+        child: MultiBlocProvider(
+          providers: StateManager.getBlocProviders(),
+          child: MaterialApp(
+            title: 'SOP Mobile',
+            scrollBehavior: MyCustomScrollBehavior(),
+            debugShowCheckedModeBanner: false,
+            navigatorKey: navigatorKey,
+            initialRoute: ConstantRoutes.init,
+            routes: ConstantRoutes.maps,
+          ),
         ),
       ),
     );

@@ -35,7 +35,7 @@ class Validator {
       return 'Username is required';
     } else if (value.length < 6) {
       return 'Username must be at least 6 characters long';
-    } else if (!RegExp(r'^[A-Za-z]{2}\d{5}$').hasMatch(value)) {
+    } else if (!RegExp(r'^[A-Z]{2,4}\d{3,5}$').hasMatch(value)) {
       return 'Invalid username format.';
     }
     return null; // No error

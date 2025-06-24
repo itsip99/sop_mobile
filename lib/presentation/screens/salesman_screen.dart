@@ -472,11 +472,14 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                         return const SizedBox();
                       }
 
-                      return Padding(
+                      return Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 60,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 20,
                           vertical: 8,
                         ),
+                        margin: const EdgeInsets.only(bottom: 16),
                         child: Row(
                           spacing: 8,
                           mainAxisAlignment: MainAxisAlignment.center,

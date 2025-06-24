@@ -450,7 +450,9 @@ class _ReportScreenState extends State<ReportScreen> {
                               log('Salesman length: ${salesmanData.length}');
 
                               // ~:Set a dynamic table height:~
-                              if (salesmanData.length <= 6) {
+                              if (salesmanData.isEmpty) {
+                                return const SizedBox();
+                              } else if (salesmanData.length <= 6) {
                                 tableHeight =
                                     260 + (50 * (salesmanData.length - 3));
                               }

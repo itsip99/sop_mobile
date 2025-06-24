@@ -16,11 +16,6 @@ class WelcomeScreen extends StatefulWidget {
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -35,7 +30,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         color: ConstantColors.primaryColor2,
         padding: const EdgeInsets.all(20),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // ~:Logo Section:~
             Align(
@@ -61,78 +55,100 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 child: Image.asset(
                   'assets/images/logo.png',
                   fit: BoxFit.cover,
-                  width: MediaQuery.of(context).size.shortestSide >= 600 ? 150 : 70, // Wider on tablets
+                  width: MediaQuery.of(context).size.shortestSide >= 600
+                      ? 150
+                      : 70, // Wider on tablets
                 ),
               ),
             ),
 
             // ~:Welcome Statement:~
-            Expanded(
-              child: CustomCarousel.welcomeSlider(context),
-            ),
+            Expanded(child: CustomCarousel.welcomeSlider(context)),
 
-            // ~:Button Section:~
+            // ~:Login Section:~
             Container(
               width: MediaQuery.of(context).size.width,
               margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // ~:Login Button:~
-                  BlocBuilder<CarouselBloc, CarouselState>(
-                    builder: (context, state) {
-                      debugPrint('Current Index: ${state.currentIndex}');
-                      if (state.currentIndex == 3) {
-                        return CustomButton.primaryButton2(
-                          context: context,
-                          text: 'Login',
-                          func: () => Navigator.pushNamed(context, '/login'),
-                          bgColor: ConstantColors.primaryColor1,
-                          textStyle: TextThemes.subtitle,
-                          shadowColor: ConstantColors.shadowColor,
-                        );
-                      } else {
-                        return CustomButton.primaryButton2(
-                          context: context,
-                          text: 'Login',
-                          func: () {},
-                          bgColor: ConstantColors.disabledColor,
-                          textStyle: TextThemes.subtitle,
-                          shadowColor: ConstantColors.shadowColor,
-                        );
-                      }
-                    },
-                  ),
-
-                  // ~:Divider:~
-                  const SizedBox(height: 10),
-
-                  // ~:Sign Up Button:~
-                  BlocBuilder<CarouselBloc, CarouselState>(
-                    builder: (context, state) {
-                      if (state.currentIndex == 3) {
-                        return CustomButton.primaryButton2(
-                          context: context,
-                          text: 'Sign Up',
-                          func: () => Navigator.pushNamed(context, '/register'),
-                          bgColor: ConstantColors.primaryColor2,
-                          textStyle: TextThemes.subtitle,
-                          shadowColor: ConstantColors.shadowColor,
-                        );
-                      } else {
-                        return CustomButton.primaryButton2(
-                          context: context,
-                          text: 'Sign Up',
-                          func: () {},
-                          bgColor: ConstantColors.disabledColor,
-                          textStyle: TextThemes.subtitle,
-                          shadowColor: ConstantColors.shadowColor,
-                        );
-                      }
-                    },
-                  ),
-                ],
+              child: BlocBuilder<CarouselBloc, CarouselState>(
+                builder: (context, state) {
+                  debugPrint('Current Index: ${state.currentIndex}');
+                  if (state.currentIndex == 3) {
+                    return CustomButton.primaryButton2(
+                      context: context,
+                      text: 'Lanjut',
+                      func: () => Navigator.pushNamed(context, '/login'),
+                      bgColor: ConstantColors.primaryColor1,
+                      textStyle: TextThemes.subtitle,
+                      shadowColor: ConstantColors.shadowColor,
+                    );
+                  } else {
+                    return CustomButton.primaryButton2(
+                      context: context,
+                      text: 'Lanjut',
+                      func: () {},
+                      bgColor: ConstantColors.disabledColor,
+                      textStyle: TextThemes.subtitle,
+                      shadowColor: ConstantColors.shadowColor,
+                    );
+                  }
+                },
               ),
+              // child: Column(
+              //   spacing: 10,
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [
+              //     // ~:Login Button:~
+              //     BlocBuilder<CarouselBloc, CarouselState>(
+              //       builder: (context, state) {
+              //         debugPrint('Current Index: ${state.currentIndex}');
+              //         if (state.currentIndex == 3) {
+              //           return CustomButton.primaryButton2(
+              //             context: context,
+              //             text: 'Login',
+              //             func: () => Navigator.pushNamed(context, '/login'),
+              //             bgColor: ConstantColors.primaryColor1,
+              //             textStyle: TextThemes.subtitle,
+              //             shadowColor: ConstantColors.shadowColor,
+              //           );
+              //         } else {
+              //           return CustomButton.primaryButton2(
+              //             context: context,
+              //             text: 'Login',
+              //             func: () {},
+              //             bgColor: ConstantColors.disabledColor,
+              //             textStyle: TextThemes.subtitle,
+              //             shadowColor: ConstantColors.shadowColor,
+              //           );
+              //         }
+              //       },
+              //     ),
+
+              //     // ~:Sign Up Button:~
+              //     BlocBuilder<CarouselBloc, CarouselState>(
+              //       builder: (context, state) {
+              //         if (state.currentIndex == 3) {
+              //           return CustomButton.primaryButton2(
+              //             context: context,
+              //             text: 'Sign Up',
+              //             func: () => Navigator.pushNamed(context, '/register'),
+              //             bgColor: ConstantColors.primaryColor2,
+              //             textStyle: TextThemes.subtitle,
+              //             shadowColor: ConstantColors.shadowColor,
+              //           );
+              //         } else {
+              //           return CustomButton.primaryButton2(
+              //             context: context,
+              //             text: 'Sign Up',
+              //             func: () {},
+              //             bgColor: ConstantColors.disabledColor,
+              //             textStyle: TextThemes.subtitle,
+              //             shadowColor: ConstantColors.shadowColor,
+              //           );
+              //         }
+              //       },
+              //     ),
+              //   ],
+              // ),
             ),
           ],
         ),

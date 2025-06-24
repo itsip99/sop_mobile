@@ -5,7 +5,7 @@ package="com.basra.sop_mobile">
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <application
-        android:label="sop_mobile"
+        android:label="SOP Mobile"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
