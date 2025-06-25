@@ -28,8 +28,9 @@ class StuDataSource extends DataGridSource {
           ),
           DataGridCell<String>(
             columnName: 'ach',
-            value:
-                '${(data.stuResult / data.stuTarget * 100).toStringAsFixed(0)}%',
+            value: data.stuTarget > 0
+                ? '${(data.stuResult / data.stuTarget * 100).toStringAsFixed(0)}%'
+                : '0%',
           ),
           DataGridCell<int>(
             columnName: 'lm',
@@ -37,7 +38,9 @@ class StuDataSource extends DataGridSource {
           ),
           DataGridCell<String>(
             columnName: 'growth',
-            value: '${(data.stuResult / data.lmStu * 100).toStringAsFixed(0)}%',
+            value: data.lmStu > 0
+                ? '${(data.stuResult / data.lmStu * 100).toStringAsFixed(0)}%'
+                : '0%',
           ),
         ],
       );

@@ -1,6 +1,26 @@
 import 'package:flutter/services.dart';
 
 class Formatter {
+  /// Converts a string to title case (first letter of each word capitalized, rest lowercase).
+  /// Example: 'hELLO wOrLd' becomes 'Hello World'
+  static String toTitleCase(String text) {
+    if (text.isEmpty) return text;
+
+    // Split into words, trim whitespace, and filter out empty strings
+    final words =
+        text.split(' ').where((word) => word.trim().isNotEmpty).toList();
+
+    // Process each word
+    final result = <String>[];
+    for (final word in words) {
+      if (word.isEmpty) continue;
+      result.add(word[0].toUpperCase() +
+          (word.length > 1 ? word.substring(1).toLowerCase() : ''));
+    }
+
+    return result.join(' ');
+  }
+
   static String reformatDate(String date) {
     final parts = date.split('-');
     if (parts.length == 3) {
@@ -27,6 +47,18 @@ class Formatter {
 
   static TextInputFormatter get capitalFormatter {
     return FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9/]'));
+  }
+
+  /// A text formatter that converts input to title case as the user types
+  static TextInputFormatter get titleCaseFormatter {
+    return TextInputFormatter.withFunction((oldValue, newValue) {
+      if (newValue.text.isEmpty) return newValue;
+      final text = toTitleCase(newValue.text);
+      return TextEditingValue(
+        text: text,
+        selection: newValue.selection,
+      );
+    });
   }
 }
 

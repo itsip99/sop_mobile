@@ -28,8 +28,9 @@ class PaymentDataSource extends DataGridSource {
           ),
           DataGridCell<String>(
             columnName: 'growth',
-            value:
-                '${(data.result / data.lmPayment * 100).toStringAsFixed(0)}%',
+            value: data.lmPayment > 0
+                ? '${(data.result / data.lmPayment * 100).toStringAsFixed(0)}%'
+                : '0%',
           ),
         ],
       );

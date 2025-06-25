@@ -186,6 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   validatorType: 'password',
                                   inputFormatters: [Formatter.normalFormatter],
                                   borderRadius: 16,
+                                  showPassword: true,
                                 ),
                               ],
                             ),

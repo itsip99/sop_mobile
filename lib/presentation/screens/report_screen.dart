@@ -264,7 +264,8 @@ class _ReportScreenState extends State<ReportScreen> {
                                 // ~:Set the dealer controller text:~
                                 if (locationController.text.isEmpty) {
                                   locationController.text =
-                                      state.getUserCreds.name;
+                                      Formatter.toTitleCase(
+                                          state.getUserCreds.name);
                                 }
                               }
 
@@ -287,7 +288,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                 // ~:Set the area controller text:~
                                 if (areaController.text.isEmpty) {
                                   areaController.text =
-                                      '${state.getUserCreds.branch} ${state.getUserCreds.branchName}';
+                                      '${state.getUserCreds.branch} ${Formatter.toTitleCase(state.getUserCreds.branchName)}';
                                 }
                               }
 

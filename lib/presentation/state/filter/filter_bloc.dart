@@ -38,13 +38,6 @@ class FilterBloc extends Bloc<FilterEvent, FilterState> {
         event.date,
       );
 
-      // HomeModel res = await filterRepo!.dataPreprocessing(
-      //   state.activeFilter.contains(FilterType.briefing),
-      //   state.activeFilter.contains(FilterType.report),
-      //   // state.activeFilter.contains(FilterType.salesman),
-      //   event.date,
-      // );
-
       if (res.briefingData.isNotEmpty ||
           res.reportData.isNotEmpty ||
           res.salesData.isNotEmpty) {

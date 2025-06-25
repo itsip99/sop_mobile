@@ -58,7 +58,7 @@ class CustomCarousel {
       children: [
         // ~:Welcome Carousel:~
         SizedBox(
-          height: MediaQuery.of(context).size.height * 0.5,
+          height: MediaQuery.of(context).size.height * 0.525,
           child: BlocBuilder<CarouselBloc, CarouselState>(
             builder: (context, state) {
               return PageView(

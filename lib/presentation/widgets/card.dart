@@ -388,7 +388,8 @@ class CustomCard {
 
         // ~:STU DataGrid:~
         SizedBox(
-          height: MediaQuery.of(context).size.height * 0.275,
+          height:
+              data.length > 3 ? 205 + (50 * (data.length - 3)).toDouble() : 205,
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: SfDataGrid(
@@ -497,7 +498,9 @@ class CustomCard {
 
         // ~:Payment DataGrid:~
         SizedBox(
-          height: MediaQuery.of(context).size.height * 0.225,
+          // height: MediaQuery.of(context).size.height * 0.225,
+          height:
+              data.length > 2 ? 155 + (50 * (data.length - 2)).toDouble() : 155,
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: SfDataGrid(
@@ -579,7 +582,9 @@ class CustomCard {
 
         // ~:Leasing DataGrid:~
         SizedBox(
-          height: MediaQuery.of(context).size.height * 0.225,
+          // height: MediaQuery.of(context).size.height * 0.225,
+          height:
+              data.length > 3 ? 205 + (50 * (data.length - 3)).toDouble() : 205,
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: SfDataGrid(

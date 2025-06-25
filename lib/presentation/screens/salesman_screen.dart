@@ -299,6 +299,7 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
             ),
             child: Container(
               width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.only(top: 20),
               decoration: const BoxDecoration(
                 color: ConstantColors.primaryColor2,
                 borderRadius: BorderRadius.only(
@@ -334,132 +335,152 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                   ),
 
                   // ~:Page Body:~
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height * 0.725,
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Builder(builder: (context) {
-                      if (args != null &&
-                          args.containsKey('registeredSales') &&
-                          (args['registeredSales'] as List<SalesmanModel>)
-                              .isNotEmpty) {
-                        log('Registered sales list: ${args['registeredSales']}');
+                  Expanded(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 8,
+                      ),
+                      child: Builder(builder: (context) {
+                        if (args != null &&
+                            args.containsKey('registeredSales') &&
+                            (args['registeredSales'] as List<SalesmanModel>)
+                                .isNotEmpty) {
+                          log('Registered sales list: ${args['registeredSales']}');
 
-                        return Column(
-                          spacing: 8.0,
-                          children:
-                              (args['registeredSales'] as List<SalesmanModel>)
-                                  .map((salesProfile) {
-                            return Card(
-                              color: ConstantColors.primaryColor2,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
+                          return SingleChildScrollView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 8,
                               ),
-                              elevation: 5,
-                              shadowColor: ConstantColors.shadowColor,
-                              child: ListTile(
-                                contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 4,
-                                  horizontal: 20,
-                                ),
-                                title: Text(
-                                  'ID ${salesProfile.idCardNumber}',
-                                  style: TextThemes.normal.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                subtitle: Text(
-                                  '${salesProfile.name} - ${salesProfile.tierLevel}',
-                                  style: TextThemes.normal,
-                                ),
-                                // ~:Change to CheckBox for further use:~
-                                // trailing: IconButton(
-                                //   icon: const Icon(
-                                //     Icons.delete_rounded,
-                                //     color: ConstantColors.primaryColor3,
-                                //   ),
-                                //   onPressed: () {},
-                                // ),
-                              ),
-                            );
-                          }).toList(),
-                        );
-                      }
-
-                      return Refresh.iOSnAndroid(
-                        onRefresh: () => salesmanBloc.add(FetchSalesman()),
-                        child: BlocBuilder<SalesmanBloc, SalesmanState>(
-                          builder: (context, state) {
-                            if (state is SalesmanLoading) {
-                              return SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.725,
-                                child: Loading.platformIndicator(
-                                  iosRadius: 13,
-                                  iosCircleColor: ConstantColors.primaryColor3,
-                                  androidWidth: 28,
-                                  androidHeight: 28,
-                                  androidStrokeWidth: 3.5,
-                                  androidCircleColor:
-                                      ConstantColors.primaryColor3,
-                                ),
-                              );
-                            } else if (state is SalesmanError) {
-                              return Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.7,
-                                alignment: Alignment.center,
-                                child: Text(
-                                  state.error,
-                                  style: TextThemes.normal,
-                                  textAlign: TextAlign.center,
-                                ),
-                              );
-                            }
-
-                            log('Fetched salesman list length: ${state.fetchSalesList.length}');
-                            return Column(
-                              spacing: 8.0,
-                              children:
-                                  state.fetchSalesList.map((salesProfile) {
-                                return Card(
-                                  color: ConstantColors.primaryColor2,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  elevation: 5,
-                                  shadowColor: ConstantColors.shadowColor,
-                                  child: ListTile(
-                                    contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 4,
-                                      horizontal: 20,
+                              child: Column(
+                                spacing: 8.0,
+                                children: (args['registeredSales']
+                                        as List<SalesmanModel>)
+                                    .map((salesProfile) {
+                                  return Card(
+                                    color: ConstantColors.primaryColor2,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
                                     ),
-                                    title: Text(
-                                      'ID ${salesProfile.id}',
-                                      style: TextThemes.normal.copyWith(
-                                        fontWeight: FontWeight.bold,
+                                    elevation: 5,
+                                    shadowColor: ConstantColors.shadowColor,
+                                    child: ListTile(
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                        vertical: 4,
+                                        horizontal: 20,
                                       ),
+                                      title: Text(
+                                        'ID ${Formatter.toTitleCase(salesProfile.idCardNumber)}',
+                                        style: TextThemes.normal.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      subtitle: Text(
+                                        '${Formatter.toTitleCase(salesProfile.name)} - ${Formatter.toTitleCase(salesProfile.tierLevel)}',
+                                        style: TextThemes.normal,
+                                      ),
+                                      // ~:Change to CheckBox for further use:~
+                                      // trailing: IconButton(
+                                      //   icon: const Icon(
+                                      //     Icons.delete_rounded,
+                                      //     color: ConstantColors.primaryColor3,
+                                      //   ),
+                                      //   onPressed: () {},
+                                      // ),
                                     ),
-                                    subtitle: Text(
-                                      '${salesProfile.userName} - ${salesProfile.tierLevel}',
-                                      style: TextThemes.normal,
-                                    ),
-                                    // ~:Change to CheckBox for further use:~
-                                    // trailing: IconButton(
-                                    //   icon: const Icon(
-                                    //     Icons.delete_rounded,
-                                    //     color: ConstantColors.primaryColor3,
-                                    //   ),
-                                    //   onPressed: () {},
-                                    // ),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          );
+                        }
+
+                        return Refresh.iOSnAndroid(
+                          onRefresh: () => salesmanBloc.add(FetchSalesman()),
+                          child: BlocBuilder<SalesmanBloc, SalesmanState>(
+                            builder: (context, state) {
+                              if (state is SalesmanLoading) {
+                                return SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.725,
+                                  child: Loading.platformIndicator(
+                                    iosRadius: 13,
+                                    iosCircleColor:
+                                        ConstantColors.primaryColor3,
+                                    androidWidth: 28,
+                                    androidHeight: 28,
+                                    androidStrokeWidth: 3.5,
+                                    androidCircleColor:
+                                        ConstantColors.primaryColor3,
                                   ),
                                 );
-                              }).toList(),
-                            );
-                          },
-                        ),
-                      );
-                    }),
+                              } else if (state is SalesmanError) {
+                                return Container(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.7,
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    state.error,
+                                    style: TextThemes.normal,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                );
+                              }
+
+                              log('Fetched salesman list length: ${state.fetchSalesList.length}');
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 8,
+                                ),
+                                child: Column(
+                                  spacing: 8.0,
+                                  children:
+                                      state.fetchSalesList.map((salesProfile) {
+                                    return Card(
+                                      color: ConstantColors.primaryColor2,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      elevation: 5,
+                                      shadowColor: ConstantColors.shadowColor,
+                                      child: ListTile(
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                          vertical: 4,
+                                          horizontal: 20,
+                                        ),
+                                        title: Text(
+                                          'ID ${Formatter.toTitleCase(salesProfile.id)}',
+                                          style: TextThemes.normal.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        subtitle: Text(
+                                          '${Formatter.toTitleCase(salesProfile.userName)} - ${Formatter.toTitleCase(salesProfile.tierLevel)}',
+                                          style: TextThemes.normal,
+                                        ),
+                                        // ~:Change to CheckBox for further use:~
+                                        // trailing: IconButton(
+                                        //   icon: const Icon(
+                                        //     Icons.delete_rounded,
+                                        //     color: ConstantColors.primaryColor3,
+                                        //   ),
+                                        //   onPressed: () {},
+                                        // ),
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      }),
+                    ),
                   ),
 
                   // ~:Page Footer:~
@@ -475,16 +496,13 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                       return Container(
                         width: MediaQuery.of(context).size.width,
                         height: 60,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 8,
-                        ),
-                        margin: const EdgeInsets.only(bottom: 16),
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
                           spacing: 8,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            // ~:Add Button:~
+                            // ~:Delete Button:~
                             CustomButton.primaryButton2(
                               context: context,
                               width: 40,

@@ -4,8 +4,9 @@ import 'package:sop_mobile/core/constant/colors.dart';
 import 'package:sop_mobile/core/helpers/validator.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
 
+// ignore: must_be_immutable
 class CustomTextFormField extends StatefulWidget {
-  const CustomTextFormField(
+  CustomTextFormField(
     this.hintText,
     this.labelText,
     this.prefixIcon,
@@ -20,6 +21,7 @@ class CustomTextFormField extends StatefulWidget {
     this.isLabelFloat = false,
     this.borderRadius = 10,
     this.isEnabled = true,
+    this.showPassword = false,
     super.key,
   });
 
@@ -37,6 +39,7 @@ class CustomTextFormField extends StatefulWidget {
   final bool isLabelFloat;
   final double borderRadius;
   final bool isEnabled;
+  bool showPassword;
 
   @override
   State<CustomTextFormField> createState() => _CustomTextFormFieldState();
@@ -44,6 +47,23 @@ class CustomTextFormField extends StatefulWidget {
 
 class _CustomTextFormFieldState extends State<CustomTextFormField> {
   final _formKey = GlobalKey<FormState>();
+
+  String? Function(String?)? get _getValidator {
+    switch (widget.validatorType) {
+      case 'email':
+        return Validator.emailValidation;
+      case 'id':
+        return Validator.idValidator;
+      case 'name':
+        return Validator.nameValidator;
+      case 'username':
+        return Validator.usernameValidator;
+      case 'password':
+        return Validator.passwordValidation;
+      default:
+        return null;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +81,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
           textCapitalization: widget.textCapitalization,
           controller: widget.controller,
           enabled: widget.isEnabled,
-          obscureText: widget.isPassword,
+          obscureText: widget.isPassword && widget.showPassword,
           style: widget.isEnabled
               ? TextThemes.textfieldPlaceholder
               : TextThemes.textfieldPlaceholder
@@ -87,62 +107,27 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
               ),
             ),
             prefixIcon: widget.prefixIcon,
+            suffixIcon: widget.isPassword
+                ? IconButton(
+                    icon: Icon(
+                      widget.showPassword
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                      color: Colors.grey,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        widget.showPassword = !widget.showPassword;
+                      });
+                    },
+                  )
+                : null,
             helperText: widget.enableValidator ? ' ' : null,
             helperStyle: const TextStyle(height: 1),
             errorStyle: const TextStyle(height: 1),
-            // suffixIcon: widget.validatorType == 'password'
-            //     ? IconButton(
-            //         icon: Icon(
-            //           widget.isPassword
-            //               ? Icons.visibility_off
-            //               : Icons.visibility,
-            //         ),
-            //         onPressed: () {
-            //           setState(() {
-            //             // Toggle the obscureText property by updating the parent widget
-            //             Navigator.of(context).push(
-            //               PageRouteBuilder(
-            //                 opaque: false,
-            //                 pageBuilder: (_, __, ___) => CustomTextFormField(
-            //                   widget.hintText,
-            //                   widget.labelText,
-            //                   widget.prefixIcon,
-            //                   widget.controller,
-            //                   isAutoFocusEnable: widget.isAutoFocusEnable,
-            //                   isPassword: !widget.isPassword,
-            //                   enableValidator: widget.enableValidator,
-            //                   validatorType: widget.validatorType,
-            //                   enableUpperCaseText: widget.enableUpperCaseText,
-            //                   inputFormatters: widget.inputFormatters,
-            //                   isLabelFloat: widget.isLabelFloat,
-            //                   borderRadius: widget.borderRadius,
-            //                 ),
-            //               ),
-            //             );
-            //           });
-            //         },
-            //       )
-            //     : null,
           ),
           autovalidateMode: AutovalidateMode.onUserInteraction,
-          validator: widget.enableValidator
-              ? (() {
-                  switch (widget.validatorType) {
-                    case 'email':
-                      return Validator.emailValidation;
-                    case 'id':
-                      return Validator.idValidator;
-                    case 'name':
-                      return Validator.nameValidator;
-                    case 'username':
-                      return Validator.usernameValidator;
-                    case 'password':
-                      return Validator.passwordValidation;
-                    default:
-                      return null;
-                  }
-                })()
-              : null,
+          validator: widget.enableValidator ? _getValidator : null,
           onChanged: (newValues) {},
         ),
       ),

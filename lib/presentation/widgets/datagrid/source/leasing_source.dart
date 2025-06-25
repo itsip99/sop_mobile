@@ -32,8 +32,9 @@ class LeasingDataSource extends DataGridSource {
           ),
           DataGridCell<String>(
             columnName: 'approved',
-            value:
-                '${(data.acceptedSpk / (data.acceptedSpk + data.rejectedSpk) * 100).toStringAsFixed(0)}%',
+            value: (data.acceptedSpk + data.rejectedSpk) > 0
+                ? '${(data.acceptedSpk / (data.acceptedSpk + data.rejectedSpk) * 100).toStringAsFixed(0)}%'
+                : '0%',
           ),
         ],
       );
