@@ -143,7 +143,7 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                       spacing: 28,
                       children: [
                         Expanded(
-                          child: Column(
+                          child: Wrap(
                             spacing: 12,
                             children: [
                               // ~:ID TextField:~
@@ -299,7 +299,7 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
             ),
             child: Container(
               width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.only(top: 20),
+              height: MediaQuery.of(context).size.height,
               decoration: const BoxDecoration(
                 color: ConstantColors.primaryColor2,
                 borderRadius: BorderRadius.only(
@@ -307,40 +307,38 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                   topRight: Radius.circular(20),
                 ),
               ),
+              padding: const EdgeInsets.only(top: 20),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                spacing: 10,
                 children: [
                   // ~:Page Header:~
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // ~:Page Title:~
-                        Text(
-                          'Daftar Salesman',
-                          style: TextThemes.subtitle.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // ~:Page Title:~
+                      Text(
+                        'Daftar Salesman',
+                        style: TextThemes.subtitle.copyWith(
+                          fontWeight: FontWeight.bold,
                         ),
+                      ),
 
-                        // ~:Page Description:~
-                        const Text(
-                          'Data diri salesman yang telah terdaftar di sistem.',
-                          style: TextThemes.normal,
-                        ),
-                      ],
-                    ),
+                      // ~:Page Description:~
+                      const Text(
+                        'Data diri salesman yang telah terdaftar di sistem.',
+                        style: TextThemes.normal,
+                      ),
+                    ],
                   ),
 
                   // ~:Page Body:~
                   Expanded(
                     child: Container(
-                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.red),
+                      ),
                       padding: const EdgeInsets.symmetric(
                         horizontal: 20,
-                        vertical: 8,
                       ),
                       child: Builder(builder: (context) {
                         if (args != null &&
@@ -432,15 +430,15 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                               }
 
                               log('Fetched salesman list length: ${state.fetchSalesList.length}');
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 8,
-                                ),
-                                child: Column(
-                                  spacing: 8.0,
-                                  children:
-                                      state.fetchSalesList.map((salesProfile) {
-                                    return Card(
+                              return Column(
+                                spacing: 8.0,
+                                children:
+                                    state.fetchSalesList.map((salesProfile) {
+                                  return DecoratedBox(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.blue),
+                                    ),
+                                    child: Card(
                                       color: ConstantColors.primaryColor2,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(20),
@@ -472,9 +470,9 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                                         //   onPressed: () {},
                                         // ),
                                       ),
-                                    );
-                                  }).toList(),
-                                ),
+                                    ),
+                                  );
+                                }).toList(),
                               );
                             },
                           ),
@@ -484,21 +482,23 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                   ),
 
                   // ~:Page Footer:~
-                  Builder(
-                    builder: (context) {
-                      if (args != null &&
-                          args.containsKey('registeredSales') &&
-                          (args['registeredSales'] as List<SalesmanModel>)
-                              .isNotEmpty) {
-                        return const SizedBox();
-                      }
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    alignment: Alignment.topCenter,
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black),
+                    ),
+                    child: Builder(
+                      builder: (context) {
+                        if (args != null &&
+                            args.containsKey('registeredSales') &&
+                            (args['registeredSales'] as List<SalesmanModel>)
+                                .isNotEmpty) {
+                          return const SizedBox();
+                        }
 
-                      return Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: 60,
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Row(
+                        return Row(
                           spacing: 8,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -557,9 +557,9 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                               ),
                             ),
                           ],
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
                 ],
               ),

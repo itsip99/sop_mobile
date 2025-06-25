@@ -20,7 +20,7 @@ class Refresh {
             SliverList(
               delegate: SliverChildBuilderDelegate(
                 (context, _) => SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
+                  physics: const BouncingScrollPhysics(),
                   child: child,
                 ),
                 childCount: 1,

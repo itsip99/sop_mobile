@@ -189,11 +189,14 @@ class _HomeScreenState extends State<HomeScreen> {
           scrolledUnderElevation: 0.0,
           automaticallyImplyLeading: false,
           backgroundColor: ConstantColors.primaryColor1,
-          title: Padding(
+          title: Container(
+            width: MediaQuery.of(context).size.width,
             padding: const EdgeInsets.only(left: 8),
             child: Wrap(
               spacing: 15,
               crossAxisAlignment: WrapCrossAlignment.center,
+              runAlignment: WrapAlignment.start,
+              alignment: WrapAlignment.start,
               children: [
                 // ~:Profile Image:~
                 CircleAvatar(
