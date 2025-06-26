@@ -200,9 +200,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                 if (state is LoginSuccess) {
                                   log('Login Success.');
                                   // log(state.login);
-                                  Navigator.pushReplacementNamed(
+                                  Navigator.pushNamedAndRemoveUntil(
                                     context,
                                     '/home',
+                                    (route) => false,
                                   );
                                 } else if (state is LoginFailure) {
                                   log('Login Failed: ${state.error}');
@@ -210,10 +211,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                     context,
                                     state.error,
                                     backgroundColor: ConstantColors.shadowColor,
-                                  );
-                                  Navigator.pushReplacementNamed(
-                                    context,
-                                    '/login',
                                   );
                                 }
                               },
