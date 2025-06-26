@@ -1,16 +1,35 @@
-# sop_mobile
+# SOP Mobile Application
 
-A new Flutter project.
+Mobile application for managing Standard Operating Procedures (SOP).
 
-## Getting Started
+## 📱 Features
 
-This project is a starting point for a Flutter application.
+- User authentication and authorization
+- Secure navigation flow
+- Intuitive user interface
 
-A few resources to get you started if this is your first Flutter project:
+## 📦 Installation
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   flutter pub get
+   ```
+3. Run the app:
+   ```bash
+   flutter run
+   ```
+
+## 📝 Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for version history and release notes.
+
+## 📚 Resources
+
+- [Flutter Documentation](https://docs.flutter.dev/)
 - [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 📄 License
+
+This project is proprietary and confidential.
