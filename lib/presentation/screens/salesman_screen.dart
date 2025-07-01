@@ -258,174 +258,101 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
             ),
           ),
         ),
-        body: Scaffold(
-          appBar: AppBar(
-            // toolbarHeight: 100,
-            elevation: 0.0,
-            scrolledUnderElevation: 0.0,
-            automaticallyImplyLeading: true,
-            backgroundColor: ConstantColors.primaryColor1,
-            systemOverlayStyle: SystemUiOverlayStyle.light,
-            title: const Text(
-              'Salesman',
-              style: TextThemes.subtitle,
-            ),
-            centerTitle: true,
-            leading: Builder(
-              builder: (context) {
-                if (Platform.isIOS) {
-                  return IconButton(
-                    icon: const Icon(
-                      Icons.arrow_back_ios_new_rounded,
-                      size: 15,
-                    ),
-                    onPressed: () => Navigator.pop(context),
-                  );
-                } else {
-                  return IconButton(
-                    icon: const Icon(
-                      Icons.arrow_back_rounded,
-                      size: 20,
-                    ),
-                    onPressed: () => Navigator.pop(context),
-                  );
-                }
-              },
-            ),
-          ),
-          body: DecoratedBox(
-            decoration: const BoxDecoration(
-              color: ConstantColors.primaryColor1,
-            ),
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              decoration: const BoxDecoration(
-                color: ConstantColors.primaryColor2,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
-                ),
+        body: SafeArea(
+          top: false,
+          left: false,
+          right: false,
+          child: Scaffold(
+            appBar: AppBar(
+              // toolbarHeight: 100,
+              elevation: 0.0,
+              scrolledUnderElevation: 0.0,
+              automaticallyImplyLeading: true,
+              backgroundColor: ConstantColors.primaryColor1,
+              title: const Text(
+                'Salesman',
+                style: TextThemes.subtitle,
               ),
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  // ~:Page Header:~
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // ~:Page Title:~
-                      Text(
-                        'Daftar Salesman',
-                        style: TextThemes.subtitle.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+              centerTitle: true,
+              leading: Builder(
+                builder: (context) {
+                  if (Platform.isIOS) {
+                    return IconButton(
+                      icon: const Icon(
+                        Icons.arrow_back_ios_new_rounded,
+                        size: 15,
                       ),
-
-                      // ~:Page Description:~
-                      const Text(
-                        'Data diri salesman yang telah terdaftar di sistem.',
-                        style: TextThemes.normal,
+                      onPressed: () => Navigator.pop(context),
+                    );
+                  } else {
+                    return IconButton(
+                      icon: const Icon(
+                        Icons.arrow_back_rounded,
+                        size: 20,
                       ),
-                    ],
+                      onPressed: () => Navigator.pop(context),
+                    );
+                  }
+                },
+              ),
+            ),
+            body: DecoratedBox(
+              decoration: const BoxDecoration(
+                color: ConstantColors.primaryColor1,
+              ),
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                decoration: const BoxDecoration(
+                  color: ConstantColors.primaryColor2,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
                   ),
-
-                  // ~:Page Body:~
-                  Expanded(
-                    child: Builder(builder: (context) {
-                      if (args != null &&
-                          args.containsKey('registeredSales') &&
-                          (args['registeredSales'] as List<SalesmanModel>)
-                              .isNotEmpty) {
-                        log('Registered sales list: ${args['registeredSales']}');
-
-                        return SingleChildScrollView(
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 12,
-                            ),
-                            child: Column(
-                              spacing: 8.0,
-                              children: (args['registeredSales']
-                                      as List<SalesmanModel>)
-                                  .map((salesProfile) {
-                                return Card(
-                                  color: ConstantColors.primaryColor2,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  elevation: 5,
-                                  shadowColor: ConstantColors.shadowColor,
-                                  child: ListTile(
-                                    contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 4,
-                                      horizontal: 20,
-                                    ),
-                                    title: Text(
-                                      'ID ${Formatter.toTitleCase(salesProfile.idCardNumber)}',
-                                      style: TextThemes.normal.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    subtitle: Text(
-                                      '${Formatter.toTitleCase(salesProfile.name)} - ${Formatter.toTitleCase(salesProfile.tierLevel)}',
-                                      style: TextThemes.normal,
-                                    ),
-                                    // ~:Change to CheckBox for further use:~
-                                    // trailing: IconButton(
-                                    //   icon: const Icon(
-                                    //     Icons.delete_rounded,
-                                    //     color: ConstantColors.primaryColor3,
-                                    //   ),
-                                    //   onPressed: () {},
-                                    // ),
-                                  ),
-                                );
-                              }).toList(),
-                            ),
+                ),
+                padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                child: Column(
+                  children: [
+                    // ~:Page Header:~
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // ~:Page Title:~
+                        Text(
+                          'Daftar Salesman',
+                          style: TextThemes.subtitle.copyWith(
+                            fontWeight: FontWeight.bold,
                           ),
-                        );
-                      }
+                        ),
 
-                      return Refresh.iOSnAndroid(
-                        onRefresh: () => salesmanBloc.add(FetchSalesman()),
-                        child: BlocBuilder<SalesmanBloc, SalesmanState>(
-                          builder: (context, state) {
-                            if (state is SalesmanLoading) {
-                              return SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.725,
-                                child: Loading.platformIndicator(
-                                  iosRadius: 13,
-                                  iosCircleColor: ConstantColors.primaryColor3,
-                                  androidWidth: 28,
-                                  androidHeight: 28,
-                                  androidStrokeWidth: 3.5,
-                                  androidCircleColor:
-                                      ConstantColors.primaryColor3,
-                                ),
-                              );
-                            } else if (state is SalesmanError) {
-                              return Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.7,
-                                alignment: Alignment.center,
-                                child: Text(
-                                  state.error,
-                                  style: TextThemes.normal,
-                                  textAlign: TextAlign.center,
-                                ),
-                              );
-                            }
+                        // ~:Page Description:~
+                        const Text(
+                          'Data diri salesman yang telah terdaftar di sistem.',
+                          style: TextThemes.normal,
+                        ),
+                      ],
+                    ),
 
-                            log('Fetched salesman list length: ${state.fetchSalesList.length}');
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 12),
+                    // ~:Page Body:~
+                    Expanded(
+                      child: Builder(builder: (context) {
+                        if (args != null &&
+                            args.containsKey('registeredSales') &&
+                            (args['registeredSales'] as List<SalesmanModel>)
+                                .isNotEmpty) {
+                          log('Registered sales list: ${args['registeredSales']}');
+
+                          return SingleChildScrollView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 12,
+                              ),
                               child: Column(
                                 spacing: 8.0,
-                                children:
-                                    state.fetchSalesList.map((salesProfile) {
+                                children: (args['registeredSales']
+                                        as List<SalesmanModel>)
+                                    .map((salesProfile) {
                                   return Card(
                                     color: ConstantColors.primaryColor2,
                                     shape: RoundedRectangleBorder(
@@ -440,13 +367,13 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                                         horizontal: 20,
                                       ),
                                       title: Text(
-                                        'ID ${Formatter.toTitleCase(salesProfile.id)}',
+                                        'ID ${Formatter.toTitleCase(salesProfile.idCardNumber)}',
                                         style: TextThemes.normal.copyWith(
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                       subtitle: Text(
-                                        '${Formatter.toTitleCase(salesProfile.userName)} - ${Formatter.toTitleCase(salesProfile.tierLevel)}',
+                                        '${Formatter.toTitleCase(salesProfile.name)} - ${Formatter.toTitleCase(salesProfile.tierLevel)}',
                                         style: TextThemes.normal,
                                       ),
                                       // ~:Change to CheckBox for further use:~
@@ -461,87 +388,167 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                                   );
                                 }).toList(),
                               ),
-                            );
-                          },
-                        ),
-                      );
-                    }),
-                  ),
-
-                  // ~:Page Footer:~
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Builder(
-                      builder: (context) {
-                        if (args != null &&
-                            args.containsKey('registeredSales') &&
-                            (args['registeredSales'] as List<SalesmanModel>)
-                                .isNotEmpty) {
-                          return const SizedBox();
+                            ),
+                          );
                         }
 
-                        return Row(
-                          spacing: 8,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            // ~:Delete Button:~
-                            CustomButton.primaryButton2(
-                              context: context,
-                              width: 40,
-                              height: 40,
-                              enableIcon: true,
-                              icon: Icons.delete_rounded,
-                              func: () {},
-                              bgColor: ConstantColors.primaryColor2,
-                              textStyle: TextThemes.normal,
-                              shadowColor: ConstantColors.primaryColor1,
-                            ),
+                        return Refresh.iOSnAndroid(
+                          onRefresh: () => salesmanBloc.add(FetchSalesman()),
+                          child: BlocBuilder<SalesmanBloc, SalesmanState>(
+                            builder: (context, state) {
+                              if (state is SalesmanLoading) {
+                                return SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.725,
+                                  child: Loading.platformIndicator(
+                                    iosRadius: 13,
+                                    iosCircleColor:
+                                        ConstantColors.primaryColor3,
+                                    androidWidth: 28,
+                                    androidHeight: 28,
+                                    androidStrokeWidth: 3.5,
+                                    androidCircleColor:
+                                        ConstantColors.primaryColor3,
+                                  ),
+                                );
+                              } else if (state is SalesmanError) {
+                                return Container(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.7,
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    state.error,
+                                    style: TextThemes.normal,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                );
+                              }
 
-                            // ~:Edit Button:~
-                            // CustomButton.primaryButton2(
-                            //   context: context,
-                            //   width: 40,
-                            //   height: 40,
-                            //   enableIcon: true,
-                            //   icon: Icons.edit_rounded,
-                            //   func: () {},
-                            //   bgColor: ConstantColors.primaryColor2,
-                            //   textStyle: TextThemes.normal,
-                            //   shadowColor: ConstantColors.primaryColor1,
-                            // ),
-                            //
-                            // ~:Delete Button:~
-                            // CustomButton.primaryButton2(
-                            //   context: context,
-                            //   width: 40,
-                            //   height: 40,
-                            //   enableIcon: true,
-                            //   icon: Icons.delete_rounded,
-                            //   func: () {},
-                            //   bgColor: ConstantColors.primaryColor2,
-                            //   textStyle: TextThemes.normal,
-                            //   shadowColor: ConstantColors.primaryColor1,
-                            // ),
+                              log('Fetched salesman list length: ${state.fetchSalesList.length}');
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 12),
+                                child: Column(
+                                  spacing: 8.0,
+                                  children:
+                                      state.fetchSalesList.map((salesProfile) {
+                                    return Card(
+                                      color: ConstantColors.primaryColor2,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      elevation: 5,
+                                      shadowColor: ConstantColors.shadowColor,
+                                      child: ListTile(
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                          vertical: 4,
+                                          horizontal: 20,
+                                        ),
+                                        title: Text(
+                                          'ID ${Formatter.toTitleCase(salesProfile.id)}',
+                                          style: TextThemes.normal.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        subtitle: Text(
+                                          '${Formatter.toTitleCase(salesProfile.userName)} - ${Formatter.toTitleCase(salesProfile.tierLevel)}',
+                                          style: TextThemes.normal,
+                                        ),
+                                        // ~:Change to CheckBox for further use:~
+                                        // trailing: IconButton(
+                                        //   icon: const Icon(
+                                        //     Icons.delete_rounded,
+                                        //     color: ConstantColors.primaryColor3,
+                                        //   ),
+                                        //   onPressed: () {},
+                                        // ),
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      }),
+                    ),
 
-                            // ~:Save Button:~
-                            Expanded(
-                              child: CustomButton.primaryButton2(
+                    // ~:Page Footer:~
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: Builder(
+                        builder: (context) {
+                          if (args != null &&
+                              args.containsKey('registeredSales') &&
+                              (args['registeredSales'] as List<SalesmanModel>)
+                                  .isNotEmpty) {
+                            return const SizedBox();
+                          }
+
+                          return Row(
+                            spacing: 8,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // ~:Delete Button:~
+                              CustomButton.primaryButton2(
                                 context: context,
+                                width: 40,
                                 height: 40,
-                                text: 'Tambah Sales',
-                                func: () => panelController.open(),
-                                bgColor: ConstantColors.primaryColor1,
+                                enableIcon: true,
+                                icon: Icons.delete_rounded,
+                                func: () {},
+                                bgColor: ConstantColors.primaryColor2,
                                 textStyle: TextThemes.normal,
                                 shadowColor: ConstantColors.primaryColor1,
                               ),
-                            ),
-                          ],
-                        );
-                      },
+
+                              // ~:Edit Button:~
+                              // CustomButton.primaryButton2(
+                              //   context: context,
+                              //   width: 40,
+                              //   height: 40,
+                              //   enableIcon: true,
+                              //   icon: Icons.edit_rounded,
+                              //   func: () {},
+                              //   bgColor: ConstantColors.primaryColor2,
+                              //   textStyle: TextThemes.normal,
+                              //   shadowColor: ConstantColors.primaryColor1,
+                              // ),
+                              //
+                              // ~:Delete Button:~
+                              // CustomButton.primaryButton2(
+                              //   context: context,
+                              //   width: 40,
+                              //   height: 40,
+                              //   enableIcon: true,
+                              //   icon: Icons.delete_rounded,
+                              //   func: () {},
+                              //   bgColor: ConstantColors.primaryColor2,
+                              //   textStyle: TextThemes.normal,
+                              //   shadowColor: ConstantColors.primaryColor1,
+                              // ),
+
+                              // ~:Save Button:~
+                              Expanded(
+                                child: CustomButton.primaryButton2(
+                                  context: context,
+                                  height: 40,
+                                  text: 'Tambah Sales',
+                                  func: () => panelController.open(),
+                                  bgColor: ConstantColors.primaryColor1,
+                                  textStyle: TextThemes.normal,
+                                  shadowColor: ConstantColors.primaryColor1,
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

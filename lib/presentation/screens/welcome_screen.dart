@@ -72,6 +72,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               child: BlocBuilder<CarouselBloc, CarouselState>(
                 builder: (context, state) {
                   debugPrint('Current Index: ${state.currentIndex}');
+
                   if (state.currentIndex == 3) {
                     return CustomButton.primaryButton2(
                       context: context,

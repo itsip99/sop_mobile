@@ -3,7 +3,9 @@ import 'package:sop_mobile/data/models/user.dart';
 import 'package:sop_mobile/domain/repositories/storage.dart';
 
 class StorageRepoImp implements StorageRepo {
-  final FlutterSecureStorage storage = const FlutterSecureStorage();
+  final FlutterSecureStorage storage = const FlutterSecureStorage(
+    aOptions: AndroidOptions(encryptedSharedPreferences: true),
+  );
 
   @override
   Future<void> saveUserCredentials(

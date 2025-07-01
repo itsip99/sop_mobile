@@ -8,6 +8,7 @@ import 'package:sop_mobile/data/repositories/storage.dart';
 import 'package:sop_mobile/domain/repositories/login.dart';
 import 'package:sop_mobile/domain/repositories/storage.dart';
 import 'package:sop_mobile/presentation/state/login/login_event.dart';
+import 'package:sop_mobile/core/constant/exceptions.dart';
 import 'package:sop_mobile/presentation/state/login/login_state.dart';
 
 class LoginBloc<BaseEvent, BaseState> extends Bloc<LoginEvent, LoginState> {
@@ -82,7 +83,7 @@ class LoginBloc<BaseEvent, BaseState> extends Bloc<LoginEvent, LoginState> {
     } catch (e) {
       // ~:Emit failure state with an error message:~
       log(e.toString());
-      emit(LoginFailure(e.toString()));
+      emit(LoginFailure(Exceptions.getFriendlyErrorMessage(e.toString())));
     }
   }
 
