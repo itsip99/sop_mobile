@@ -49,9 +49,6 @@ class LoginBloc<BaseEvent, BaseState> extends Bloc<LoginEvent, LoginState> {
           emit(LoginFailure((user['data'] as LoginModel).memo));
         }
       } else {
-        Map<String, dynamic> user =
-            await loginRepo.login(event.username, event.password);
-
         // ~:Unit Test Passed:~
         // Map<String, dynamic> user =
         //     await loginRepo!.login(event.username, event.password);
@@ -61,6 +58,9 @@ class LoginBloc<BaseEvent, BaseState> extends Bloc<LoginEvent, LoginState> {
           emit(LoginFailure("Username or password cannot be empty"));
           return;
         } else {
+          Map<String, dynamic> user =
+              await loginRepo.login(event.username, event.password);
+
           if (user['status'] == 'success') {
             log('User logged in successfully');
             await storageRepo.saveUserCredentials(

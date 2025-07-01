@@ -11,11 +11,11 @@ final navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Colors.black,
-    // Adjust for icon visibility
-    statusBarBrightness: Brightness.light,
-  ));
+  // SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+  //   statusBarColor: Colors.black,
+  //   // Adjust for icon visibility
+  //   statusBarBrightness: Brightness.light,
+  // ));
 
   // --- FIX: Add these lines to enable edge-to-edge display ---
   // This tells the app to draw behind the status and navigation bars.

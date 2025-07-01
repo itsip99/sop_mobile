@@ -96,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         children: [
                           CustomText.title(text: 'SOP Mobile'),
                           CustomText.subtitle(
-                            text: 'v1.0.0',
+                            text: 'v1.0.1',
                             themes: TextThemes.normal,
                           ),
                         ],
@@ -215,38 +215,21 @@ class _LoginScreenState extends State<LoginScreen> {
                                 }
                               },
                               builder: (context, state) {
-                                if (state is LoginLoading) {
-                                  return CustomButton.primaryButton2(
-                                    context: context,
-                                    text: 'Sign In',
-                                    func: () => context.read<LoginBloc>().add(
-                                          LoginButtonPressed(
-                                            username: usernameController.text,
-                                            password: passwordController.text,
-                                          ),
+                                return CustomButton.primaryButton2(
+                                  context: context,
+                                  text: 'Sign In',
+                                  func: () => context.read<LoginBloc>().add(
+                                        LoginButtonPressed(
+                                          username: usernameController.text,
+                                          password: passwordController.text,
                                         ),
-                                    bgColor: ConstantColors.primaryColor1,
-                                    textStyle: TextThemes.subtitle,
-                                    shadowColor: ConstantColors.shadowColor,
-                                    height: 40,
-                                    isLoading: true,
-                                  );
-                                } else {
-                                  return CustomButton.primaryButton2(
-                                    context: context,
-                                    text: 'Sign In',
-                                    func: () => context.read<LoginBloc>().add(
-                                          LoginButtonPressed(
-                                            username: usernameController.text,
-                                            password: passwordController.text,
-                                          ),
-                                        ),
-                                    bgColor: ConstantColors.primaryColor1,
-                                    textStyle: TextThemes.subtitle,
-                                    shadowColor: ConstantColors.shadowColor,
-                                    height: 40,
-                                  );
-                                }
+                                      ),
+                                  bgColor: ConstantColors.primaryColor1,
+                                  textStyle: TextThemes.subtitle,
+                                  shadowColor: ConstantColors.shadowColor,
+                                  height: 40,
+                                  isLoading: state is LoginLoading,
+                                );
                               },
                             ),
                           ],
