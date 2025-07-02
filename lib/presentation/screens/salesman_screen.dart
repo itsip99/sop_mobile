@@ -2,13 +2,16 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:sop_mobile/core/constant/colors.dart';
 import 'package:sop_mobile/core/helpers/formatter.dart';
 import 'package:sop_mobile/data/models/report.dart';
 import 'package:sop_mobile/presentation/state/cubit/sales.dart';
+import 'package:sop_mobile/presentation/state/import/import_bloc.dart';
+import 'package:sop_mobile/presentation/state/import/import_state.dart';
+import 'package:sop_mobile/presentation/state/permission/storage_cubit.dart';
 import 'package:sop_mobile/presentation/state/salesman/salesman_bloc.dart';
 import 'package:sop_mobile/presentation/state/salesman/salesman_event.dart';
 import 'package:sop_mobile/presentation/state/salesman/salesman_state.dart';
@@ -36,10 +39,31 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
 
   void addSalesman() {}
 
+  void askStoragePermission(StorageCubit storageCubit) async {
+    await storageCubit.checkStoragePermission();
+    if (storageCubit.state.isDenied) {
+      await storageCubit.requestStoragePermission();
+    }
+  }
+
+  void uploadSalesmanFile(
+    StorageCubit storageCubit,
+    ImportBloc importBloc,
+  ) async {
+    // For now, let's just show a snackbar indicating success
+    // File picking logic will be added next.
+    CustomSnackbar.showSnackbar(
+      context,
+      'Storage permission granted. You can now select a file.',
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final salesStatusCubit = context.read<SalesStatusCubit>();
     final salesmanBloc = context.read<SalesmanBloc>();
+    final storageCubit = context.read<StorageCubit>();
+    final importBloc = context.read<ImportBloc>();
     final args =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
 
@@ -181,12 +205,7 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                               // ~:Status Dropdown:~
                               CustomDropdown.sales(
                                 salesStatusCubit,
-                                [
-                                  'Sales Counter',
-                                  'Freelance',
-                                  'Gold',
-                                  'Platinum'
-                                ],
+                                ['Sales Counter', 'Salesman'],
                                 'Status',
                               ),
                             ],
@@ -502,6 +521,39 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                                 bgColor: ConstantColors.primaryColor2,
                                 textStyle: TextThemes.normal,
                                 shadowColor: ConstantColors.primaryColor1,
+                              ),
+
+                              // ~:Import File Button:~
+                              BlocListener<ImportBloc, ImportState>(
+                                listener: (context, state) {
+                                  log('Storage permission: ${storageCubit.state}');
+                                  if (storageCubit.state ==
+                                      PermissionStatus.granted) {
+                                    uploadSalesmanFile(
+                                      storageCubit,
+                                      importBloc,
+                                    );
+                                  } else if (storageCubit.state ==
+                                      PermissionStatus.permanentlyDenied) {
+                                    CustomSnackbar.showSnackbar(
+                                      context,
+                                      'Storage permission is required to import files.',
+                                    );
+                                  }
+                                },
+                                child: CustomButton.primaryButton2(
+                                  context: context,
+                                  width: 40,
+                                  height: 40,
+                                  enableIcon: true,
+                                  icon: Icons.upload_rounded,
+                                  func: () => askStoragePermission(
+                                    storageCubit,
+                                  ),
+                                  bgColor: ConstantColors.primaryColor2,
+                                  textStyle: TextThemes.normal,
+                                  shadowColor: ConstantColors.primaryColor1,
+                                ),
                               ),
 
                               // ~:Edit Button:~

@@ -96,8 +96,8 @@ class CustomButton {
               return Loading.platformIndicator(
                 iosRadius: 13,
                 iosCircleColor: ConstantColors.primaryColor3,
-                androidWidth: 28,
-                androidHeight: 28,
+                androidWidth: 24,
+                androidHeight: 24,
                 androidStrokeWidth: 3.5,
                 androidCircleColor: ConstantColors.primaryColor3,
               );

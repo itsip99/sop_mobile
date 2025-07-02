@@ -111,8 +111,7 @@ class LeasingInsertDataSource extends DataGridSource {
         if (isEditable) {
           return Container(
             alignment: Alignment.center,
-            padding:
-                const EdgeInsets.symmetric(horizontal: 4.0), // Reduced padding
+            padding: const EdgeInsets.symmetric(horizontal: 4.0),
             child: TextFormField(
               initialValue: dataGridCell.value.toString(),
               textAlign: TextAlign.center,
@@ -159,10 +158,10 @@ class LeasingInsertDataSource extends DataGridSource {
           );
         } else if (columnName == 'Approval') {
           // Format the approvalRate (double 0.0-1.0) as a percentage string
-          String approvalText = (leasingEntry.approve * 100).toStringAsFixed(0);
+          String approvalText = (leasingEntry.approve * 100).toStringAsFixed(1);
           return Center(
             child: Text(
-              approvalText,
+              '$approvalText%',
               textAlign: TextAlign.center,
               style: TextThemes.normal, // (using existing style)
             ),

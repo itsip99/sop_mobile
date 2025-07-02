@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:sop_mobile/presentation/screens/about_screen.dart';
 import 'package:sop_mobile/presentation/screens/briefing_screen.dart';
 import 'package:sop_mobile/presentation/screens/home_screen.dart';
 import 'package:sop_mobile/presentation/screens/location_screen.dart';
@@ -19,6 +20,7 @@ class ConstantRoutes {
   static const String brief = '/brief';
   static const String report = '/report';
   static const String sales = '/sales';
+  static const String about = '/about';
 
   static Map<String, Widget Function(BuildContext)> maps = {
     ConstantRoutes.init: (context) => const SplashScreen(),
@@ -30,6 +32,7 @@ class ConstantRoutes {
     ConstantRoutes.brief: (context) => const BriefingScreen(),
     ConstantRoutes.report: (context) => const ReportScreen(),
     ConstantRoutes.sales: (context) => const SalesmanScreen(),
+    ConstantRoutes.about: (context) => const AboutScreen(),
   };
 
   // final Map<String, WidgetBuilder> routes = {

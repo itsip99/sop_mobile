@@ -77,7 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   // ~:Logo Section:~
-                  Logo.rounded1(context, 'assets/images/logo.png', 88, 88),
+                  Logo.rounded1(context, 'assets/images/logo.png', 75, 75),
 
                   // ~:Welcome Statement:~
                   Wrap(
@@ -89,18 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       CustomText.subtitle(text: 'Welcome back to'),
 
                       // ~:Welcome Title:~
-                      Wrap(
-                        spacing: -8,
-                        direction: Axis.vertical,
-                        crossAxisAlignment: WrapCrossAlignment.start,
-                        children: [
-                          CustomText.title(text: 'SOP Mobile'),
-                          CustomText.subtitle(
-                            text: 'v1.0.1',
-                            themes: TextThemes.normal,
-                          ),
-                        ],
-                      ),
+                      CustomText.title(text: 'SOP Mobile'),
                     ],
                   ),
                 ],

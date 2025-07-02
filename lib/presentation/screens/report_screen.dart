@@ -347,6 +347,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                       newValue,
                                     ),
                                   ),
+                                  tableHeight: 310,
                                   StuType.values
                                       .map((e) => e.name.toString())
                                       .toList(),
@@ -393,13 +394,11 @@ class _ReportScreenState extends State<ReportScreen> {
                             // ~:Leasing Input Table:~
                             BlocBuilder<LeasingBloc, LeasingState>(
                               builder: (context, state) {
-                                tableHeight = 260;
+                                tableHeight = 410;
                                 leasingData = state.data;
 
                                 if (state is AddLeasingData) {
                                   leasingData = state.newData;
-                                  tableHeight =
-                                      260 + (50 * (leasingData.length - 3));
                                   // Update the existing data source with new data
                                   _leasingDataSource.updateData(leasingData);
                                 } else if (state is LeasingInitial) {

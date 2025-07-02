@@ -12,6 +12,7 @@ class StuBloc<BaseEvent, BaseState> extends Bloc<StuEvent, StuState> {
         StuData('MAXI', 0, 0, '0.0', 0, '0.0'),
         StuData('AT CLASSY', 0, 0, '0.0', 0, '0.0'),
         StuData('AT LPM', 0, 0, '0.0', 0, '0.0'),
+        StuData('Others', 0, 0, '0.0', 0, '0.0'),
       ]));
     });
     on<ModifyStuData>(modifyData);

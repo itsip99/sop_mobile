@@ -44,12 +44,10 @@ class Filter {
       width: MediaQuery.of(context).size.width,
       height: isTablet ? 100 : 50, // Taller on tablets, shorter on phones
       child: Row(
+        spacing: 8,
         children: [
           // ~:Filter Icon:~
           FilterButton.iconOnly(Icons.filter_list_alt),
-
-          // ~:Divider:~
-          const SizedBox(width: 8),
 
           // ~:Filter Options:~
           Expanded(
@@ -61,6 +59,18 @@ class Filter {
                 crossAxisAlignment: WrapCrossAlignment.center,
                 runAlignment: WrapAlignment.center,
                 children: [
+                  // ~:Date:~
+                  BlocBuilder<DateCubit, String>(
+                    builder: (context, state) {
+                      final cubit = context.read<DateCubit>();
+
+                      return FilterButton.dateButton(
+                        () => DatePicker.single(context),
+                        cubit.getDate(),
+                      );
+                    },
+                  ),
+
                   // ~:Morning Briefing:~
                   BlocBuilder<FilterBloc, FilterState>(
                     builder: (context, state) {
@@ -90,18 +100,6 @@ class Filter {
                         () => onActPressed(context, FilterType.report),
                         'Daily Report',
                         isActive,
-                      );
-                    },
-                  ),
-
-                  // ~:Date:~
-                  BlocBuilder<DateCubit, String>(
-                    builder: (context, state) {
-                      final cubit = context.read<DateCubit>();
-
-                      return FilterButton.dateButton(
-                        () => DatePicker.single(context),
-                        cubit.getDate(),
                       );
                     },
                   ),

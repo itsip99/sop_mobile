@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
       controller: panelController,
       renderPanelSheet: false,
       minHeight: 0,
-      maxHeight: 200,
+      maxHeight: 250,
       isDraggable: false,
       panelSnapping: false,
       defaultPanelState: PanelState.CLOSED,
@@ -166,6 +166,21 @@ class _HomeScreenState extends State<HomeScreen> {
                       bgColor: Colors.transparent,
                     ),
                   ),
+                  const Divider(
+                    height: 0.5,
+                  ),
+                  DefaultTextStyle(
+                    style: TextThemes.normalTextButton,
+                    child: CustomButton.normalButton(
+                      context: context,
+                      text: 'Tentang Aplikasi',
+                      func: () {
+                        Navigator.pushNamed(context, ConstantRoutes.about);
+                        panelController.close();
+                      },
+                      bgColor: Colors.transparent,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -202,13 +217,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 CircleAvatar(
                   backgroundColor: ConstantColors.primaryColor2,
                   radius: MediaQuery.of(context).size.shortestSide >= 600
-                      ? 50
-                      : 30, // Larger on tablets
+                      ? 52
+                      : 32, // Larger on tablets
                   child: Padding(
                     padding: const EdgeInsets.all(8),
                     child: Image.asset(
                       'assets/images/logo.png',
-                      fit: BoxFit.cover,
+                      fit: BoxFit.contain,
                     ),
                   ),
                 ),

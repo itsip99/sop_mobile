@@ -13,6 +13,9 @@ class LeasingBloc<BaseEvent, BaseState>
             LeasingData('BAF', 0, 0, 0, 0, 0),
             LeasingData('Adira', 0, 0, 0, 0, 0),
             LeasingData('SOF', 0, 0, 0, 0, 0),
+            LeasingData('IMFI', 0, 0, 0, 0, 0),
+            LeasingData('MAF', 0, 0, 0, 0, 0),
+            LeasingData('Others', 0, 0, 0, 0, 0),
           ]),
         ) {
     on<ResetLeasingData>(resetData);
@@ -28,6 +31,9 @@ class LeasingBloc<BaseEvent, BaseState>
       LeasingData('BAF', 0, 0, 0, 0, 0),
       LeasingData('Adira', 0, 0, 0, 0, 0),
       LeasingData('SOF', 0, 0, 0, 0, 0),
+      LeasingData('IMFI', 0, 0, 0, 0, 0),
+      LeasingData('MAF', 0, 0, 0, 0, 0),
+      LeasingData('Others', 0, 0, 0, 0, 0),
     ]));
   }
 
