@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:sop_mobile/data/models/sales_import.dart';
 import 'package:sop_mobile/presentation/state/base_state.dart';
 
 class ImportState extends BaseState with EquatableMixin {
@@ -8,10 +9,13 @@ class ImportState extends BaseState with EquatableMixin {
 
 class ImportInitial extends ImportState {}
 
+class ImportLoading extends ImportState {}
+
 class ImportExcelSucceed extends ImportState {
   final String message;
+  final List<SalesImportModel> salesmanList;
 
-  ImportExcelSucceed(this.message);
+  ImportExcelSucceed(this.message, this.salesmanList);
 }
 
 class ImportExcelFailed extends ImportState {

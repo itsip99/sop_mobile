@@ -4,13 +4,12 @@ import 'package:permission_handler/permission_handler.dart';
 class StorageCubit extends Cubit<PermissionStatus> {
   StorageCubit() : super(PermissionStatus.denied);
 
-  Future<void> checkStoragePermission() async {
-    final status = await Permission.storage.status;
+  Future<PermissionStatus> askStoragePermission() async {
+    PermissionStatus status = await Permission.storage.status;
+    if (status.isDenied) {
+      status = await Permission.storage.request();
+    }
     emit(status);
-  }
-
-  Future<void> requestStoragePermission() async {
-    final status = await Permission.storage.request();
-    emit(status);
+    return status;
   }
 }

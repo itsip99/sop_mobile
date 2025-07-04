@@ -10,6 +10,7 @@ import 'package:sop_mobile/core/helpers/formatter.dart';
 import 'package:sop_mobile/data/models/report.dart';
 import 'package:sop_mobile/presentation/state/cubit/sales.dart';
 import 'package:sop_mobile/presentation/state/import/import_bloc.dart';
+import 'package:sop_mobile/presentation/state/import/import_event.dart';
 import 'package:sop_mobile/presentation/state/import/import_state.dart';
 import 'package:sop_mobile/presentation/state/permission/storage_cubit.dart';
 import 'package:sop_mobile/presentation/state/salesman/salesman_bloc.dart';
@@ -17,6 +18,7 @@ import 'package:sop_mobile/presentation/state/salesman/salesman_event.dart';
 import 'package:sop_mobile/presentation/state/salesman/salesman_state.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
 import 'package:sop_mobile/presentation/widgets/buttons.dart';
+import 'package:sop_mobile/presentation/widgets/dialog.dart';
 import 'package:sop_mobile/presentation/widgets/dropdown.dart';
 import 'package:sop_mobile/presentation/widgets/functions.dart';
 import 'package:sop_mobile/presentation/widgets/loading.dart';
@@ -39,31 +41,118 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
 
   void addSalesman() {}
 
-  void askStoragePermission(StorageCubit storageCubit) async {
-    await storageCubit.checkStoragePermission();
-    if (storageCubit.state.isDenied) {
-      await storageCubit.requestStoragePermission();
-    }
-  }
+  // Future<void> askStoragePermission(
+  //   BuildContext context,
+  //   StorageCubit storageCubit,
+  //   ImportBloc importBloc,
+  // ) async {
+  //   await storageCubit.checkStoragePermission();
+  //   if (storageCubit.state.isDenied) {
+  //     await storageCubit.requestStoragePermission();
+  //   }
+  //   log('Storage permission: ${storageCubit.state}');
 
-  void uploadSalesmanFile(
-    StorageCubit storageCubit,
-    ImportBloc importBloc,
-  ) async {
-    // For now, let's just show a snackbar indicating success
-    // File picking logic will be added next.
-    CustomSnackbar.showSnackbar(
-      context,
-      'Storage permission granted. You can now select a file.',
-    );
+  //   if (storageCubit.state == PermissionStatus.granted) {
+  //     await uploadSalesmanFile(storageCubit, importBloc);
+  //   } else if (storageCubit.state == PermissionStatus.permanentlyDenied) {
+  //     if (context.mounted) {
+  //       CustomSnackbar.showSnackbar(
+  //         context,
+  //         'Storage permission is required to import files.',
+  //       );
+  //     }
+  //   }
+  // }
+
+  // Future<void> uploadSalesmanFile(
+  //   StorageCubit storageCubit,
+  //   ImportBloc importBloc,
+  // ) async {
+  //   try {
+  //     FilePickerResult? result = await FilePicker.platform.pickFiles(
+  //       type: FileType.custom,
+  //       allowedExtensions: ['xlsx', 'xls'],
+  //     );
+
+  //     if (result != null && result.files.single.path != null) {
+  //       // 3. Parse File and Update Bloc
+  //       File file = File(result.files.single.path!);
+
+  //       // 3. Parse File and Update Bloc
+  //       var bytes = file.readAsBytesSync();
+  //       var excel = xls.Excel.decodeBytes(bytes);
+
+  //       // Assumption: Data is in the first sheet named 'Sheet1'
+  //       // Assumption: Columns are Name, Status, SPK, STU, STU LM
+  //       var sheet = excel['Sheet1'];
+
+  //       List<SalesImportModel> importedSalesmen = [];
+  //       // Skip the first row (header)
+  //       for (var row in sheet.rows.skip(1)) {
+  //         // Check for null cells to avoid errors
+  //         final String id = row[0]?.value?.toString() ?? '';
+  //         final String name = row[1]?.value?.toString() ?? '';
+  //         final String tier = row[2]?.value?.toString() ?? '';
+
+  //         if (id.isNotEmpty && name.isNotEmpty && tier.isNotEmpty) {
+  //           importedSalesmen.add(
+  //             SalesImportModel(id: id, name: name, tier: tier),
+  //           );
+  //         }
+  //       }
+
+  //       if (importedSalesmen.isNotEmpty) {
+  //         // Dispatch event to Bloc to add these salesmen
+  //         importBloc.add(ImportExcelEvent(salesmanList: importedSalesmen));
+  //         // if (mounted) {
+  //         //   importBloc.add(ImportExcelEvent(salesmanList: importedSalesmen));
+
+  //         //   CustomSnackbar.showSnackbar(
+  //         //     context,
+  //         //     '${importedSalesmen.length} salesman imported successfully!',
+  //         //   );
+  //         // }
+  //       } else {
+  //         if (mounted) {
+  //           CustomSnackbar.showSnackbar(
+  //             context,
+  //             'No valid salesman data found in the file.',
+  //           );
+  //         }
+  //       }
+  //     } else {
+  //       // User canceled the picker
+  //       log('File picking canceled by user.');
+  //     }
+  //   } catch (e) {
+  //     log('Error: $e');
+  //   }
+  // }
+
+  Future<void> _onImportButtonPressed(BuildContext context) async {
+    final storageCubit = context.read<StorageCubit>();
+    final importBloc = context.read<ImportBloc>();
+
+    // This implementation assumes `askStoragePermission` can be modified
+    // to be an `async` method that returns the `PermissionStatus`.
+    final permissionStatus = await storageCubit.askStoragePermission();
+
+    if (!context.mounted) return;
+
+    if (permissionStatus.isGranted) {
+      importBloc.add(ImportExcelEvent());
+    } else {
+      CustomSnackbar.showSnackbar(
+        context,
+        'Storage permission is required to import files',
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final salesStatusCubit = context.read<SalesStatusCubit>();
     final salesmanBloc = context.read<SalesmanBloc>();
-    final storageCubit = context.read<StorageCubit>();
-    final importBloc = context.read<ImportBloc>();
     final args =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
 
@@ -146,10 +235,7 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                         ),
                         child: IconButton(
                           onPressed: () => panelController.close(),
-                          icon: const Icon(
-                            Icons.close_rounded,
-                            size: 20,
-                          ),
+                          icon: const Icon(Icons.close_rounded, size: 20),
                           visualDensity: VisualDensity.compact,
                           padding: EdgeInsets.zero,
                         ),
@@ -180,9 +266,7 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                                 keyboardType: TextInputType.number,
                                 enableValidator: true,
                                 validatorType: 'id',
-                                inputFormatters: [
-                                  Formatter.numberFormatter,
-                                ],
+                                inputFormatters: [Formatter.numberFormatter],
                                 isLabelFloat: true,
                               ),
 
@@ -196,18 +280,15 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                                 enableValidator: true,
                                 validatorType: 'name',
                                 textCapitalization: TextCapitalization.words,
-                                inputFormatters: [
-                                  Formatter.normalFormatter,
-                                ],
+                                inputFormatters: [Formatter.normalFormatter],
                                 isLabelFloat: true,
                               ),
 
                               // ~:Status Dropdown:~
-                              CustomDropdown.sales(
-                                salesStatusCubit,
-                                ['Sales Counter', 'Salesman'],
-                                'Status',
-                              ),
+                              CustomDropdown.sales(salesStatusCubit, [
+                                'Sales Counter',
+                                'Salesman',
+                              ], 'Status'),
                             ],
                           ),
                         ),
@@ -251,13 +332,14 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                                     context: context,
                                     height: 40,
                                     text: 'Tambah',
-                                    func: () => CustomFunctions.addSalesman(
-                                      salesmanBloc,
-                                      panelController,
-                                      idController.text,
-                                      nameController.text,
-                                      salesStatusCubit.getSalesStatus(),
-                                    ),
+                                    func:
+                                        () => CustomFunctions.addSalesman(
+                                          salesmanBloc,
+                                          panelController,
+                                          idController.text,
+                                          nameController.text,
+                                          salesStatusCubit.getSalesStatus(),
+                                        ),
                                     bgColor: ConstantColors.primaryColor1,
                                     textStyle: TextThemes.subtitle,
                                     shadowColor: ConstantColors.shadowColor,
@@ -283,15 +365,11 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
           right: false,
           child: Scaffold(
             appBar: AppBar(
-              // toolbarHeight: 100,
               elevation: 0.0,
               scrolledUnderElevation: 0.0,
               automaticallyImplyLeading: true,
               backgroundColor: ConstantColors.primaryColor1,
-              title: const Text(
-                'Salesman',
-                style: TextThemes.subtitle,
-              ),
+              title: const Text('Salesman', style: TextThemes.subtitle),
               centerTitle: true,
               leading: Builder(
                 builder: (context) {
@@ -305,10 +383,7 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                     );
                   } else {
                     return IconButton(
-                      icon: const Icon(
-                        Icons.arrow_back_rounded,
-                        size: 20,
-                      ),
+                      icon: const Icon(Icons.arrow_back_rounded, size: 20),
                       onPressed: () => Navigator.pop(context),
                     );
                   }
@@ -354,143 +429,162 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
 
                     // ~:Page Body:~
                     Expanded(
-                      child: Builder(builder: (context) {
-                        if (args != null &&
-                            args.containsKey('registeredSales') &&
-                            (args['registeredSales'] as List<SalesmanModel>)
-                                .isNotEmpty) {
-                          log('Registered sales list: ${args['registeredSales']}');
+                      child: Builder(
+                        builder: (context) {
+                          if (args != null &&
+                              args.containsKey('registeredSales') &&
+                              (args['registeredSales'] as List<SalesmanModel>)
+                                  .isNotEmpty) {
+                            log(
+                              'Registered sales list: ${args['registeredSales']}',
+                            );
 
-                          return SingleChildScrollView(
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 12,
-                              ),
-                              child: Column(
-                                spacing: 8.0,
-                                children: (args['registeredSales']
-                                        as List<SalesmanModel>)
-                                    .map((salesProfile) {
-                                  return Card(
-                                    color: ConstantColors.primaryColor2,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    elevation: 5,
-                                    shadowColor: ConstantColors.shadowColor,
-                                    child: ListTile(
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                        vertical: 4,
-                                        horizontal: 20,
-                                      ),
-                                      title: Text(
-                                        'ID ${Formatter.toTitleCase(salesProfile.idCardNumber)}',
-                                        style: TextThemes.normal.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      subtitle: Text(
-                                        '${Formatter.toTitleCase(salesProfile.name)} - ${Formatter.toTitleCase(salesProfile.tierLevel)}',
-                                        style: TextThemes.normal,
-                                      ),
-                                      // ~:Change to CheckBox for further use:~
-                                      // trailing: IconButton(
-                                      //   icon: const Icon(
-                                      //     Icons.delete_rounded,
-                                      //     color: ConstantColors.primaryColor3,
-                                      //   ),
-                                      //   onPressed: () {},
-                                      // ),
-                                    ),
-                                  );
-                                }).toList(),
-                              ),
-                            ),
-                          );
-                        }
-
-                        return Refresh.iOSnAndroid(
-                          onRefresh: () => salesmanBloc.add(FetchSalesman()),
-                          child: BlocBuilder<SalesmanBloc, SalesmanState>(
-                            builder: (context, state) {
-                              if (state is SalesmanLoading) {
-                                return SizedBox(
-                                  height: MediaQuery.of(context).size.height *
-                                      0.725,
-                                  child: Loading.platformIndicator(
-                                    iosRadius: 13,
-                                    iosCircleColor:
-                                        ConstantColors.primaryColor3,
-                                    androidWidth: 28,
-                                    androidHeight: 28,
-                                    androidStrokeWidth: 3.5,
-                                    androidCircleColor:
-                                        ConstantColors.primaryColor3,
-                                  ),
-                                );
-                              } else if (state is SalesmanError) {
-                                return Container(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.7,
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    state.error,
-                                    style: TextThemes.normal,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                );
-                              }
-
-                              log('Fetched salesman list length: ${state.fetchSalesList.length}');
-                              return Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 12),
+                            return SingleChildScrollView(
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                ),
                                 child: Column(
                                   spacing: 8.0,
                                   children:
-                                      state.fetchSalesList.map((salesProfile) {
-                                    return Card(
-                                      color: ConstantColors.primaryColor2,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      elevation: 5,
-                                      shadowColor: ConstantColors.shadowColor,
-                                      child: ListTile(
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                          vertical: 4,
-                                          horizontal: 20,
-                                        ),
-                                        title: Text(
-                                          'ID ${Formatter.toTitleCase(salesProfile.id)}',
-                                          style: TextThemes.normal.copyWith(
-                                            fontWeight: FontWeight.bold,
+                                      (args['registeredSales'] as List<SalesmanModel>).map((
+                                        salesProfile,
+                                      ) {
+                                        return Card(
+                                          color: ConstantColors.primaryColor2,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              20,
+                                            ),
                                           ),
-                                        ),
-                                        subtitle: Text(
-                                          '${Formatter.toTitleCase(salesProfile.userName)} - ${Formatter.toTitleCase(salesProfile.tierLevel)}',
-                                          style: TextThemes.normal,
-                                        ),
-                                        // ~:Change to CheckBox for further use:~
-                                        // trailing: IconButton(
-                                        //   icon: const Icon(
-                                        //     Icons.delete_rounded,
-                                        //     color: ConstantColors.primaryColor3,
-                                        //   ),
-                                        //   onPressed: () {},
-                                        // ),
-                                      ),
-                                    );
-                                  }).toList(),
+                                          elevation: 5,
+                                          shadowColor:
+                                              ConstantColors.shadowColor,
+                                          child: ListTile(
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
+                                                  vertical: 4,
+                                                  horizontal: 20,
+                                                ),
+                                            title: Text(
+                                              'ID ${Formatter.toTitleCase(salesProfile.idCardNumber)}',
+                                              style: TextThemes.normal.copyWith(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            subtitle: Text(
+                                              '${Formatter.toTitleCase(salesProfile.name)} - ${Formatter.toTitleCase(salesProfile.tierLevel)}',
+                                              style: TextThemes.normal,
+                                            ),
+                                            // ~:Change to CheckBox for further use:~
+                                            // trailing: IconButton(
+                                            //   icon: const Icon(
+                                            //     Icons.delete_rounded,
+                                            //     color: ConstantColors.primaryColor3,
+                                            //   ),
+                                            //   onPressed: () {},
+                                            // ),
+                                          ),
+                                        );
+                                      }).toList(),
                                 ),
-                              );
-                            },
-                          ),
-                        );
-                      }),
+                              ),
+                            );
+                          }
+
+                          return Refresh.iOSnAndroid(
+                            onRefresh: () => salesmanBloc.add(FetchSalesman()),
+                            child: BlocBuilder<SalesmanBloc, SalesmanState>(
+                              builder: (context, state) {
+                                if (state is SalesmanLoading) {
+                                  return SizedBox(
+                                    height:
+                                        MediaQuery.of(context).size.height *
+                                        0.725,
+                                    child: Loading.platformIndicator(
+                                      iosRadius: 13,
+                                      iosCircleColor:
+                                          ConstantColors.primaryColor3,
+                                      androidWidth: 28,
+                                      androidHeight: 28,
+                                      androidStrokeWidth: 3.5,
+                                      androidCircleColor:
+                                          ConstantColors.primaryColor3,
+                                    ),
+                                  );
+                                } else if (state is SalesmanError) {
+                                  return Container(
+                                    height:
+                                        MediaQuery.of(context).size.height *
+                                        0.7,
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      state.error,
+                                      style: TextThemes.normal,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  );
+                                }
+
+                                log(
+                                  'Fetched salesman list length: ${state.fetchSalesList.length}',
+                                );
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                  ),
+                                  child: Column(
+                                    spacing: 8.0,
+                                    children:
+                                        state.fetchSalesList.map((
+                                          salesProfile,
+                                        ) {
+                                          return Card(
+                                            color: ConstantColors.primaryColor2,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                            ),
+                                            elevation: 5,
+                                            shadowColor:
+                                                ConstantColors.shadowColor,
+                                            child: ListTile(
+                                              contentPadding:
+                                                  const EdgeInsets.symmetric(
+                                                    vertical: 4,
+                                                    horizontal: 20,
+                                                  ),
+                                              title: Text(
+                                                'ID ${Formatter.toTitleCase(salesProfile.id)}',
+                                                style: TextThemes.normal
+                                                    .copyWith(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                              ),
+                                              subtitle: Text(
+                                                '${Formatter.toTitleCase(salesProfile.userName)} - ${Formatter.toTitleCase(salesProfile.tierLevel)}',
+                                                style: TextThemes.normal,
+                                              ),
+                                              // ~:Change to CheckBox for further use:~
+                                              // trailing: IconButton(
+                                              //   icon: const Icon(
+                                              //     Icons.delete_rounded,
+                                              //     color: ConstantColors.primaryColor3,
+                                              //   ),
+                                              //   onPressed: () {},
+                                              // ),
+                                            ),
+                                          );
+                                        }).toList(),
+                                  ),
+                                );
+                              },
+                            ),
+                          );
+                        },
+                      ),
                     ),
 
                     // ~:Page Footer:~
@@ -526,18 +620,21 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                               // ~:Import File Button:~
                               BlocListener<ImportBloc, ImportState>(
                                 listener: (context, state) {
-                                  log('Storage permission: ${storageCubit.state}');
-                                  if (storageCubit.state ==
-                                      PermissionStatus.granted) {
-                                    uploadSalesmanFile(
-                                      storageCubit,
-                                      importBloc,
+                                  if (state is ImportExcelSucceed) {
+                                    CustomFunctions.displayDialog(
+                                      context,
+                                      CustomDialog.alertSalesImport(
+                                        context,
+                                        state.salesmanList,
+                                        () {
+                                          Navigator.pop(context);
+                                        },
+                                      ),
                                     );
-                                  } else if (storageCubit.state ==
-                                      PermissionStatus.permanentlyDenied) {
+                                  } else if (state is ImportExcelFailed) {
                                     CustomSnackbar.showSnackbar(
                                       context,
-                                      'Storage permission is required to import files.',
+                                      state.message,
                                     );
                                   }
                                 },
@@ -547,9 +644,7 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                                   height: 40,
                                   enableIcon: true,
                                   icon: Icons.upload_rounded,
-                                  func: () => askStoragePermission(
-                                    storageCubit,
-                                  ),
+                                  func: () => _onImportButtonPressed(context),
                                   bgColor: ConstantColors.primaryColor2,
                                   textStyle: TextThemes.normal,
                                   shadowColor: ConstantColors.primaryColor1,
