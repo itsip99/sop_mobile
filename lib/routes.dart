@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:sop_mobile/presentation/screens/about_screen.dart';
+import 'package:sop_mobile/presentation/screens/settings_screen.dart';
 import 'package:sop_mobile/presentation/screens/briefing_screen.dart';
 import 'package:sop_mobile/presentation/screens/home_screen.dart';
 import 'package:sop_mobile/presentation/screens/location_screen.dart';
@@ -17,6 +17,7 @@ class ConstantRoutes {
   static const String register = '/register';
   static const String location = '/location';
   static const String home = '/home';
+  static const String settings = '/settings';
   static const String brief = '/brief';
   static const String report = '/report';
   static const String sales = '/sales';
@@ -29,10 +30,10 @@ class ConstantRoutes {
     ConstantRoutes.register: (context) => const SignupScreen(),
     ConstantRoutes.location: (context) => const LocationScreen(),
     ConstantRoutes.home: (context) => const HomeScreen(),
+    ConstantRoutes.settings: (context) => const SettingsScreen(),
     ConstantRoutes.brief: (context) => const BriefingScreen(),
     ConstantRoutes.report: (context) => const ReportScreen(),
     ConstantRoutes.sales: (context) => const SalesmanScreen(),
-    ConstantRoutes.about: (context) => const AboutScreen(),
   };
 
   // final Map<String, WidgetBuilder> routes = {

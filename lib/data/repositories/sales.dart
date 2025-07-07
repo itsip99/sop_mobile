@@ -15,9 +15,7 @@ class SalesRepoImp extends SalesRepo {
       APIConstants.fetchSalesProfileEndpoint,
     );
 
-    Map body = {
-      'CustomerID': username,
-    };
+    Map body = {'CustomerID': username};
     log('Map Body: $body');
 
     final response = await http.post(
@@ -37,23 +35,18 @@ class SalesRepoImp extends SalesRepo {
         log('Success');
         return {
           'status': 'success',
-          'data': (res['Data'] as List)
-              .map((item) => SalesModel.fromJson(item))
-              .toList(),
+          'data':
+              (res['Data'] as List)
+                  .map((item) => SalesModel.fromJson(item))
+                  .toList(),
         };
       } else {
         log('Fail');
-        return {
-          'status': 'fail',
-          'data': 'Failed to fetch data',
-        };
+        return {'status': 'fail', 'data': 'Failed to fetch data'};
       }
     } else {
       log('Response: ${response.statusCode}');
-      return {
-        'status': 'fail',
-        'data': 'Status Code ${response.statusCode}',
-      };
+      return {'status': 'fail', 'data': 'Status Code ${response.statusCode}'};
     }
   }
 
@@ -63,6 +56,7 @@ class SalesRepoImp extends SalesRepo {
     String id,
     String name,
     String tier,
+    int status,
   ) async {
     // Simulate a network call
     Uri uri = Uri.https(
@@ -78,7 +72,8 @@ class SalesRepoImp extends SalesRepo {
         'KTP': id,
         'SName': name,
         'EntryLevel': tier,
-      }
+        'Active': status,
+      },
     };
     log('Map Body: $body');
 
@@ -98,10 +93,7 @@ class SalesRepoImp extends SalesRepo {
         final message = (res['Data'] as List)[0]['ResultMessage'].toString();
         if (message.toLowerCase().contains('duplicate key')) {
           log('Duplicate key found');
-          return {
-            'status': 'fail',
-            'data': 'Duplicate key found.',
-          };
+          return {'status': 'fail', 'data': 'Duplicate key found.'};
         } else if (message.toLowerCase() == 'sukses') {
           log('Success');
           return {
@@ -111,23 +103,14 @@ class SalesRepoImp extends SalesRepo {
         }
 
         log('Something\'s wrong');
-        return {
-          'status': 'success',
-          'data': 'Something went wrong.',
-        };
+        return {'status': 'success', 'data': 'Something went wrong.'};
       } else {
         log('Fail');
-        return {
-          'status': 'fail',
-          'data': 'Failed to fetch data',
-        };
+        return {'status': 'fail', 'data': 'Failed to fetch data'};
       }
     } else {
       log('Response: ${response.statusCode}');
-      return {
-        'status': 'fail',
-        'data': 'Status Code ${response.statusCode}',
-      };
+      return {'status': 'fail', 'data': 'Status Code ${response.statusCode}'};
     }
   }
 }

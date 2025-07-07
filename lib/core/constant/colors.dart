@@ -7,6 +7,7 @@ class ConstantColors {
   static const primaryColor3 = Colors.black;
   static const closeColor = Colors.red;
   static const shadowColor = Colors.grey;
+  static const lightShadowColor = Color.fromARGB(255, 230, 230, 230);
   static final disabledColor = Colors.grey[400]!;
   static final backdropColor = Colors.grey[800]!;
   static const textButtonCollor = Colors.blue;

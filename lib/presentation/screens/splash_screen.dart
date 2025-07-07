@@ -50,14 +50,18 @@ class _SplashScreenState extends State<SplashScreen> {
         toolbarHeight: 0.0,
         elevation: 0.0,
         scrolledUnderElevation: 0.0,
-        backgroundColor: ConstantColors.primaryColor1,
+        backgroundColor: ConstantColors.primaryColor2,
       ),
       body: BlocListener<LoginBloc, LoginState>(
         listener: (context, state) {
           if (state is LoginSuccess) {
             log('Data available');
-            context.read<FilterBloc>().add(FilterAdded(
-                FilterType.briefing, DateTime.now().toString().split(' ')[0]));
+            context.read<FilterBloc>().add(
+              FilterAdded(
+                FilterType.briefing,
+                DateTime.now().toString().split(' ')[0],
+              ),
+            );
             Navigator.pushReplacementNamed(context, ConstantRoutes.home);
           } else if (state is LoginFailure) {
             log('No data available');
@@ -67,7 +71,7 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
-          color: ConstantColors.primaryColor1,
+          color: ConstantColors.primaryColor2,
           child: Column(
             spacing: 20,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -78,16 +82,18 @@ class _SplashScreenState extends State<SplashScreen> {
                 width: 150,
                 height: 150,
               ),
-              Builder(builder: (context) {
-                return Loading.platformIndicator(
-                  iosRadius: 13,
-                  iosCircleColor: ConstantColors.primaryColor3,
-                  androidWidth: 28,
-                  androidHeight: 28,
-                  androidStrokeWidth: 3.5,
-                  androidCircleColor: ConstantColors.primaryColor3,
-                );
-              })
+              Builder(
+                builder: (context) {
+                  return Loading.platformIndicator(
+                    iosRadius: 13,
+                    iosCircleColor: ConstantColors.primaryColor3,
+                    androidWidth: 28,
+                    androidHeight: 28,
+                    androidStrokeWidth: 3.5,
+                    androidCircleColor: ConstantColors.primaryColor3,
+                  );
+                },
+              ),
             ],
           ),
         ),

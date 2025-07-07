@@ -13,7 +13,7 @@ class ImportLoading extends ImportState {}
 
 class ImportExcelSucceed extends ImportState {
   final String message;
-  final List<SalesImportModel> salesmanList;
+  final List<NewSalesModel> salesmanList;
 
   ImportExcelSucceed(this.message, this.salesmanList);
 }

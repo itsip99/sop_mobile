@@ -36,38 +36,41 @@ class FakeFilterRepo implements FilterRepo {
 
     // Return sample data based on active filters
     return HomeModel(
-      briefingData: isBriefingActive
-          ? [
-              BriefingModel(
-                date: date,
-                location: 'Test Location',
-                participants: 0,
-                shopManager: 0,
-                salesCounter: 0,
-                salesman: 0,
-                others: 0,
-                topic: 'Test Topic',
-              ),
-            ]
-          : [],
-      reportData: isReportActive
-          ? [
-              ReportModel(
-                date: date,
-                userId: '1',
-                userName: 'Test User',
-                area: 'Test Area',
-                pic: 'Test PIC',
-                payment: [],
-                salesmen: [],
-                stu: [],
-                leasing: [],
-              ),
-            ]
-          : [],
+      briefingData:
+          isBriefingActive
+              ? [
+                BriefingModel(
+                  date: date,
+                  location: 'Test Location',
+                  participants: 0,
+                  shopManager: 0,
+                  salesCounter: 0,
+                  salesman: 0,
+                  others: 0,
+                  topic: 'Test Topic',
+                ),
+              ]
+              : [],
+      reportData:
+          isReportActive
+              ? [
+                ReportModel(
+                  date: date,
+                  userId: '1',
+                  userName: 'Test User',
+                  area: 'Test Area',
+                  pic: 'Test PIC',
+                  payment: [],
+                  salesmen: [],
+                  stu: [],
+                  leasing: [],
+                ),
+              ]
+              : [],
       salesData: [
         SalesModel(
           tierLevel: 'Gold',
+          status: 1,
           userId: '1',
           id: '1',
           userName: 'Test Sales',
@@ -78,7 +81,9 @@ class FakeFilterRepo implements FilterRepo {
 
   @override
   Future<Map<String, dynamic>> fetchBriefingData(
-      String date, String userId) async {
+    String date,
+    String userId,
+  ) async {
     if (!shouldSucceed) throw Exception('Failed to fetch briefing data');
     if (!hasData) return {'status': 'success', 'data': []};
 
@@ -104,7 +109,9 @@ class FakeFilterRepo implements FilterRepo {
 
   @override
   Future<Map<String, dynamic>> fetchReportData(
-      String date, String userId) async {
+    String date,
+    String userId,
+  ) async {
     if (!shouldSucceed) throw Exception('Failed to fetch report data');
     if (!hasData) return {'status': 'success', 'data': []};
 

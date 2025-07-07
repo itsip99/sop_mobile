@@ -4,7 +4,7 @@ import 'package:sop_mobile/data/models/sales_import.dart';
 class CustomDialog {
   static Widget alertSalesImport(
     BuildContext context,
-    List<SalesImportModel> list,
+    List<NewSalesModel> list,
     Function func,
   ) {
     return AlertDialog(
@@ -19,7 +19,19 @@ class CustomDialog {
               title: Text(list[index].name),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [Text(list[index].id), Text(list[index].tier)],
+                children: [
+                  Text(list[index].id),
+                  Text(list[index].tier),
+                  Builder(
+                    builder: (context) {
+                      if (list[index].isActive == 1) {
+                        return const Text('Aktif');
+                      } else {
+                        return const Text('Tidak Aktif');
+                      }
+                    },
+                  ),
+                ],
               ),
             );
           },
@@ -29,7 +41,7 @@ class CustomDialog {
         TextButton(
           child: const Text('Cancel'),
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.pop(context);
           },
         ),
         TextButton(child: const Text('Import'), onPressed: () => func()),

@@ -9,6 +9,13 @@ class TextFontFamily {
 }
 
 class TextThemes {
+  static const TextStyle logoutButton = TextStyle(
+    fontFamily: TextFontFamily.roboto,
+    fontSize: 16,
+    color: ConstantColors.closeColor,
+    fontWeight: FontWeight.bold,
+  );
+
   static const TextStyle title1 = TextStyle(
     fontFamily: TextFontFamily.roboto,
     fontSize: 28,

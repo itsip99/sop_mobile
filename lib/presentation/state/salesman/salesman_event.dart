@@ -21,8 +21,9 @@ class AddSalesman extends SalesmanEvent {
   final String id;
   final String name;
   final String tier;
+  final int status;
 
-  AddSalesman(this.id, this.name, this.tier);
+  AddSalesman(this.id, this.name, this.tier, this.status);
 }
 
 class ModifySalesman extends SalesmanEvent {

@@ -7,12 +7,11 @@ import 'package:sop_mobile/core/constant/colors.dart';
 import 'package:sop_mobile/data/models/home.dart';
 import 'package:sop_mobile/presentation/state/counter/counter_cubit.dart';
 import 'package:sop_mobile/presentation/state/leasing/leasing_bloc.dart';
-import 'package:sop_mobile/presentation/state/cubit/sales.dart';
+import 'package:sop_mobile/presentation/state/cubit/sales_position.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_bloc.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_state.dart';
 import 'package:sop_mobile/presentation/state/leasing/leasing_event.dart';
 import 'package:sop_mobile/presentation/state/login/login_bloc.dart';
-import 'package:sop_mobile/presentation/state/login/login_event.dart';
 import 'package:sop_mobile/presentation/state/login/login_state.dart';
 import 'package:sop_mobile/presentation/state/payment/payment_bloc.dart';
 import 'package:sop_mobile/presentation/state/payment/payment_event.dart';
@@ -32,7 +31,6 @@ import 'package:sop_mobile/presentation/widgets/card.dart';
 import 'package:sop_mobile/presentation/widgets/filter.dart';
 import 'package:sop_mobile/presentation/widgets/loading.dart';
 import 'package:sop_mobile/presentation/widgets/refresh.dart';
-import 'package:sop_mobile/presentation/widgets/snackbar.dart';
 import 'package:sop_mobile/routes.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -49,19 +47,16 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final routeBloc = context.read<RouteBloc>();
-    final loginBloc = context.read<LoginBloc>();
     final counterCubit = context.read<CounterCubit>();
     final photoBloc = context.read<PhotoBloc>();
     final salesProfileBloc = context.read<SalesmanBloc>();
-    final salesStatusCubit = context.read<SalesStatusCubit>();
-    // log('Width: ${MediaQuery.of(context).size.width}');
-    // log('Height: ${MediaQuery.of(context).size.height}');
+    final salesPositionCubit = context.read<SalesPositionCubit>();
 
     return SlidingUpPanel(
       controller: panelController,
       renderPanelSheet: false,
       minHeight: 0,
-      maxHeight: 250,
+      maxHeight: 200,
       isDraggable: false,
       panelSnapping: false,
       defaultPanelState: PanelState.CLOSED,
@@ -84,16 +79,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: <Widget>[
                   const DefaultTextStyle(
                     style: TextThemes.subtitle,
-                    child: Text(
-                      'Buat Laporan / Tambah Data',
-                    ),
+                    child: Text('Buat Laporan / Tambah Data'),
                   ),
                   IconButton(
                     onPressed: () => panelController.close(),
-                    icon: const Icon(
-                      Icons.close_rounded,
-                      size: 20,
-                    ),
+                    icon: const Icon(Icons.close_rounded, size: 20),
                   ),
                 ],
               ),
@@ -122,9 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       bgColor: Colors.transparent,
                     ),
                   ),
-                  const Divider(
-                    height: 0.5,
-                  ),
+                  const Divider(height: 0.5),
                   DefaultTextStyle(
                     style: TextThemes.normalTextButton,
                     child: CustomButton.normalButton(
@@ -147,9 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       bgColor: Colors.transparent,
                     ),
                   ),
-                  const Divider(
-                    height: 0.5,
-                  ),
+                  const Divider(height: 0.5),
                   DefaultTextStyle(
                     style: TextThemes.normalTextButton,
                     child: CustomButton.normalButton(
@@ -158,24 +144,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       func: () {
                         salesProfileBloc.add(ResetSalesman([]));
                         salesProfileBloc.add(FetchSalesman());
-                        salesStatusCubit.setSalesStatus('Sales Counter');
+                        salesPositionCubit.setSalesPosition('Sales Counter');
                         routeBloc.add(RoutePush(ConstantRoutes.sales));
                         Navigator.pushNamed(context, ConstantRoutes.sales);
-                        panelController.close();
-                      },
-                      bgColor: Colors.transparent,
-                    ),
-                  ),
-                  const Divider(
-                    height: 0.5,
-                  ),
-                  DefaultTextStyle(
-                    style: TextThemes.normalTextButton,
-                    child: CustomButton.normalButton(
-                      context: context,
-                      text: 'Tentang Aplikasi',
-                      func: () {
-                        Navigator.pushNamed(context, ConstantRoutes.about);
                         panelController.close();
                       },
                       bgColor: Colors.transparent,
@@ -192,10 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
         floatingActionButton: FloatingActionButton(
           onPressed: () => panelController.open(),
           backgroundColor: ConstantColors.primaryColor1,
-          child: const Icon(
-            Icons.add,
-            color: ConstantColors.primaryColor3,
-          ),
+          child: const Icon(Icons.add, color: ConstantColors.primaryColor3),
         ),
         // ~:Profile Section:~
         appBar: AppBar(
@@ -216,9 +184,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 // ~:Profile Image:~
                 CircleAvatar(
                   backgroundColor: ConstantColors.primaryColor2,
-                  radius: MediaQuery.of(context).size.shortestSide >= 600
-                      ? 52
-                      : 32, // Larger on tablets
+                  radius:
+                      MediaQuery.of(context).size.shortestSide >= 600
+                          ? 52
+                          : 32, // Larger on tablets
                   child: Padding(
                     padding: const EdgeInsets.all(8),
                     child: Image.asset(
@@ -233,10 +202,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   direction: Axis.vertical,
                   children: [
                     // ~:Welcome Statement:~
-                    const Text(
-                      'Selamat datang,',
-                      style: TextThemes.subtitle,
-                    ),
+                    const Text('Selamat datang,', style: TextThemes.subtitle),
 
                     // ~:Profile Name:~
                     BlocConsumer<LoginBloc, LoginState>(
@@ -265,38 +231,49 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           // ~:Utility Section:~
           actions: [
-            // ~:Logout Button:~
+            // // ~:Logout Button:~
+            // Padding(
+            //   padding: const EdgeInsets.only(right: 8),
+            //   child: BlocListener<LoginBloc, LoginState>(
+            //     listener: (context, state) {
+            //       if (state is LogoutSuccess) {
+            //         Navigator.pushReplacementNamed(context, '/welcome');
+            //       } else if (state is LogoutFailure) {
+            //         CustomSnackbar.showSnackbar(
+            //           context,
+            //           state.getLogoutFailure,
+            //           backgroundColor: ConstantColors.primaryColor3,
+            //         );
+            //       }
+            //     },
+            //     child: IconButton(
+            //       onPressed: () {
+            //         loginBloc.add(LogoutButtonPressed());
+            //       },
+            //       icon: const Icon(
+            //         Icons.logout,
+            //         color: ConstantColors.primaryColor3,
+            //       ),
+            //     ),
+            //   ),
+            // ),
+
+            // ~:Settings Button:~
             Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: BlocListener<LoginBloc, LoginState>(
-                listener: (context, state) {
-                  if (state is LogoutSuccess) {
-                    Navigator.pushReplacementNamed(context, '/welcome');
-                  } else if (state is LogoutFailure) {
-                    CustomSnackbar.showSnackbar(
-                      context,
-                      state.getLogoutFailure,
-                      backgroundColor: ConstantColors.primaryColor3,
-                    );
-                  }
-                },
-                child: IconButton(
-                  onPressed: () {
-                    loginBloc.add(LogoutButtonPressed());
-                  },
-                  icon: const Icon(
-                    Icons.logout,
-                    color: ConstantColors.primaryColor3,
-                  ),
+              padding: const EdgeInsets.only(right: 12),
+              child: IconButton(
+                onPressed:
+                    () => Navigator.pushNamed(context, ConstantRoutes.settings),
+                icon: const Icon(
+                  Icons.settings,
+                  color: ConstantColors.primaryColor3,
                 ),
               ),
             ),
           ],
         ),
         body: DecoratedBox(
-          decoration: const BoxDecoration(
-            color: ConstantColors.primaryColor1,
-          ),
+          decoration: const BoxDecoration(color: ConstantColors.primaryColor1),
           child: Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
@@ -361,36 +338,42 @@ class _HomeScreenState extends State<HomeScreen> {
                             runSpacing: 10,
                             children: [
                               // ~:Briefing Section:~
-                              Builder(builder: (context) {
-                                if (data.briefingData.isNotEmpty) {
-                                  return CustomCard.briefSection(
-                                    context,
-                                    MediaQuery.of(context).size.width,
-                                    360,
-                                    scrollController,
-                                    data.briefingData,
-                                    MediaQuery.of(context).size.width,
-                                    350,
-                                    cardMargin: 4.0,
-                                  );
-                                }
+                              Builder(
+                                builder: (context) {
+                                  if (data.briefingData.isNotEmpty) {
+                                    return CustomCard.briefSection(
+                                      context,
+                                      MediaQuery.of(context).size.width,
+                                      360,
+                                      scrollController,
+                                      data.briefingData,
+                                      MediaQuery.of(context).size.width,
+                                      350,
+                                      cardMargin: 4.0,
+                                    );
+                                  }
 
-                                return const SizedBox();
-                              }),
+                                  return const SizedBox();
+                                },
+                              ),
 
                               // ~:Report Section:~
-                              Builder(builder: (context) {
-                                if (data.reportData.isNotEmpty) {
-                                  log('STU Data: ${data.reportData[0].stu.length}');
-                                  return CustomCard.reportSection(
-                                    context,
-                                    ConstantColors.primaryColor2,
-                                    data.reportData[0],
-                                  );
-                                }
+                              Builder(
+                                builder: (context) {
+                                  if (data.reportData.isNotEmpty) {
+                                    log(
+                                      'STU Data: ${data.reportData[0].stu.length}',
+                                    );
+                                    return CustomCard.reportSection(
+                                      context,
+                                      ConstantColors.primaryColor2,
+                                      data.reportData[0],
+                                    );
+                                  }
 
-                                return const SizedBox();
-                              }),
+                                  return const SizedBox();
+                                },
+                              ),
 
                               // ~:Salesman Section:~
                               // Builder(builder: (context) {
@@ -405,9 +388,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             ],
                           );
                         } else if (state is FilterError) {
-                          if (state.errorMessage
-                              .toLowerCase()
-                              .contains('connection timed out')) {
+                          if (state.errorMessage.toLowerCase().contains(
+                            'connection timed out',
+                          )) {
                             return Container(
                               height: MediaQuery.of(context).size.height * 0.7,
                               alignment: Alignment.center,

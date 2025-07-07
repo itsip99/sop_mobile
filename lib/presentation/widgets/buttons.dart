@@ -3,6 +3,27 @@ import 'package:sop_mobile/core/constant/colors.dart';
 import 'package:sop_mobile/presentation/widgets/loading.dart';
 
 class CustomButton {
+  static Widget radioButton({
+    required bool isSelected,
+    required Function onSelect,
+    required Color selectedColor,
+    required Color unselectedColor,
+  }) {
+    return Radio<bool>(
+      value: true,
+      groupValue: isSelected,
+      onChanged: (value) => onSelect(),
+      activeColor: selectedColor,
+      fillColor: WidgetStateProperty.resolveWith<Color>((states) {
+        if (states.contains(WidgetState.selected)) {
+          return selectedColor;
+        }
+        return unselectedColor;
+      }),
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+    );
+  }
+
   static Widget normalButton({
     required BuildContext context,
     required String text,
@@ -21,10 +42,7 @@ class CustomButton {
           color: bgColor,
           borderRadius: BorderRadius.circular(20),
         ),
-        child: Text(
-          text,
-          style: textStyle,
-        ),
+        child: Text(text, style: textStyle),
       ),
     );
   }
@@ -43,16 +61,11 @@ class CustomButton {
         backgroundColor: bgColor,
         minimumSize: Size(MediaQuery.of(context).size.width, 50),
         maximumSize: Size(MediaQuery.of(context).size.width, 100),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         shadowColor: shadowColor,
         elevation: 5,
       ),
-      child: Text(
-        text,
-        style: textStyle,
-      ),
+      child: Text(text, style: textStyle),
     );
   }
 
@@ -105,10 +118,7 @@ class CustomButton {
               if (enableIcon) {
                 return Icon(icon);
               } else {
-                return Text(
-                  text,
-                  style: textStyle,
-                );
+                return Text(text, style: textStyle);
               }
             }
           },

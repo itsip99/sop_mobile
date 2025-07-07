@@ -8,7 +8,8 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:sop_mobile/core/constant/colors.dart';
 import 'package:sop_mobile/core/helpers/formatter.dart';
 import 'package:sop_mobile/data/models/report.dart';
-import 'package:sop_mobile/presentation/state/cubit/sales.dart';
+import 'package:sop_mobile/data/models/sales_import.dart';
+import 'package:sop_mobile/presentation/state/cubit/sales_status.dart';
 import 'package:sop_mobile/presentation/state/import/import_bloc.dart';
 import 'package:sop_mobile/presentation/state/import/import_event.dart';
 import 'package:sop_mobile/presentation/state/import/import_state.dart';
@@ -16,6 +17,7 @@ import 'package:sop_mobile/presentation/state/permission/storage_cubit.dart';
 import 'package:sop_mobile/presentation/state/salesman/salesman_bloc.dart';
 import 'package:sop_mobile/presentation/state/salesman/salesman_event.dart';
 import 'package:sop_mobile/presentation/state/salesman/salesman_state.dart';
+import 'package:sop_mobile/presentation/state/cubit/sales_position.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
 import 'package:sop_mobile/presentation/widgets/buttons.dart';
 import 'package:sop_mobile/presentation/widgets/dialog.dart';
@@ -39,96 +41,6 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
   final TextEditingController idController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
 
-  void addSalesman() {}
-
-  // Future<void> askStoragePermission(
-  //   BuildContext context,
-  //   StorageCubit storageCubit,
-  //   ImportBloc importBloc,
-  // ) async {
-  //   await storageCubit.checkStoragePermission();
-  //   if (storageCubit.state.isDenied) {
-  //     await storageCubit.requestStoragePermission();
-  //   }
-  //   log('Storage permission: ${storageCubit.state}');
-
-  //   if (storageCubit.state == PermissionStatus.granted) {
-  //     await uploadSalesmanFile(storageCubit, importBloc);
-  //   } else if (storageCubit.state == PermissionStatus.permanentlyDenied) {
-  //     if (context.mounted) {
-  //       CustomSnackbar.showSnackbar(
-  //         context,
-  //         'Storage permission is required to import files.',
-  //       );
-  //     }
-  //   }
-  // }
-
-  // Future<void> uploadSalesmanFile(
-  //   StorageCubit storageCubit,
-  //   ImportBloc importBloc,
-  // ) async {
-  //   try {
-  //     FilePickerResult? result = await FilePicker.platform.pickFiles(
-  //       type: FileType.custom,
-  //       allowedExtensions: ['xlsx', 'xls'],
-  //     );
-
-  //     if (result != null && result.files.single.path != null) {
-  //       // 3. Parse File and Update Bloc
-  //       File file = File(result.files.single.path!);
-
-  //       // 3. Parse File and Update Bloc
-  //       var bytes = file.readAsBytesSync();
-  //       var excel = xls.Excel.decodeBytes(bytes);
-
-  //       // Assumption: Data is in the first sheet named 'Sheet1'
-  //       // Assumption: Columns are Name, Status, SPK, STU, STU LM
-  //       var sheet = excel['Sheet1'];
-
-  //       List<SalesImportModel> importedSalesmen = [];
-  //       // Skip the first row (header)
-  //       for (var row in sheet.rows.skip(1)) {
-  //         // Check for null cells to avoid errors
-  //         final String id = row[0]?.value?.toString() ?? '';
-  //         final String name = row[1]?.value?.toString() ?? '';
-  //         final String tier = row[2]?.value?.toString() ?? '';
-
-  //         if (id.isNotEmpty && name.isNotEmpty && tier.isNotEmpty) {
-  //           importedSalesmen.add(
-  //             SalesImportModel(id: id, name: name, tier: tier),
-  //           );
-  //         }
-  //       }
-
-  //       if (importedSalesmen.isNotEmpty) {
-  //         // Dispatch event to Bloc to add these salesmen
-  //         importBloc.add(ImportExcelEvent(salesmanList: importedSalesmen));
-  //         // if (mounted) {
-  //         //   importBloc.add(ImportExcelEvent(salesmanList: importedSalesmen));
-
-  //         //   CustomSnackbar.showSnackbar(
-  //         //     context,
-  //         //     '${importedSalesmen.length} salesman imported successfully!',
-  //         //   );
-  //         // }
-  //       } else {
-  //         if (mounted) {
-  //           CustomSnackbar.showSnackbar(
-  //             context,
-  //             'No valid salesman data found in the file.',
-  //           );
-  //         }
-  //       }
-  //     } else {
-  //       // User canceled the picker
-  //       log('File picking canceled by user.');
-  //     }
-  //   } catch (e) {
-  //     log('Error: $e');
-  //   }
-  // }
-
   Future<void> _onImportButtonPressed(BuildContext context) async {
     final storageCubit = context.read<StorageCubit>();
     final importBloc = context.read<ImportBloc>();
@@ -151,8 +63,9 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final salesStatusCubit = context.read<SalesStatusCubit>();
+    final salesPositionCubit = context.read<SalesPositionCubit>();
     final salesmanBloc = context.read<SalesmanBloc>();
+    final salesStatusCubit = context.read<SalesStatusCubit>();
     final args =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
 
@@ -162,7 +75,7 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
         controller: panelController,
         renderPanelSheet: false,
         minHeight: 0,
-        maxHeight: 400,
+        maxHeight: 450,
         isDraggable: false,
         panelSnapping: false,
         defaultPanelState: PanelState.CLOSED,
@@ -250,46 +163,61 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                     duration: const Duration(seconds: 2),
                     width: MediaQuery.of(context).size.width,
                     child: Column(
-                      spacing: 28,
                       children: [
                         Expanded(
-                          child: Wrap(
-                            spacing: 12,
-                            children: [
-                              // ~:ID TextField:~
-                              CustomTextFormField(
-                                'sales id',
-                                'ID',
-                                const Icon(Icons.person),
-                                borderRadius: 20,
-                                idController,
-                                keyboardType: TextInputType.number,
-                                enableValidator: true,
-                                validatorType: 'id',
-                                inputFormatters: [Formatter.numberFormatter],
-                                isLabelFloat: true,
-                              ),
+                          child: SingleChildScrollView(
+                            physics: const BouncingScrollPhysics(),
+                            child: Column(
+                              spacing: 8,
+                              children: [
+                                // ~:ID TextField:~
+                                CustomTextFormField(
+                                  'sales id',
+                                  'ID',
+                                  const Icon(Icons.person),
+                                  borderRadius: 20,
+                                  idController,
+                                  keyboardType: TextInputType.number,
+                                  enableValidator: true,
+                                  validatorType: 'id',
+                                  inputFormatters: [Formatter.numberFormatter],
+                                  isLabelFloat: true,
+                                ),
 
-                              // ~:Name TextField:~
-                              CustomTextFormField(
-                                'sales name',
-                                'Name',
-                                const Icon(Icons.person),
-                                borderRadius: 20,
-                                nameController,
-                                enableValidator: true,
-                                validatorType: 'name',
-                                textCapitalization: TextCapitalization.words,
-                                inputFormatters: [Formatter.normalFormatter],
-                                isLabelFloat: true,
-                              ),
+                                // ~:Name TextField:~
+                                CustomTextFormField(
+                                  'sales name',
+                                  'Name',
+                                  const Icon(Icons.person),
+                                  borderRadius: 20,
+                                  nameController,
+                                  enableValidator: true,
+                                  validatorType: 'name',
+                                  textCapitalization: TextCapitalization.words,
+                                  inputFormatters: [Formatter.normalFormatter],
+                                  isLabelFloat: true,
+                                ),
 
-                              // ~:Status Dropdown:~
-                              CustomDropdown.sales(salesStatusCubit, [
-                                'Sales Counter',
-                                'Salesman',
-                              ], 'Status'),
-                            ],
+                                Column(
+                                  spacing: 16,
+                                  children: [
+                                    // ~:Position Dropdown:~
+                                    CustomDropdown.salesPosition(
+                                      salesPositionCubit,
+                                      ['Sales Counter', 'Salesman'],
+                                      'Position',
+                                    ),
+
+                                    // ~:Status Dropdown:~
+                                    CustomDropdown.salesStatus(
+                                      salesStatusCubit,
+                                      ['Aktif', 'Non-Aktif'],
+                                      'Status',
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
 
@@ -332,14 +260,26 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                                     context: context,
                                     height: 40,
                                     text: 'Tambah',
-                                    func:
-                                        () => CustomFunctions.addSalesman(
-                                          salesmanBloc,
-                                          panelController,
-                                          idController.text,
-                                          nameController.text,
-                                          salesStatusCubit.getSalesStatus(),
-                                        ),
+                                    func: () {
+                                      CustomFunctions.addSalesman(
+                                        salesmanBloc,
+                                        panelController,
+                                        [
+                                          NewSalesModel(
+                                            id: idController.text,
+                                            name: nameController.text,
+                                            tier:
+                                                salesPositionCubit
+                                                    .getSalesPosition(),
+                                            isActive:
+                                                salesStatusCubit
+                                                        .getSalesStatus()
+                                                    ? 1
+                                                    : 0,
+                                          ),
+                                        ],
+                                      );
+                                    },
                                     bgColor: ConstantColors.primaryColor1,
                                     textStyle: TextThemes.subtitle,
                                     shadowColor: ConstantColors.shadowColor,
@@ -618,7 +558,7 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                               ),
 
                               // ~:Import File Button:~
-                              BlocListener<ImportBloc, ImportState>(
+                              BlocConsumer<ImportBloc, ImportState>(
                                 listener: (context, state) {
                                   if (state is ImportExcelSucceed) {
                                     CustomFunctions.displayDialog(
@@ -627,6 +567,12 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                                         context,
                                         state.salesmanList,
                                         () {
+                                          CustomFunctions.addSalesman(
+                                            salesmanBloc,
+                                            panelController,
+                                            state.salesmanList,
+                                          );
+
                                           Navigator.pop(context);
                                         },
                                       ),
@@ -638,17 +584,20 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                                     );
                                   }
                                 },
-                                child: CustomButton.primaryButton2(
-                                  context: context,
-                                  width: 40,
-                                  height: 40,
-                                  enableIcon: true,
-                                  icon: Icons.upload_rounded,
-                                  func: () => _onImportButtonPressed(context),
-                                  bgColor: ConstantColors.primaryColor2,
-                                  textStyle: TextThemes.normal,
-                                  shadowColor: ConstantColors.primaryColor1,
-                                ),
+                                builder: (context, state) {
+                                  return CustomButton.primaryButton2(
+                                    context: context,
+                                    width: 40,
+                                    height: 40,
+                                    enableIcon: true,
+                                    icon: Icons.upload_rounded,
+                                    func: () => _onImportButtonPressed(context),
+                                    bgColor: ConstantColors.primaryColor2,
+                                    textStyle: TextThemes.normal,
+                                    shadowColor: ConstantColors.primaryColor1,
+                                    isLoading: state is ImportLoading,
+                                  );
+                                },
                               ),
 
                               // ~:Edit Button:~

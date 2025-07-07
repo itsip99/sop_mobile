@@ -48,17 +48,19 @@ class ImportBloc extends Bloc<ImportEvent, ImportState> {
         // Assumption: Columns are Name, Status, SPK, STU, STU LM
         var sheet = excel['Sheet1'];
 
-        List<SalesImportModel> importedSalesmen = [];
+        List<NewSalesModel> importedSalesmen = [];
         // Skip the first row (header)
         for (var row in sheet.rows.skip(1)) {
           // Check for null cells to avoid errors
           final String id = row[0]?.value?.toString() ?? '';
           final String name = row[1]?.value?.toString() ?? '';
           final String tier = row[2]?.value?.toString() ?? '';
+          final int isActive =
+              row[3]?.value?.toString().toLowerCase() == 't' ? 1 : 0;
 
           if (id.isNotEmpty && name.isNotEmpty && tier.isNotEmpty) {
             importedSalesmen.add(
-              SalesImportModel(id: id, name: name, tier: tier),
+              NewSalesModel(id: id, name: name, tier: tier, isActive: isActive),
             );
           }
         }

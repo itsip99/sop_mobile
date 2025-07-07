@@ -1,17 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:sop_mobile/core/constant/colors.dart';
+import 'package:sop_mobile/data/models/sales_import.dart';
 import 'package:sop_mobile/presentation/state/salesman/salesman_bloc.dart';
 import 'package:sop_mobile/presentation/state/salesman/salesman_event.dart';
+import 'package:sop_mobile/presentation/widgets/snackbar.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CustomFunctions {
+  static Future<void> launchURL(BuildContext context, String url) async {
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    } else {
+      if (context.mounted) {
+        CustomSnackbar.showSnackbar(
+          context,
+          'Unable to open the link. Please check the URL and try again.',
+          margin: 12,
+          behavior: SnackBarBehavior.floating,
+          radius: 16,
+          backgroundColor: ConstantColors.shadowColor.shade300,
+          iconColor: ConstantColors.primaryColor3,
+          showCloseIcon: true,
+        );
+      }
+    }
+  }
+
   static void addSalesman(
     SalesmanBloc salesmanBloc,
     PanelController controller,
-    String id,
-    String name,
-    String tier,
+    List<NewSalesModel> sales,
   ) {
-    salesmanBloc.add(AddSalesman(id, name, tier));
+    for (var salesman in sales) {
+      salesmanBloc.add(
+        AddSalesman(
+          salesman.id,
+          salesman.name,
+          salesman.tier,
+          salesman.isActive,
+        ),
+      );
+    }
     controller.close();
     salesmanBloc.add(FetchSalesman());
   }

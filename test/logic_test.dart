@@ -104,20 +104,28 @@ void main() {
       'emits updated state when increment is called',
       build: () => counterCubit,
       act: (bloc) => bloc.increment('counter'),
-      expect: () => [
-        isA<Map<String, int>>()
-            .having((state) => state['counter'], 'counter count', 2)
-      ],
+      expect:
+          () => [
+            isA<Map<String, int>>().having(
+              (state) => state['counter'],
+              'counter count',
+              2,
+            ),
+          ],
     );
 
     blocTest(
       'emits updated state when decrement is called',
       build: () => counterCubit,
       act: (bloc) => bloc.decrement('counter'),
-      expect: () => [
-        isA<Map<String, int>>()
-            .having((state) => state['counter'], 'counter count', 0)
-      ],
+      expect:
+          () => [
+            isA<Map<String, int>>().having(
+              (state) => state['counter'],
+              'counter count',
+              0,
+            ),
+          ],
     );
 
     blocTest(
@@ -131,10 +139,14 @@ void main() {
       'emits updated state when setInitial is called',
       build: () => counterCubit,
       act: (bloc) => bloc.setInitial('counter', 5),
-      expect: () => [
-        isA<Map<String, int>>()
-            .having((state) => state['counter'], 'counter count', 5)
-      ],
+      expect:
+          () => [
+            isA<Map<String, int>>().having(
+              (state) => state['counter'],
+              'counter count',
+              5,
+            ),
+          ],
     );
 
     blocTest(
@@ -151,10 +163,14 @@ void main() {
         return counterCubit;
       },
       act: (bloc) => bloc.deleteKey('counter'),
-      expect: () => [
-        isA<Map<String, int>>().having(
-            (state) => state.containsKey('counter'), 'contains key', false)
-      ],
+      expect:
+          () => [
+            isA<Map<String, int>>().having(
+              (state) => state.containsKey('counter'),
+              'contains key',
+              false,
+            ),
+          ],
     );
   });
 
@@ -167,10 +183,7 @@ void main() {
     setUp(() {
       mockLoginRepo = MockLoginRepo();
       mockStorageRepo = MockStorageRepo();
-      loginBloc = LoginBloc(
-        mockLoginRepo,
-        mockStorageRepo,
-      );
+      loginBloc = LoginBloc(mockLoginRepo, mockStorageRepo);
     });
 
     tearDown(() {
@@ -184,32 +197,38 @@ void main() {
     blocTest<LoginBloc, LoginState>(
       'emits [LoginLoading, LoginFailure] when username and password are empty and no stored credentials',
       setUp: () {
-        when(() => mockStorageRepo.getUserCredentials()).thenAnswer(
-          (_) async => UserCredsModel(username: '', password: ''),
-        );
+        when(
+          () => mockStorageRepo.getUserCredentials(),
+        ).thenAnswer((_) async => UserCredsModel(username: '', password: ''));
       },
       build: () => loginBloc,
       act: (bloc) => bloc.add(LoginButtonPressed(username: '', password: '')),
-      expect: () => [
-        isA<LoginLoading>(),
-        isA<LoginFailure>().having(
-            (e) => e.error, 'error', 'Username or password cannot be empty'),
-      ],
+      expect:
+          () => [
+            isA<LoginLoading>(),
+            isA<LoginFailure>().having(
+              (e) => e.error,
+              'error',
+              'Username or password cannot be empty',
+            ),
+          ],
     );
 
     blocTest<LoginBloc, LoginState>(
       'emits [LoginLoading, LoginInitial, LogoutSuccess] when logout is successful',
       setUp: () {
-        when(() => mockStorageRepo.deleteUserCredentials())
-            .thenAnswer((_) async {});
+        when(
+          () => mockStorageRepo.deleteUserCredentials(),
+        ).thenAnswer((_) async {});
       },
       build: () => loginBloc,
       act: (bloc) => bloc.add(LogoutButtonPressed()),
-      expect: () => [
-        isA<LoginLoading>(),
-        isA<LoginInitial>(),
-        isA<LogoutSuccess>(),
-      ],
+      expect:
+          () => [
+            isA<LoginLoading>(),
+            isA<LoginInitial>(),
+            isA<LogoutSuccess>(),
+          ],
       verify: (_) {
         verify(() => mockStorageRepo.deleteUserCredentials()).called(1);
       },
@@ -229,8 +248,10 @@ void main() {
     });
 
     test('initial state is today\'s date', () {
-      expect(dateCubit.state,
-          Formatter.dateFormatter(DateTime.now().toString().split(' ')[0]));
+      expect(
+        dateCubit.state,
+        Formatter.dateFormatter(DateTime.now().toString().split(' ')[0]),
+      );
     });
 
     blocTest<DateCubit, String>(
@@ -262,14 +283,29 @@ void main() {
     });
 
     final tSalesmanList = [
-      SalesModel(id: '1', userName: 'sales1', tierLevel: '1', userId: 'user1'),
-      SalesModel(id: '2', userName: 'sales2', tierLevel: '2', userId: 'user2'),
+      SalesModel(
+        id: '1',
+        userName: 'sales1',
+        tierLevel: '1',
+        userId: 'user1',
+        status: 1,
+      ),
+      SalesModel(
+        id: '2',
+        userName: 'sales2',
+        tierLevel: '2',
+        userId: 'user2',
+        status: 1,
+      ),
     ];
-    final tSalesmanDataList = tSalesmanList
-        .map((e) => SalesmanData(e.userName, e.tierLevel, 0, 0, 0))
-        .toList();
-    final tUserCreds =
-        UserCredsModel(username: 'testuser', password: 'password');
+    final tSalesmanDataList =
+        tSalesmanList
+            .map((e) => SalesmanData(e.userName, e.tierLevel, 0, 0, 0))
+            .toList();
+    final tUserCreds = UserCredsModel(
+      username: 'testuser',
+      password: 'password',
+    );
 
     test('initial state is SalesmanInitial', () {
       expect(salesmanBloc.state, SalesmanInitial([], [], []));
@@ -279,50 +315,65 @@ void main() {
       blocTest<SalesmanBloc, SalesmanState>(
         'emits [SalesmanLoading, SalesmanFetched] when successful',
         setUp: () {
-          when(() => mockStorageRepo.getUserCredentials())
-              .thenAnswer((_) async => tUserCreds);
+          when(
+            () => mockStorageRepo.getUserCredentials(),
+          ).thenAnswer((_) async => tUserCreds);
           when(() => mockSalesRepo.fetchSalesman(any())).thenAnswer(
-              (_) async => {'status': 'success', 'data': tSalesmanList});
+            (_) async => {'status': 'success', 'data': tSalesmanList},
+          );
         },
         build: () => salesmanBloc,
         act: (bloc) => bloc.add(FetchSalesman()),
-        expect: () => [
-          SalesmanLoading(SalesmanInitial([], [], [])),
-          isA<SalesmanFetched>()
-              .having((s) => s.fetchSalesList, 'fetchSalesList', tSalesmanList)
-              .having((s) => s.salesDataList.length, 'salesDataList length',
-                  tSalesmanDataList.length),
-        ],
+        expect:
+            () => [
+              SalesmanLoading(SalesmanInitial([], [], [])),
+              isA<SalesmanFetched>()
+                  .having(
+                    (s) => s.fetchSalesList,
+                    'fetchSalesList',
+                    tSalesmanList,
+                  )
+                  .having(
+                    (s) => s.salesDataList.length,
+                    'salesDataList length',
+                    tSalesmanDataList.length,
+                  ),
+            ],
       );
 
       blocTest<SalesmanBloc, SalesmanState>(
         'emits [SalesmanLoading, SalesmanError] when user credentials not found',
         setUp: () {
-          when(() => mockStorageRepo.getUserCredentials()).thenAnswer(
-              (_) async => UserCredsModel(username: '', password: ''));
+          when(
+            () => mockStorageRepo.getUserCredentials(),
+          ).thenAnswer((_) async => UserCredsModel(username: '', password: ''));
         },
         build: () => salesmanBloc,
         act: (bloc) => bloc.add(FetchSalesman()),
-        expect: () => [
-          SalesmanLoading(SalesmanInitial([], [], [])),
-          SalesmanError('User credentials not found'),
-        ],
+        expect:
+            () => [
+              SalesmanLoading(SalesmanInitial([], [], [])),
+              SalesmanError('User credentials not found'),
+            ],
       );
 
       blocTest<SalesmanBloc, SalesmanState>(
         'emits [SalesmanLoading, SalesmanError] when repository returns an error status',
         setUp: () {
-          when(() => mockStorageRepo.getUserCredentials())
-              .thenAnswer((_) async => tUserCreds);
+          when(
+            () => mockStorageRepo.getUserCredentials(),
+          ).thenAnswer((_) async => tUserCreds);
           when(() => mockSalesRepo.fetchSalesman(any())).thenAnswer(
-              (_) async => {'status': 'error', 'data': 'Something went wrong'});
+            (_) async => {'status': 'error', 'data': 'Something went wrong'},
+          );
         },
         build: () => salesmanBloc,
         act: (bloc) => bloc.add(FetchSalesman()),
-        expect: () => [
-          SalesmanLoading(SalesmanInitial([], [], [])),
-          SalesmanError('Something went wrong'),
-        ],
+        expect:
+            () => [
+              SalesmanLoading(SalesmanInitial([], [], [])),
+              SalesmanError('Something went wrong'),
+            ],
       );
     });
 
@@ -330,17 +381,20 @@ void main() {
       blocTest<SalesmanBloc, SalesmanState>(
         'emits [SalesmanLoading, SalesmanAdded] when successful',
         setUp: () {
-          when(() => mockStorageRepo.getUserCredentials())
-              .thenAnswer((_) async => tUserCreds);
-          when(() => mockSalesRepo.addSalesman(any(), any(), any(), any()))
-              .thenAnswer((_) async => {'status': 'success'});
+          when(
+            () => mockStorageRepo.getUserCredentials(),
+          ).thenAnswer((_) async => tUserCreds);
+          when(
+            () => mockSalesRepo.addSalesman(any(), any(), any(), any(), any()),
+          ).thenAnswer((_) async => {'status': 'success'});
         },
         build: () => salesmanBloc,
-        act: (bloc) => bloc.add(AddSalesman('3', 'sales3', '3')),
-        expect: () => [
-          SalesmanLoading(SalesmanInitial([], [], [])),
-          SalesmanAdded(),
-        ],
+        act: (bloc) => bloc.add(AddSalesman('3', 'sales3', '3', 1)),
+        expect:
+            () => [
+              SalesmanLoading(SalesmanInitial([], [], [])),
+              SalesmanAdded(),
+            ],
       );
     });
 
@@ -356,13 +410,14 @@ void main() {
         build: () => salesmanBloc,
         seed: () => initialState,
         act: (bloc) => bloc.add(ModifySalesman(rowIndex: 0, newSpkValue: 10)),
-        expect: () => [
-          isA<SalesmanModified>().having(
-            (s) => s.salesDataList[0].spk,
-            'updated spk value',
-            10,
-          ),
-        ],
+        expect:
+            () => [
+              isA<SalesmanModified>().having(
+                (s) => s.salesDataList[0].spk,
+                'updated spk value',
+                10,
+              ),
+            ],
       );
     });
   });
@@ -385,11 +440,12 @@ void main() {
       'emits [StuInitial] when ResetStuData is added',
       build: () => stuBloc,
       act: (bloc) => bloc.add(ResetStuData()),
-      expect: () => [
-        isA<StuInitial>()
-            .having((s) => s.data.length, 'data length', 3)
-            .having((s) => s.data[0].type, 'item 0 type', 'MAXI'),
-      ],
+      expect:
+          () => [
+            isA<StuInitial>()
+                .having((s) => s.data.length, 'data length', 3)
+                .having((s) => s.data[0].type, 'item 0 type', 'MAXI'),
+          ],
     );
 
     group('Modify Events', () {
@@ -401,48 +457,53 @@ void main() {
         'ModifyStuData emits [StuDataModified] with correctly calculated rates',
         build: () => stuBloc,
         seed: () => seedState,
-        act: (bloc) => bloc.add(ModifyStuData(
-          rowIndex: 0,
-          newResultValue: 15,
-          newTargetValue: 25,
-          newLmValue: 10,
-        )),
-        expect: () => [
-          isA<StuDataModified>()
-              .having((s) => s.data.first.result, 'result', 15)
-              .having((s) => s.data.first.target, 'target', 25)
-              .having((s) => s.data.first.lm, 'lm', 10)
-              .having((s) => s.data.first.growth, 'growth', '150.0'),
-        ],
+        act:
+            (bloc) => bloc.add(
+              ModifyStuData(
+                rowIndex: 0,
+                newResultValue: 15,
+                newTargetValue: 25,
+                newLmValue: 10,
+              ),
+            ),
+        expect:
+            () => [
+              isA<StuDataModified>()
+                  .having((s) => s.data.first.result, 'result', 15)
+                  .having((s) => s.data.first.target, 'target', 25)
+                  .having((s) => s.data.first.lm, 'lm', 10)
+                  .having((s) => s.data.first.growth, 'growth', '150.0'),
+            ],
       );
 
       blocTest<StuBloc, StuState>(
         'ModifyStuTargetData emits [StuDataModified] with updated target',
         build: () => stuBloc,
         seed: () => seedState,
-        act: (bloc) => bloc.add(ModifyStuTargetData(
-          rowIndex: 0,
-          newTargetValue: 40,
-        )),
-        expect: () => [
-          isA<StuDataModified>()
-              .having((s) => s.data.first.target, 'target', 40),
-        ],
+        act:
+            (bloc) =>
+                bloc.add(ModifyStuTargetData(rowIndex: 0, newTargetValue: 40)),
+        expect:
+            () => [
+              isA<StuDataModified>().having(
+                (s) => s.data.first.target,
+                'target',
+                40,
+              ),
+            ],
       );
 
       blocTest<StuBloc, StuState>(
         'ModifyStuLmData emits [StuDataModified] with updated lm and growth rate',
         build: () => stuBloc,
         seed: () => seedState,
-        act: (bloc) => bloc.add(ModifyStuLmData(
-          rowIndex: 0,
-          newLmValue: 8,
-        )),
-        expect: () => [
-          isA<StuDataModified>()
-              .having((s) => s.data.first.lm, 'lm', 8)
-              .having((s) => s.data.first.growth, 'growth', '125.0'),
-        ],
+        act: (bloc) => bloc.add(ModifyStuLmData(rowIndex: 0, newLmValue: 8)),
+        expect:
+            () => [
+              isA<StuDataModified>()
+                  .having((s) => s.data.first.lm, 'lm', 8)
+                  .having((s) => s.data.first.growth, 'growth', '125.0'),
+            ],
       );
     });
   });
@@ -463,8 +524,8 @@ void main() {
           'ResultPayment': 10,
           'LMPayment': 5,
           'FlagPayment': 1,
-          'LinePayment': 1
-        }
+          'LinePayment': 1,
+        },
       ],
       'DataSalesman': [
         {
@@ -475,8 +536,8 @@ void main() {
           'STU': 3,
           'STULM': 2,
           'LineSalesman': 1,
-          'FlagSalesman': 1
-        }
+          'FlagSalesman': 1,
+        },
       ],
       'DataSTU': [
         {
@@ -485,8 +546,8 @@ void main() {
           'TargetSTU': 15,
           'LMSTU': 8,
           'LineSTU': 1,
-          'FlagSTU': 1
-        }
+          'FlagSTU': 1,
+        },
       ],
       'DataLeasing': [
         {
@@ -495,9 +556,9 @@ void main() {
           'ApprovedSPK': 4,
           'RejectedSPK': 1,
           'LineLeasing': 1,
-          'FlagLeasing': 1
-        }
-      ]
+          'FlagLeasing': 1,
+        },
+      ],
     });
     final mockBriefing = BriefingModel.fromJson({
       'TransDate': '2025-06-21',
@@ -507,7 +568,7 @@ void main() {
       'SC': 2,
       'Salesman': 2,
       'Other': 0,
-      'Topic': 'Test Topic'
+      'Topic': 'Test Topic',
     });
 
     setUp(() {
@@ -527,8 +588,9 @@ void main() {
     blocTest<FilterBloc, FilterState>(
       'emits [FilterState, FilterLoading, FilterSuccess] when adding a filter successfully',
       setUp: () {
-        when(() => mockFilterRepo.dataPreprocessing(any(), any(), any()))
-            .thenAnswer(
+        when(
+          () => mockFilterRepo.dataPreprocessing(any(), any(), any()),
+        ).thenAnswer(
           (_) async => HomeModel(
             briefingData: [],
             reportData: [mockReport],
@@ -538,74 +600,98 @@ void main() {
       },
       build: () => filterBloc,
       act: (bloc) => bloc.add(FilterAdded(FilterType.report, '2025-06-20')),
-      expect: () => [
-        isA<FilterState>().having((s) => s.activeFilter, 'activeFilter',
-            [FilterType.briefing, FilterType.report]),
-        isA<FilterLoading>(),
-        isA<FilterSuccess>(),
-      ],
+      expect:
+          () => [
+            isA<FilterState>().having((s) => s.activeFilter, 'activeFilter', [
+              FilterType.briefing,
+              FilterType.report,
+            ]),
+            isA<FilterLoading>(),
+            isA<FilterSuccess>(),
+          ],
     );
 
     blocTest<FilterBloc, FilterState>(
       'emits [FilterState, FilterLoading, FilterError] when no data is found',
       setUp: () {
-        when(() => mockFilterRepo.dataPreprocessing(any(), any(), any()))
-            .thenAnswer(
+        when(
+          () => mockFilterRepo.dataPreprocessing(any(), any(), any()),
+        ).thenAnswer(
           (_) async =>
               HomeModel(briefingData: [], reportData: [], salesData: []),
         );
       },
       build: () => filterBloc,
       act: (bloc) => bloc.add(FilterAdded(FilterType.report, '2025-06-20')),
-      expect: () => [
-        isA<FilterState>().having((s) => s.activeFilter, 'activeFilter',
-            [FilterType.briefing, FilterType.report]),
-        isA<FilterLoading>(),
-        isA<FilterError>()
-            .having((e) => e.errorMessage, 'errorMessage', 'No data available'),
-      ],
+      expect:
+          () => [
+            isA<FilterState>().having((s) => s.activeFilter, 'activeFilter', [
+              FilterType.briefing,
+              FilterType.report,
+            ]),
+            isA<FilterLoading>(),
+            isA<FilterError>().having(
+              (e) => e.errorMessage,
+              'errorMessage',
+              'No data available',
+            ),
+          ],
     );
 
     blocTest<FilterBloc, FilterState>(
       'emits [FilterState, FilterLoading, FilterError] when repository throws an exception',
       setUp: () {
-        when(() => mockFilterRepo.dataPreprocessing(any(), any(), any()))
-            .thenThrow(Exception('Network Error'));
+        when(
+          () => mockFilterRepo.dataPreprocessing(any(), any(), any()),
+        ).thenThrow(Exception('Network Error'));
       },
       build: () => filterBloc,
       act: (bloc) => bloc.add(FilterAdded(FilterType.report, '2025-06-20')),
-      expect: () => [
-        isA<FilterState>().having((s) => s.activeFilter, 'activeFilter',
-            [FilterType.briefing, FilterType.report]),
-        isA<FilterLoading>(),
-        isA<FilterError>(),
-      ],
+      expect:
+          () => [
+            isA<FilterState>().having((s) => s.activeFilter, 'activeFilter', [
+              FilterType.briefing,
+              FilterType.report,
+            ]),
+            isA<FilterLoading>(),
+            isA<FilterError>(),
+          ],
     );
 
     blocTest<FilterBloc, FilterState>(
       'emits [FilterState, FilterLoading, FilterSuccess] when removing a filter',
       setUp: () {
-        when(() => mockFilterRepo.dataPreprocessing(any(), any(), any()))
-            .thenAnswer(
+        when(
+          () => mockFilterRepo.dataPreprocessing(any(), any(), any()),
+        ).thenAnswer(
           (_) async =>
               HomeModel(briefingData: [], reportData: [], salesData: []),
         );
       },
       build: () => filterBloc,
       act: (bloc) => bloc.add(FilterRemoved(FilterType.briefing, '2025-06-20')),
-      expect: () => [
-        isA<FilterState>().having((s) => s.activeFilter, 'activeFilter', []),
-        isA<FilterLoading>(),
-        isA<FilterError>()
-            .having((e) => e.errorMessage, 'errorMessage', 'No data available'),
-      ],
+      expect:
+          () => [
+            isA<FilterState>().having(
+              (s) => s.activeFilter,
+              'activeFilter',
+              [],
+            ),
+            isA<FilterLoading>(),
+            isA<FilterError>().having(
+              (e) => e.errorMessage,
+              'errorMessage',
+              'No data available',
+            ),
+          ],
     );
 
     blocTest<FilterBloc, FilterState>(
       'emits [FilterLoading, FilterSuccess] when date is modified',
       setUp: () {
-        when(() => mockFilterRepo.dataPreprocessing(any(), any(), any()))
-            .thenAnswer(
+        when(
+          () => mockFilterRepo.dataPreprocessing(any(), any(), any()),
+        ).thenAnswer(
           (_) async => HomeModel(
             briefingData: [mockBriefing],
             reportData: [],
@@ -615,10 +701,7 @@ void main() {
       },
       build: () => filterBloc,
       act: (bloc) => bloc.add(FilterModified('2025-06-21')),
-      expect: () => [
-        isA<FilterLoading>(),
-        isA<FilterSuccess>(),
-      ],
+      expect: () => [isA<FilterLoading>(), isA<FilterSuccess>()],
     );
   });
 
@@ -634,90 +717,136 @@ void main() {
       leasingBloc.close();
     });
 
-    test('initial state is LeasingInitial with 3 default leasing data entries',
-        () {
-      expect(leasingBloc.state, isA<LeasingInitial>());
-      expect(leasingBloc.state.data.length, 3);
-      expect(leasingBloc.state.data[0].type, 'BAF');
-    });
+    test(
+      'initial state is LeasingInitial with 3 default leasing data entries',
+      () {
+        expect(leasingBloc.state, isA<LeasingInitial>());
+        expect(leasingBloc.state.data.length, 3);
+        expect(leasingBloc.state.data[0].type, 'BAF');
+      },
+    );
 
     blocTest<LeasingBloc, LeasingState>(
       'emits [LeasingInitial] when ResetLeasingData is added',
       build: () => leasingBloc,
       act: (bloc) => bloc.add(ResetLeasingData()),
-      expect: () => [
-        isA<LeasingInitial>().having((s) => s.data.length, 'data.length', 3),
-      ],
+      expect:
+          () => [
+            isA<LeasingInitial>().having(
+              (s) => s.data.length,
+              'data.length',
+              3,
+            ),
+          ],
     );
 
     blocTest<LeasingBloc, LeasingState>(
       'emits [AddLeasingData] with a new row when LeasingDataAdded is added',
       build: () => leasingBloc,
       act: (bloc) => bloc.add(LeasingDataAdded()),
-      expect: () => [
-        isA<AddLeasingData>().having((s) => s.data.length, 'data.length', 4),
-      ],
+      expect:
+          () => [
+            isA<AddLeasingData>().having(
+              (s) => s.data.length,
+              'data.length',
+              4,
+            ),
+          ],
     );
 
     blocTest<LeasingBloc, LeasingState>(
       'emits [AddLeasingData] with modified data when LeasingDataModified is added',
       build: () => leasingBloc,
-      act: (bloc) => bloc.add(LeasingDataModified(
-          rowIndex: 0, newAcceptedValue: 10, newRejectedValue: 5)),
-      expect: () => [
-        isA<AddLeasingData>().having((s) {
-          final modifiedData = s.data[0];
-          return modifiedData.accept == 10 &&
-              modifiedData.reject == 5 &&
-              (modifiedData.approve - (10 / 15)).abs() <
-                  0.001; // Check approval rate with tolerance
-        }, 'modified data', true),
-      ],
+      act:
+          (bloc) => bloc.add(
+            LeasingDataModified(
+              rowIndex: 0,
+              newAcceptedValue: 10,
+              newRejectedValue: 5,
+            ),
+          ),
+      expect:
+          () => [
+            isA<AddLeasingData>().having(
+              (s) {
+                final modifiedData = s.data[0];
+                return modifiedData.accept == 10 &&
+                    modifiedData.reject == 5 &&
+                    (modifiedData.approve - (10 / 15)).abs() <
+                        0.001; // Check approval rate with tolerance
+              },
+              'modified data',
+              true,
+            ),
+          ],
     );
 
     blocTest<LeasingBloc, LeasingState>(
       'emits [AddLeasingData] with correct approval rate when only accepted value is modified',
       build: () => leasingBloc,
-      act: (bloc) =>
-          bloc.add(LeasingDataModified(rowIndex: 1, newAcceptedValue: 8)),
-      expect: () => [
-        isA<AddLeasingData>().having((s) {
-          final modifiedData = s.data[1];
-          return modifiedData.accept == 8 &&
-              modifiedData.reject == 0 &&
-              modifiedData.approve == 1.0;
-        }, 'modified data', true),
-      ],
+      act:
+          (bloc) =>
+              bloc.add(LeasingDataModified(rowIndex: 1, newAcceptedValue: 8)),
+      expect:
+          () => [
+            isA<AddLeasingData>().having(
+              (s) {
+                final modifiedData = s.data[1];
+                return modifiedData.accept == 8 &&
+                    modifiedData.reject == 0 &&
+                    modifiedData.approve == 1.0;
+              },
+              'modified data',
+              true,
+            ),
+          ],
     );
 
     blocTest<LeasingBloc, LeasingState>(
       'emits [AddLeasingData] with correct approval rate when only rejected value is modified',
       build: () => leasingBloc,
-      act: (bloc) =>
-          bloc.add(LeasingDataModified(rowIndex: 2, newRejectedValue: 4)),
-      expect: () => [
-        isA<AddLeasingData>().having((s) {
-          final modifiedData = s.data[2];
-          return modifiedData.accept == 0 &&
-              modifiedData.reject == 4 &&
-              modifiedData.approve == 0.0;
-        }, 'modified data', true),
-      ],
+      act:
+          (bloc) =>
+              bloc.add(LeasingDataModified(rowIndex: 2, newRejectedValue: 4)),
+      expect:
+          () => [
+            isA<AddLeasingData>().having(
+              (s) {
+                final modifiedData = s.data[2];
+                return modifiedData.accept == 0 &&
+                    modifiedData.reject == 4 &&
+                    modifiedData.approve == 0.0;
+              },
+              'modified data',
+              true,
+            ),
+          ],
     );
 
     blocTest<LeasingBloc, LeasingState>(
       'emits [AddLeasingData] with approval rate of 0 when accepted and rejected are 0',
       build: () => leasingBloc,
-      act: (bloc) => bloc.add(LeasingDataModified(
-          rowIndex: 0, newAcceptedValue: 0, newRejectedValue: 0)),
-      expect: () => [
-        isA<AddLeasingData>().having((s) {
-          final modifiedData = s.data[0];
-          return modifiedData.accept == 0 &&
-              modifiedData.reject == 0 &&
-              modifiedData.approve == 0.0;
-        }, 'modified data', true),
-      ],
+      act:
+          (bloc) => bloc.add(
+            LeasingDataModified(
+              rowIndex: 0,
+              newAcceptedValue: 0,
+              newRejectedValue: 0,
+            ),
+          ),
+      expect:
+          () => [
+            isA<AddLeasingData>().having(
+              (s) {
+                final modifiedData = s.data[0];
+                return modifiedData.accept == 0 &&
+                    modifiedData.reject == 0 &&
+                    modifiedData.approve == 0.0;
+              },
+              'modified data',
+              true,
+            ),
+          ],
     );
   });
 
@@ -744,44 +873,47 @@ void main() {
       'emits [BriefLoading, BriefCreationSuccess] when creation is successful',
       // Arrange: Set up the mock repository to return a success response
       setUp: () {
-        when(() =>
-            mockBriefRepo.createBriefingReport(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any())).thenAnswer(
-            (_) async => {'status': 'success', 'data': 'Briefing Created!'});
+        when(
+          () => mockBriefRepo.createBriefingReport(
+            any(),
+            any(),
+            any(),
+            any(),
+            any(),
+            any(),
+            any(),
+            any(),
+            any(),
+            any(),
+            any(),
+            any(),
+          ),
+        ).thenAnswer(
+          (_) async => {'status': 'success', 'data': 'Briefing Created!'},
+        );
       },
       // Build: Create the BriefBloc instance with our mock repository
       build: () => BriefBloc(briefRepo: mockBriefRepo),
       // Act: Add the valid event to the Bloc
-      act: (bloc) => bloc.add(BriefCreation(
-        'testuser',
-        'branch1',
-        'shop1',
-        '2025-06-19',
-        'Test Location',
-        5,
-        1,
-        2,
-        2,
-        0,
-        'Test Description',
-        'image.jpg',
-      )),
+      act:
+          (bloc) => bloc.add(
+            BriefCreation(
+              'testuser',
+              'branch1',
+              'shop1',
+              '2025-06-19',
+              'Test Location',
+              5,
+              1,
+              2,
+              2,
+              0,
+              'Test Description',
+              'image.jpg',
+            ),
+          ),
       // Expect: Verify that the Bloc emits Loading, then Success
-      expect: () => [
-        isA<BriefLoading>(),
-        isA<BriefCreationSuccess>(),
-      ],
+      expect: () => [isA<BriefLoading>(), isA<BriefCreationSuccess>()],
     );
 
     // Test 3: Test the validation failure path (e.g., empty location)
@@ -789,25 +921,33 @@ void main() {
       'emits [BriefLoading, BriefCreationFail] for empty location validation',
       build: () => BriefBloc(briefRepo: mockBriefRepo),
       // Act: Add an event with an empty location string
-      act: (bloc) => bloc.add(BriefCreation(
-          'testuser',
-          'branch1',
-          'shop1',
-          '2025-06-19',
-          '', // Empty location
-          5,
-          1,
-          2,
-          2,
-          0,
-          'Test Description',
-          'image.jpg')),
+      act:
+          (bloc) => bloc.add(
+            BriefCreation(
+              'testuser',
+              'branch1',
+              'shop1',
+              '2025-06-19',
+              '', // Empty location
+              5,
+              1,
+              2,
+              2,
+              0,
+              'Test Description',
+              'image.jpg',
+            ),
+          ),
       // Expect: Verify that the Bloc emits Loading, then Fail, and check the error message
-      expect: () => [
-        isA<BriefLoading>(),
-        isA<BriefCreationFail>()
-            .having((state) => state.error, 'error', 'Location is required.'),
-      ],
+      expect:
+          () => [
+            isA<BriefLoading>(),
+            isA<BriefCreationFail>().having(
+              (state) => state.error,
+              'error',
+              'Location is required.',
+            ),
+          ],
     );
 
     // Test 4: Test the repository failure path
@@ -815,29 +955,43 @@ void main() {
       'emits [BriefLoading, BriefCreationFail] when repository returns fail status',
       // Arrange: Set up the mock repository to return a failure response
       setUp: () {
-        when(() => mockBriefRepo.createBriefingReport(any(), any(), any(),
-                any(), any(), any(), any(), any(), any(), any(), any(), any()))
-            .thenAnswer((_) async => {'status': 'fail', 'data': 'API Error'});
+        when(
+          () => mockBriefRepo.createBriefingReport(
+            any(),
+            any(),
+            any(),
+            any(),
+            any(),
+            any(),
+            any(),
+            any(),
+            any(),
+            any(),
+            any(),
+            any(),
+          ),
+        ).thenAnswer((_) async => {'status': 'fail', 'data': 'API Error'});
       },
       build: () => BriefBloc(briefRepo: mockBriefRepo),
-      act: (bloc) => bloc.add(BriefCreation(
-          'testuser',
-          'branch1',
-          'shop1',
-          '2025-06-19',
-          'Test Location',
-          5,
-          1,
-          2,
-          2,
-          0,
-          'Test Description',
-          'image.jpg')),
+      act:
+          (bloc) => bloc.add(
+            BriefCreation(
+              'testuser',
+              'branch1',
+              'shop1',
+              '2025-06-19',
+              'Test Location',
+              5,
+              1,
+              2,
+              2,
+              0,
+              'Test Description',
+              'image.jpg',
+            ),
+          ),
       // Expect: Verify that the Bloc emits Loading, then Fail
-      expect: () => [
-        isA<BriefLoading>(),
-        isA<BriefCreationFail>(),
-      ],
+      expect: () => [isA<BriefLoading>(), isA<BriefCreationFail>()],
     );
 
     // Test 5: Test the exception path (e.g., network error)
@@ -845,7 +999,8 @@ void main() {
       'emits [BriefLoading, BriefCreationFail] when repository throws an exception',
       // Arrange: Set up the mock repository to throw an error
       setUp: () {
-        when(() => mockBriefRepo.createBriefingReport(
+        when(
+          () => mockBriefRepo.createBriefingReport(
             any(),
             any(),
             any(),
@@ -857,27 +1012,30 @@ void main() {
             any(),
             any(),
             any(),
-            any())).thenThrow(Exception('Network connection failed'));
+            any(),
+          ),
+        ).thenThrow(Exception('Network connection failed'));
       },
       build: () => BriefBloc(briefRepo: mockBriefRepo),
-      act: (bloc) => bloc.add(BriefCreation(
-          'testuser',
-          'branch1',
-          'shop1',
-          '2025-06-19',
-          'Test Location',
-          5,
-          1,
-          2,
-          2,
-          0,
-          'Test Description',
-          'image.jpg')),
+      act:
+          (bloc) => bloc.add(
+            BriefCreation(
+              'testuser',
+              'branch1',
+              'shop1',
+              '2025-06-19',
+              'Test Location',
+              5,
+              1,
+              2,
+              2,
+              0,
+              'Test Description',
+              'image.jpg',
+            ),
+          ),
       // Expect: Verify that the Bloc emits Loading, then Fail
-      expect: () => [
-        isA<BriefLoading>(),
-        isA<BriefCreationFail>(),
-      ],
+      expect: () => [isA<BriefLoading>(), isA<BriefCreationFail>()],
     );
   });
 
@@ -905,30 +1063,34 @@ void main() {
     blocTest<PaymentBloc, PaymentState>(
       'emits [PaymentInitial] with default data when ResetPaymentData is added',
       build: () => paymentBloc,
-      seed: () => PaymentModified([
-        const PaymentData('Cash', 100, 50, '200.0'),
-        const PaymentData('Credit', 0, 0, '0.0'),
-      ]),
+      seed:
+          () => PaymentModified([
+            const PaymentData('Cash', 100, 50, '200.0'),
+            const PaymentData('Credit', 0, 0, '0.0'),
+          ]),
       act: (bloc) => bloc.add(ResetPaymentData()),
-      expect: () => [
-        PaymentInitial([
-          const PaymentData('Cash', 0, 0, '0.0'),
-          const PaymentData('Credit', 0, 0, '0.0'),
-        ]),
-      ],
+      expect:
+          () => [
+            PaymentInitial([
+              const PaymentData('Cash', 0, 0, '0.0'),
+              const PaymentData('Credit', 0, 0, '0.0'),
+            ]),
+          ],
     );
 
     blocTest<PaymentBloc, PaymentState>(
       'emits [PaymentModified] with updated data when PaymentDataModified is added',
       build: () => paymentBloc,
-      act: (bloc) =>
-          bloc.add(PaymentDataModified(rowIndex: 0, newResultValue: 100)),
-      expect: () => [
-        PaymentModified([
-          const PaymentData('Cash', 100, 0, '0.0'),
-          const PaymentData('Credit', 0, 0, '0.0'),
-        ]),
-      ],
+      act:
+          (bloc) =>
+              bloc.add(PaymentDataModified(rowIndex: 0, newResultValue: 100)),
+      expect:
+          () => [
+            PaymentModified([
+              const PaymentData('Cash', 100, 0, '0.0'),
+              const PaymentData('Credit', 0, 0, '0.0'),
+            ]),
+          ],
     );
 
     blocTest<PaymentBloc, PaymentState>(
@@ -939,12 +1101,13 @@ void main() {
         bloc.add(PaymentDataModified(rowIndex: 0, newResultValue: 100));
       },
       skip: 1,
-      expect: () => [
-        PaymentModified([
-          const PaymentData('Cash', 100, 50, '200.0'),
-          const PaymentData('Credit', 0, 0, '0.0'),
-        ]),
-      ],
+      expect:
+          () => [
+            PaymentModified([
+              const PaymentData('Cash', 100, 50, '200.0'),
+              const PaymentData('Credit', 0, 0, '0.0'),
+            ]),
+          ],
     );
   });
 
@@ -974,9 +1137,7 @@ void main() {
       'emits [ReportInitial] when InitiateReport is added',
       build: () => reportBloc,
       act: (bloc) => bloc.add(InitiateReport()),
-      expect: () => [
-        isA<ReportInitial>(),
-      ],
+      expect: () => [isA<ReportInitial>()],
     );
 
     blocTest<ReportBloc, ReportState>(
@@ -988,46 +1149,60 @@ void main() {
         );
       },
       build: () => reportBloc,
-      act: (bloc) => bloc.add(CreateReport(
-        dealerName: '',
-        areaName: '',
-        personInCharge: '',
-        stuData: [],
-        paymentData: [],
-        leasingData: [],
-        salesmanData: [],
-        salesData: [],
-      )),
-      expect: () => [
-        isA<ReportLoading>(),
-        isA<ReportCreationWarning>()
-            .having((e) => e.message, 'message', 'Kolom PIC wajib diisi.'),
-      ],
+      act:
+          (bloc) => bloc.add(
+            CreateReport(
+              dealerName: '',
+              areaName: '',
+              personInCharge: '',
+              stuData: [],
+              paymentData: [],
+              leasingData: [],
+              salesmanData: [],
+              salesData: [],
+            ),
+          ),
+      expect:
+          () => [
+            isA<ReportLoading>(),
+            isA<ReportCreationWarning>().having(
+              (e) => e.message,
+              'message',
+              'Kolom PIC wajib diisi.',
+            ),
+          ],
     );
 
     blocTest<ReportBloc, ReportState>(
       'emits [ReportLoading, ReportCreationError] when CreateReport is added with no user credentials',
       setUp: () {
-        when(() => mockStorageRepo.getUserCredentials()).thenAnswer(
-          (_) async => UserCredsModel(username: '', password: ''),
-        );
+        when(
+          () => mockStorageRepo.getUserCredentials(),
+        ).thenAnswer((_) async => UserCredsModel(username: '', password: ''));
       },
       build: () => reportBloc,
-      act: (bloc) => bloc.add(CreateReport(
-        dealerName: 'test',
-        areaName: 'test',
-        personInCharge: 'test',
-        stuData: const [],
-        paymentData: const [],
-        leasingData: const [],
-        salesmanData: const [],
-        salesData: const [],
-      )),
-      expect: () => [
-        isA<ReportLoading>(),
-        isA<ReportCreationError>().having(
-            (e) => e.message, 'message', 'Informasi pengguna tidak ditemukan.'),
-      ],
+      act:
+          (bloc) => bloc.add(
+            CreateReport(
+              dealerName: 'test',
+              areaName: 'test',
+              personInCharge: 'test',
+              stuData: const [],
+              paymentData: const [],
+              leasingData: const [],
+              salesmanData: const [],
+              salesData: const [],
+            ),
+          ),
+      expect:
+          () => [
+            isA<ReportLoading>(),
+            isA<ReportCreationError>().having(
+              (e) => e.message,
+              'message',
+              'Informasi pengguna tidak ditemukan.',
+            ),
+          ],
     );
 
     blocTest<ReportBloc, ReportState>(
@@ -1037,10 +1212,15 @@ void main() {
           (_) async =>
               UserCredsModel(username: 'testuser', password: 'password'),
         );
-        when(() => mockReportRepo.createBasicReport(
-            any(), any(), any(), any(), any())).thenAnswer(
-          (_) async => {'status': 'success'},
-        );
+        when(
+          () => mockReportRepo.createBasicReport(
+            any(),
+            any(),
+            any(),
+            any(),
+            any(),
+          ),
+        ).thenAnswer((_) async => {'status': 'success'});
         when(
           () => mockReportRepo.createReportSTU(
             any(),
@@ -1048,9 +1228,7 @@ void main() {
             any(that: isA<StuData>()),
             any(),
           ),
-        ).thenAnswer(
-          (_) async => {'status': 'success'},
-        );
+        ).thenAnswer((_) async => {'status': 'success'});
         when(
           () => mockReportRepo.createReportPayment(
             any(),
@@ -1058,9 +1236,7 @@ void main() {
             any(that: isA<PaymentData>()),
             any(),
           ),
-        ).thenAnswer(
-          (_) async => {'status': 'success'},
-        );
+        ).thenAnswer((_) async => {'status': 'success'});
         when(
           () => mockReportRepo.createReportLeasing(
             any(),
@@ -1068,9 +1244,7 @@ void main() {
             any(that: isA<LeasingData>()),
             any(),
           ),
-        ).thenAnswer(
-          (_) async => {'status': 'success'},
-        );
+        ).thenAnswer((_) async => {'status': 'success'});
         when(
           () => mockReportRepo.createReportSalesman(
             any(),
@@ -1079,34 +1253,40 @@ void main() {
             any(that: isA<SalesmanData>()),
             any(),
           ),
-        ).thenAnswer(
-          (_) async => {'status': 'success'},
-        );
+        ).thenAnswer((_) async => {'status': 'success'});
       },
       build: () => reportBloc,
-      act: (bloc) => bloc.add(CreateReport(
-        dealerName: 'test',
-        areaName: '00',
-        personInCharge: 'John',
-        stuData: [StuData('MAXI', 0, 0, '0.0', 0, '0.0')],
-        paymentData: [const PaymentData('Cash', 0, 0, '0.0')],
-        leasingData: [LeasingData('BAF', 0, 0, 0, 0, 0.0)],
-        salesmanData: [SalesmanData('Joe', 'Gold', 0, 0, 0)],
-        salesData: [
-          // Ensure the userName matches the salesman's name and provide an ID
-          SalesModel(
-            id: '',
-            userName: 'Joe',
-            tierLevel: 'Gold',
-            userId: '',
-          )
-        ],
-      )),
-      expect: () => [
-        isA<ReportLoading>(),
-        isA<ReportCreationSuccess>()
-            .having((e) => e.message, 'message', 'Laporan berhasil dibuat.'),
-      ],
+      act:
+          (bloc) => bloc.add(
+            CreateReport(
+              dealerName: 'test',
+              areaName: '00',
+              personInCharge: 'John',
+              stuData: [StuData('MAXI', 0, 0, '0.0', 0, '0.0')],
+              paymentData: [const PaymentData('Cash', 0, 0, '0.0')],
+              leasingData: [LeasingData('BAF', 0, 0, 0, 0, 0.0)],
+              salesmanData: [SalesmanData('Joe', 'Gold', 0, 0, 0)],
+              salesData: [
+                // Ensure the userName matches the salesman's name and provide an ID
+                SalesModel(
+                  id: '',
+                  userName: 'Joe',
+                  tierLevel: 'Gold',
+                  userId: '',
+                  status: 1,
+                ),
+              ],
+            ),
+          ),
+      expect:
+          () => [
+            isA<ReportLoading>(),
+            isA<ReportCreationSuccess>().having(
+              (e) => e.message,
+              'message',
+              'Laporan berhasil dibuat.',
+            ),
+          ],
     );
   });
 }

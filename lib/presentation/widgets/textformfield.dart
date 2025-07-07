@@ -82,10 +82,12 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
           controller: widget.controller,
           enabled: widget.isEnabled,
           obscureText: widget.isPassword && widget.showPassword,
-          style: widget.isEnabled
-              ? TextThemes.textfieldPlaceholder
-              : TextThemes.textfieldPlaceholder
-                  .copyWith(color: ConstantColors.shadowColor),
+          style:
+              widget.isEnabled
+                  ? TextThemes.textfieldPlaceholder
+                  : TextThemes.textfieldPlaceholder.copyWith(
+                    color: ConstantColors.shadowColor,
+                  ),
           keyboardType: widget.keyboardType,
           decoration: InputDecoration(
             filled: true,
@@ -97,9 +99,10 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
             hintStyle: TextThemes.textfieldPlaceholder,
             hintText: 'Enter ${widget.hintText}',
             labelText: widget.labelText,
-            floatingLabelBehavior: widget.isLabelFloat
-                ? FloatingLabelBehavior.always
-                : FloatingLabelBehavior.auto,
+            floatingLabelBehavior:
+                widget.isLabelFloat
+                    ? FloatingLabelBehavior.always
+                    : FloatingLabelBehavior.auto,
             border: OutlineInputBorder(
               borderSide: const BorderSide(color: Colors.black, width: 2.0),
               borderRadius: BorderRadius.all(
@@ -107,21 +110,22 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
               ),
             ),
             prefixIcon: widget.prefixIcon,
-            suffixIcon: widget.isPassword
-                ? IconButton(
-                    icon: Icon(
-                      widget.showPassword
-                          ? Icons.visibility
-                          : Icons.visibility_off,
-                      color: Colors.grey,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        widget.showPassword = !widget.showPassword;
-                      });
-                    },
-                  )
-                : null,
+            suffixIcon:
+                widget.isPassword
+                    ? IconButton(
+                      icon: Icon(
+                        widget.showPassword
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                        color: Colors.grey,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          widget.showPassword = !widget.showPassword;
+                        });
+                      },
+                    )
+                    : null,
             helperText: widget.enableValidator ? ' ' : null,
             helperStyle: const TextStyle(height: 1),
             errorStyle: const TextStyle(height: 1),
