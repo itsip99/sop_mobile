@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:sop_mobile/data/models/sales_import.dart';
 import 'package:sop_mobile/presentation/state/base_event.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_salesman.dart';
 
@@ -26,6 +27,12 @@ class AddSalesman extends SalesmanEvent {
   AddSalesman(this.id, this.name, this.tier, this.status);
 }
 
+class AddSalesmanList extends SalesmanEvent {
+  final List<NewSalesModel> salesDraftList;
+
+  AddSalesmanList(this.salesDraftList);
+}
+
 class ModifySalesman extends SalesmanEvent {
   final int rowIndex;
   final int? newSpkValue;
@@ -38,4 +45,10 @@ class ModifySalesman extends SalesmanEvent {
     this.newStuValue,
     this.newLmValue,
   });
+}
+
+class ModifySalesmanStatus extends SalesmanEvent {
+  final NewSalesModel sales;
+
+  ModifySalesmanStatus({required this.sales});
 }

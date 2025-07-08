@@ -14,11 +14,17 @@ class Formatter {
     final result = <String>[];
     for (final word in words) {
       if (word.isEmpty) continue;
-      result.add(word[0].toUpperCase() +
-          (word.length > 1 ? word.substring(1).toLowerCase() : ''));
+      result.add(
+        word[0].toUpperCase() +
+            (word.length > 1 ? word.substring(1).toLowerCase() : ''),
+      );
     }
 
     return result.join(' ');
+  }
+
+  static String removeSpaces(String text) {
+    return text.trim();
   }
 
   static String reformatDate(String date) {
@@ -54,10 +60,7 @@ class Formatter {
     return TextInputFormatter.withFunction((oldValue, newValue) {
       if (newValue.text.isEmpty) return newValue;
       final text = toTitleCase(newValue.text);
-      return TextEditingValue(
-        text: text,
-        selection: newValue.selection,
-      );
+      return TextEditingValue(text: text, selection: newValue.selection);
     });
   }
 }

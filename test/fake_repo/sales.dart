@@ -18,14 +18,14 @@ class FakeSalesRepo implements SalesRepo {
         userName: 'John Doe',
         tierLevel: 'Gold',
         userId: 'user1',
-        status: 1,
+        isActive: 1,
       ),
       SalesModel(
         id: '2',
         userName: 'Jane Smith',
         tierLevel: 'Silver',
         userId: 'user2',
-        status: 1,
+        isActive: 1,
       ),
     ];
 
@@ -38,7 +38,7 @@ class FakeSalesRepo implements SalesRepo {
     String id,
     String name,
     String tier,
-    int status,
+    int isActive,
   ) async {
     if (shouldFail) {
       throw Exception('Failed to add salesman');

@@ -25,7 +25,7 @@ class SalesmanInitial extends SalesmanState {
 
 class SalesmanLoading extends SalesmanState {
   SalesmanLoading(SalesmanState previousState)
-      : super(previousState.salesDraftList, previousState.fetchSalesList, []);
+    : super(previousState.salesDraftList, previousState.fetchSalesList, []);
 
   List<SalesProfileModel> get getSalesmanLoading => [];
 }
@@ -35,35 +35,54 @@ class SalesmanFetched extends SalesmanState {
   final List<SalesmanData> salesmanDataList;
 
   SalesmanFetched(
-      SalesmanState previousState, this.salesList, this.salesmanDataList)
-      : super(previousState.salesDraftList, salesList, salesmanDataList);
+    SalesmanState previousState,
+    this.salesList,
+    this.salesmanDataList,
+  ) : super(previousState.salesDraftList, salesList, salesmanDataList);
 }
 
 class SalesmanAdded extends SalesmanState {
-  // final SalesProfileModel salesProfile;
+  final List<Map<String, dynamic>>? results;
 
-  SalesmanAdded(
-      // SalesmanState previousState,
-      /*this.salesProfile*/
-      // ) : super([...previousState.salesDraftList /*, salesProfile*/],
-      )
-      : super([], [], []);
+  SalesmanAdded({this.results}) : super([], [], []);
 
-  // SalesProfileModel get getSalesmanAdded => salesProfile;
+  @override
+  List<Object?> get props => [results];
+}
+
+class SalesmanPartialSuccess extends SalesmanState {
+  final List<Map<String, dynamic>> results;
+  final String? errorMessage;
+
+  SalesmanPartialSuccess(this.results, {this.errorMessage}) : super([], [], []);
+
+  @override
+  List<Object?> get props => [results, errorMessage];
 }
 
 class SalesmanError extends SalesmanState {
   final String error;
 
   SalesmanError(/*SalesmanState previousState,*/ this.error)
-      : super(/*previousState.salesDraftList, previousState.fetchSalesList*/ [],
-            [], []);
+    : super(
+        /*previousState.salesDraftList, previousState.fetchSalesList*/ [],
+        [],
+        [],
+      );
 
   String get getSalesmanError => 'Error: $error';
 }
 
+// ~:Table Insertation:~
 class SalesmanModified extends SalesmanState {
   final List<SalesmanData> newData;
 
   SalesmanModified(this.newData) : super([], [], newData);
+}
+
+// ~:Modify Salesman Status:~
+class SalesmanStatusModified extends SalesmanState {
+  final String message;
+
+  SalesmanStatusModified(this.message) : super([], [], []);
 }

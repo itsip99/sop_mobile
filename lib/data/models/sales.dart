@@ -1,13 +1,13 @@
 class SalesModel {
   final String tierLevel;
-  final int status;
+  final int isActive;
   final String userId;
   final String id;
   final String userName;
 
   SalesModel({
     required this.tierLevel,
-    required this.status,
+    required this.isActive,
     required this.userId,
     required this.id,
     required this.userName,
@@ -16,7 +16,7 @@ class SalesModel {
   factory SalesModel.fromJson(Map<String, dynamic> json) {
     return SalesModel(
       tierLevel: json['EntryLevel'],
-      status: json['Active'],
+      isActive: json['Active'],
       userId: json['CustomerID'],
       id: json['KTP'],
       userName: json['SName'],

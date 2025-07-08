@@ -288,14 +288,14 @@ void main() {
         userName: 'sales1',
         tierLevel: '1',
         userId: 'user1',
-        status: 1,
+        isActive: 1,
       ),
       SalesModel(
         id: '2',
         userName: 'sales2',
         tierLevel: '2',
         userId: 'user2',
-        status: 1,
+        isActive: 1,
       ),
     ];
     final tSalesmanDataList =
@@ -1273,7 +1273,7 @@ void main() {
                   userName: 'Joe',
                   tierLevel: 'Gold',
                   userId: '',
-                  status: 1,
+                  isActive: 1,
                 ),
               ],
             ),

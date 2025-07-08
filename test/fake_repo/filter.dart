@@ -70,7 +70,7 @@ class FakeFilterRepo implements FilterRepo {
       salesData: [
         SalesModel(
           tierLevel: 'Gold',
-          status: 1,
+          isActive: 1,
           userId: '1',
           id: '1',
           userName: 'Test Sales',

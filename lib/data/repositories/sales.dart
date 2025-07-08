@@ -51,13 +51,14 @@ class SalesRepoImp extends SalesRepo {
   }
 
   @override
-  Future<Map<String, dynamic>> addSalesman(
+  Future<Map<String, dynamic>> addOrModifySalesman(
     String userId,
     String id,
     String name,
     String tier,
-    int status,
-  ) async {
+    int status, {
+    bool isModify = false,
+  }) async {
     // Simulate a network call
     Uri uri = Uri.https(
       APIConstants.baseUrl,
@@ -66,7 +67,7 @@ class SalesRepoImp extends SalesRepo {
 
     Map body = {
       'Jenis': 'SALESMAN',
-      'Mode': '1',
+      'Mode': isModify ? '2' : '1',
       'Data': {
         'CustomerID': userId,
         'KTP': id,
@@ -98,15 +99,18 @@ class SalesRepoImp extends SalesRepo {
           log('Success');
           return {
             'status': 'success',
-            'data': (res['Data'] as List)[0]['ResultMessage'],
+            'data':
+                isModify
+                    ? 'Modify Success'
+                    : (res['Data'] as List)[0]['ResultMessage'],
           };
         }
 
         log('Something\'s wrong');
         return {'status': 'success', 'data': 'Something went wrong.'};
       } else {
-        log('Fail');
-        return {'status': 'fail', 'data': 'Failed to fetch data'};
+        log('Failed to insert new data');
+        return {'status': 'fail', 'data': 'Failed to insert new data'};
       }
     } else {
       log('Response: ${response.statusCode}');

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:sop_mobile/core/constant/colors.dart';
+import 'package:sop_mobile/core/helpers/formatter.dart';
 import 'package:sop_mobile/data/models/sales_import.dart';
 import 'package:sop_mobile/presentation/state/salesman/salesman_bloc.dart';
 import 'package:sop_mobile/presentation/state/salesman/salesman_event.dart';
@@ -35,9 +36,9 @@ class CustomFunctions {
     for (var salesman in sales) {
       salesmanBloc.add(
         AddSalesman(
-          salesman.id,
-          salesman.name,
-          salesman.tier,
+          Formatter.removeSpaces(salesman.id),
+          Formatter.removeSpaces(salesman.name),
+          Formatter.removeSpaces(salesman.tier),
           salesman.isActive,
         ),
       );

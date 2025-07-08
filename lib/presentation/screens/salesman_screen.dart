@@ -20,6 +20,7 @@ import 'package:sop_mobile/presentation/state/salesman/salesman_state.dart';
 import 'package:sop_mobile/presentation/state/cubit/sales_position.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
 import 'package:sop_mobile/presentation/widgets/buttons.dart';
+import 'package:sop_mobile/presentation/widgets/card.dart';
 import 'package:sop_mobile/presentation/widgets/dialog.dart';
 import 'package:sop_mobile/presentation/widgets/dropdown.dart';
 import 'package:sop_mobile/presentation/widgets/functions.dart';
@@ -467,58 +468,9 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                                   );
                                 }
 
-                                log(
-                                  'Fetched salesman list length: ${state.fetchSalesList.length}',
-                                );
-                                return Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 12,
-                                  ),
-                                  child: Column(
-                                    spacing: 8.0,
-                                    children:
-                                        state.fetchSalesList.map((
-                                          salesProfile,
-                                        ) {
-                                          return Card(
-                                            color: ConstantColors.primaryColor2,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                            ),
-                                            elevation: 5,
-                                            shadowColor:
-                                                ConstantColors.shadowColor,
-                                            child: ListTile(
-                                              contentPadding:
-                                                  const EdgeInsets.symmetric(
-                                                    vertical: 4,
-                                                    horizontal: 20,
-                                                  ),
-                                              title: Text(
-                                                'ID ${Formatter.toTitleCase(salesProfile.id)}',
-                                                style: TextThemes.normal
-                                                    .copyWith(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                              ),
-                                              subtitle: Text(
-                                                '${Formatter.toTitleCase(salesProfile.userName)} - ${Formatter.toTitleCase(salesProfile.tierLevel)}',
-                                                style: TextThemes.normal,
-                                              ),
-                                              // ~:Change to CheckBox for further use:~
-                                              // trailing: IconButton(
-                                              //   icon: const Icon(
-                                              //     Icons.delete_rounded,
-                                              //     color: ConstantColors.primaryColor3,
-                                              //   ),
-                                              //   onPressed: () {},
-                                              // ),
-                                            ),
-                                          );
-                                        }).toList(),
-                                  ),
+                                return CustomCard.salesmanProfile(
+                                  salesmanBloc,
+                                  state.fetchSalesList,
                                 );
                               },
                             ),

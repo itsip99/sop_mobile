@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sop_mobile/core/helpers/formatter.dart';
 import 'package:sop_mobile/data/models/sales.dart';
 import 'package:sop_mobile/data/models/user.dart';
 import 'package:sop_mobile/domain/repositories/sales.dart';
@@ -21,7 +22,9 @@ class SalesmanBloc<BaseEvent, BaseState>
     );
     on<FetchSalesman>(fetchSalesmanHandler);
     on<AddSalesman>(addSalesmanHandler);
+    on<AddSalesmanList>(addSalesmanListHandler);
     on<ModifySalesman>(modifySalesmanHandler);
+    on<ModifySalesmanStatus>(modifySalesmanStatusHandler);
     // on<RemoveSalesman>(removeSalesmanHandler);
   }
 
@@ -89,30 +92,93 @@ class SalesmanBloc<BaseEvent, BaseState>
 
       if (userCredentials.username != '') {
         // ~:Network Call Simulation:~
-        Map<String, dynamic> result = await salesRepo.addSalesman(
+        Map<String, dynamic> result = await salesRepo.addOrModifySalesman(
           userCredentials.username,
           event.id,
           event.name,
           event.tier,
-          1,
+          event.status,
         );
 
         if (result['status'] == 'success') {
           // ~:Emit success state with user data:~
           emit(SalesmanAdded());
         } else {
-          // ~:Emit failure state with an error message:~
-          emit(SalesmanError(result['data'] as String));
+          if ((result['data'] as String).contains('duplicate key')) {
+            emit(SalesmanError('Duplicate ID found'));
+          } else {
+            emit(SalesmanError(result['data'] as String));
+          }
         }
       } else {
         emit(SalesmanError('User credentials not found'));
       }
-      // emit(SalesmanAdded(
-      //   state,
-      //   SalesProfileModel(event.id, event.name, event.tier),
-      // ));
     } catch (e) {
+      log('Error: ${e.toString()}');
       emit(SalesmanError(e.toString()));
+    }
+  }
+
+  Future<void> addSalesmanListHandler(
+    AddSalesmanList event,
+    Emitter<SalesmanState> emit,
+  ) async {
+    emit(SalesmanLoading(state));
+    try {
+      UserCredsModel userCredentials = await storageRepo.getUserCredentials();
+
+      if (userCredentials.username != '') {
+        List<Map<String, dynamic>> results = [];
+        bool hasError = false;
+        String? errorMessage;
+
+        // Process each salesman in the list
+        for (var salesman in event.salesDraftList) {
+          try {
+            Map<String, dynamic> result = await salesRepo.addOrModifySalesman(
+              userCredentials.username,
+              Formatter.removeSpaces(salesman.id),
+              Formatter.removeSpaces(salesman.name),
+              Formatter.removeSpaces(salesman.tier),
+              salesman.isActive,
+            );
+
+            results.add({
+              'success': result['status'] == 'success',
+              'message': result['data'] as String,
+            });
+
+            // If any insert fails, mark as error but continue processing others
+            if (result['status'] != 'success') {
+              hasError = true;
+              errorMessage = result['data'] as String;
+            }
+          } catch (e) {
+            hasError = true;
+            errorMessage = e.toString();
+            results.add({'success': false, 'message': e.toString()});
+          }
+        }
+
+        // After processing all items
+        if (hasError) {
+          // If any insert failed, show error but include successful ones
+          emit(
+            SalesmanPartialSuccess(
+              results,
+              errorMessage: errorMessage ?? 'Some salesmen could not be added',
+            ),
+          );
+        } else {
+          // All inserts were successful
+          emit(SalesmanAdded(results: results));
+        }
+      } else {
+        emit(SalesmanError('User credentials not found'));
+      }
+    } catch (e) {
+      log('Error: ${e.toString()}');
+      emit(SalesmanError('Failed to process salesman list: ${e.toString()}'));
     }
   }
 
@@ -183,6 +249,40 @@ class SalesmanBloc<BaseEvent, BaseState>
     } catch (e) {
       log('Error modifying salesman data: $e');
       emit(SalesmanError(e.toString()));
+    }
+  }
+
+  Future<void> modifySalesmanStatusHandler(
+    ModifySalesmanStatus event,
+    Emitter<SalesmanState> emit,
+  ) async {
+    try {
+      // ~:Secure Storage Simulation:~
+      UserCredsModel userCredentials = await storageRepo.getUserCredentials();
+
+      if (userCredentials.username != '') {
+        // ~:Network Call Simulation:~
+        Map<String, dynamic> result = await salesRepo.addOrModifySalesman(
+          userCredentials.username,
+          Formatter.removeSpaces(event.sales.id),
+          Formatter.removeSpaces(event.sales.name),
+          Formatter.removeSpaces(event.sales.tier),
+          event.sales.isActive,
+          isModify: true,
+        );
+
+        if (result['status'] == 'success') {
+          // ~:Emit success state with user data:~
+          emit(SalesmanStatusModified('Data successfully updated'));
+        } else {
+          emit(SalesmanError(result['data'] as String));
+        }
+      } else {
+        emit(SalesmanError('User credentials not found'));
+      }
+    } catch (e) {
+      log('Error: ${e.toString()}');
+      emit(SalesmanError('Failed to modify salesman status: ${e.toString()}'));
     }
   }
 }
