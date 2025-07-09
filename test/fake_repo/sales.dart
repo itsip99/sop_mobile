@@ -33,13 +33,14 @@ class FakeSalesRepo implements SalesRepo {
   }
 
   @override
-  Future<Map<String, dynamic>> addSalesman(
+  Future<Map<String, dynamic>> addOrModifySalesman(
     String userId,
     String id,
     String name,
     String tier,
-    int isActive,
-  ) async {
+    int isActive, {
+    bool isModify = false,
+  }) async {
     if (shouldFail) {
       throw Exception('Failed to add salesman');
     }

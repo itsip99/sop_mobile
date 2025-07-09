@@ -1,3 +1,5 @@
+import 'package:sop_mobile/data/models/report.dart';
+
 class SalesModel {
   final String tierLevel;
   final int isActive;
@@ -20,6 +22,16 @@ class SalesModel {
       userId: json['CustomerID'],
       id: json['KTP'],
       userName: json['SName'],
+    );
+  }
+
+  factory SalesModel.fromSalesmanModel(SalesmanModel salesman) {
+    return SalesModel(
+      tierLevel: salesman.tierLevel,
+      isActive: salesman.flag,
+      userId: '',
+      id: salesman.idCardNumber,
+      userName: salesman.name,
     );
   }
 }

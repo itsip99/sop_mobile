@@ -86,3 +86,9 @@ class SalesmanStatusModified extends SalesmanState {
 
   SalesmanStatusModified(this.message) : super([], [], []);
 }
+
+class SalesmanStatusModifyError extends SalesmanState {
+  final String error;
+
+  SalesmanStatusModifyError(this.error) : super([], [], []);
+}

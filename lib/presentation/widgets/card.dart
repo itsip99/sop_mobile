@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sop_mobile/core/constant/colors.dart';
 import 'package:sop_mobile/core/helpers/formatter.dart';
 import 'package:sop_mobile/data/models/briefing.dart';
@@ -8,120 +7,154 @@ import 'package:sop_mobile/data/models/sales.dart';
 import 'package:sop_mobile/data/models/sales_import.dart';
 import 'package:sop_mobile/presentation/state/salesman/salesman_bloc.dart';
 import 'package:sop_mobile/presentation/state/salesman/salesman_event.dart';
-import 'package:sop_mobile/presentation/state/salesman/salesman_state.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/source/leasing_source.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/source/payment_source.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/source/stu_source.dart';
+import 'package:sop_mobile/presentation/widgets/salesman_profile.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class CustomCard {
   static Widget salesmanProfile(
     SalesmanBloc salesmanBloc,
-    List<SalesModel> salesList,
-  ) {
+    List<SalesModel> salesList, {
+    bool isPreview = false,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: Column(
         spacing: 8.0,
         children:
             salesList.map((SalesModel salesProfile) {
-              return Card(
-                color: ConstantColors.primaryColor2,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                elevation: 5,
-                shadowColor: ConstantColors.shadowColor,
-                child: ListTile(
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 4,
-                    horizontal: 20,
-                  ),
-                  title: Text(
-                    'ID ${Formatter.toTitleCase(salesProfile.id)}',
-                    style: TextThemes.normal.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  subtitle: Text(
-                    '${Formatter.toTitleCase(salesProfile.userName)} - ${Formatter.toTitleCase(salesProfile.tierLevel)}',
-                    style: TextThemes.normal,
-                  ),
-                  trailing: BlocBuilder<SalesmanBloc, SalesmanState>(
-                    buildWhen:
-                        (previous, current) => current is! SalesmanLoading,
-                    builder: (context, state) {
-                      return AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 200),
-                        transitionBuilder: (
-                          Widget child,
-                          Animation<double> animation,
-                        ) {
-                          return ScaleTransition(
-                            scale: animation,
-                            child: child,
-                          );
-                        },
-                        child: Theme(
-                          data: Theme.of(context).copyWith(
-                            switchTheme: SwitchThemeData(
-                              thumbColor: WidgetStateProperty.resolveWith<
-                                Color
-                              >((states) {
-                                if (states.contains(WidgetState.selected)) {
-                                  return Theme.of(context).colorScheme.primary;
-                                }
-                                return Theme.of(context).brightness ==
-                                        Brightness.light
-                                    ? Colors.grey.shade300
-                                    : Colors.grey.shade600;
-                              }),
-                              trackColor:
-                                  WidgetStateProperty.resolveWith<Color>((
-                                    states,
-                                  ) {
-                                    if (states.contains(WidgetState.selected)) {
-                                      return Theme.of(context)
-                                          .colorScheme
-                                          .primary
-                                          .withValues(alpha: 0.5);
-                                    }
-                                    return Theme.of(context).brightness ==
-                                            Brightness.light
-                                        ? Colors.grey.shade400
-                                        : Colors.grey.shade700;
-                                  }),
-                              materialTapTargetSize:
-                                  MaterialTapTargetSize.shrinkWrap,
-                            ),
-                          ),
-                          child: Switch(
-                            key: ValueKey<bool>(salesProfile.isActive == 1),
-                            value: salesProfile.isActive == 1,
-                            onChanged: (bool value) {
-                              salesmanBloc.add(
-                                ModifySalesmanStatus(
-                                  sales: NewSalesModel(
-                                    id: salesProfile.id,
-                                    name: salesProfile.userName,
-                                    tier: salesProfile.tierLevel,
-                                    isActive: value ? 1 : 0,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
+              return SalesmanProfileCard(
+                salesman: salesProfile,
+                onStatusChanged: (bool isActive) {
+                  if (!isPreview) {
+                    salesmanBloc.add(
+                      ModifySalesmanStatus(
+                        sales: NewSalesModel(
+                          id: salesProfile.id,
+                          name: salesProfile.userName,
+                          tier: salesProfile.tierLevel,
+                          isActive: isActive ? 1 : 0,
                         ),
-                      );
-                    },
-                  ),
-                ),
+                      ),
+                    );
+                  }
+                },
+                isPreview: isPreview,
               );
             }).toList(),
       ),
     );
   }
+
+  // static Widget salesmanProfile(
+  //   SalesmanBloc salesmanBloc,
+  //   List<SalesModel> salesList,
+  // ) {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(vertical: 12),
+  //     child: Column(
+  //       spacing: 8.0,
+  //       children:
+  //           salesList.map((SalesModel salesProfile) {
+  //             return Card(
+  //               color: ConstantColors.primaryColor2,
+  //               shape: RoundedRectangleBorder(
+  //                 borderRadius: BorderRadius.circular(20),
+  //               ),
+  //               elevation: 5,
+  //               shadowColor: ConstantColors.shadowColor,
+  //               child: ListTile(
+  //                 contentPadding: const EdgeInsets.symmetric(
+  //                   vertical: 4,
+  //                   horizontal: 20,
+  //                 ),
+  //                 title: Text(
+  //                   'ID ${Formatter.toTitleCase(salesProfile.id)}',
+  //                   style: TextThemes.normal.copyWith(
+  //                     fontWeight: FontWeight.bold,
+  //                   ),
+  //                 ),
+  //                 subtitle: Text(
+  //                   '${Formatter.toTitleCase(salesProfile.userName)} - ${Formatter.toTitleCase(salesProfile.tierLevel)}',
+  //                   style: TextThemes.normal,
+  //                 ),
+  //                 trailing: BlocBuilder<SalesmanBloc, SalesmanState>(
+  //                   buildWhen:
+  //                       (previous, current) => current is! SalesmanLoading,
+  //                   builder: (context, state) {
+  //                     return AnimatedSwitcher(
+  //                       duration: const Duration(milliseconds: 200),
+  //                       transitionBuilder: (
+  //                         Widget child,
+  //                         Animation<double> animation,
+  //                       ) {
+  //                         return ScaleTransition(
+  //                           scale: animation,
+  //                           child: child,
+  //                         );
+  //                       },
+  //                       child: Theme(
+  //                         data: Theme.of(context).copyWith(
+  //                           switchTheme: SwitchThemeData(
+  //                             thumbColor: WidgetStateProperty.resolveWith<
+  //                               Color
+  //                             >((states) {
+  //                               if (states.contains(WidgetState.selected)) {
+  //                                 return Theme.of(context).colorScheme.primary;
+  //                               }
+  //                               return Theme.of(context).brightness ==
+  //                                       Brightness.light
+  //                                   ? Colors.grey.shade300
+  //                                   : Colors.grey.shade600;
+  //                             }),
+  //                             trackColor:
+  //                                 WidgetStateProperty.resolveWith<Color>((
+  //                                   states,
+  //                                 ) {
+  //                                   if (states.contains(WidgetState.selected)) {
+  //                                     return Theme.of(context)
+  //                                         .colorScheme
+  //                                         .primary
+  //                                         .withValues(alpha: 0.5);
+  //                                   }
+  //                                   return Theme.of(context).brightness ==
+  //                                           Brightness.light
+  //                                       ? Colors.grey.shade400
+  //                                       : Colors.grey.shade700;
+  //                                 }),
+  //                             materialTapTargetSize:
+  //                                 MaterialTapTargetSize.shrinkWrap,
+  //                           ),
+  //                         ),
+  //                         child: Switch(
+  //                           key: ValueKey<bool>(salesProfile.isActive == 1),
+  //                           value: salesProfile.isActive == 1,
+  //                           onChanged: (bool value) {
+  //                             salesmanBloc.add(
+  //                               ModifySalesmanStatus(
+  //                                 sales: NewSalesModel(
+  //                                   id: salesProfile.id,
+  //                                   name: salesProfile.userName,
+  //                                   tier: salesProfile.tierLevel,
+  //                                   isActive: value ? 1 : 0,
+  //                                 ),
+  //                               ),
+  //                             );
+  //                           },
+  //                         ),
+  //                       ),
+  //                     );
+  //                   },
+  //                 ),
+  //               ),
+  //             );
+  //           }).toList(),
+  //     ),
+  //   );
+  // }
 
   static Widget briefSection(
     final BuildContext context,
@@ -425,7 +458,13 @@ class CustomCard {
       child: Row(
         children: [
           // ~:PIC Section:~
-          Expanded(child: Text('${data.pic} as PIC', style: TextThemes.normal)),
+          Expanded(
+            child: Text(
+              'PIC: ${Formatter.toTitleCase(data.pic)}',
+              style: TextThemes.normal.copyWith(fontSize: 16),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
 
           // ~:View Salesman Button:~
           TextButton(
@@ -433,7 +472,12 @@ class CustomCard {
                 () => Navigator.pushNamed(
                   context,
                   '/sales',
-                  arguments: {'registeredSales': data.salesmen},
+                  arguments: {
+                    'registeredSales':
+                        data.salesmen
+                            .map((e) => SalesModel.fromSalesmanModel(e))
+                            .toList(),
+                  },
                 ),
             child: const Text(
               'Lihat Salesman',

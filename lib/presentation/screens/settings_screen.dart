@@ -54,13 +54,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         body: Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
-          decoration: const BoxDecoration(
-            color: ConstantColors.primaryColor2,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-          ),
+          color: ConstantColors.primaryColor2,
           padding: const EdgeInsets.fromLTRB(0, 20, 0, 8),
           child: Column(
             spacing: 8,
@@ -77,10 +71,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
               ),
 
-              // ~:App Version:~
+              // ~:About App:~
               CustomText.horizontalAlignment(
                 'Tentang Aplikasi',
-                sectionValue: 'Versi 1.0.0',
+                isIcon: true,
+                icon: Icons.arrow_forward_ios,
+                onTap: () => Navigator.pushNamed(context, '/about'),
               ),
 
               // ~:Logout Button:~
@@ -96,9 +92,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     );
                   }
                 },
-                child: TextButton(
-                  onPressed: () => loginBloc.add(LogoutButtonPressed()),
-                  child: const Text('Logout', style: TextThemes.logoutButton),
+                child: Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.symmetric(horizontal: 12),
+                  child: ElevatedButton(
+                    onPressed: () => loginBloc.add(LogoutButtonPressed()),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: ConstantColors.primaryColor2,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                        side: const BorderSide(
+                          color: ConstantColors.closeColor,
+                          width: 2,
+                        ),
+                      ),
+                    ),
+                    child: const Text('Logout', style: TextThemes.logoutButton),
+                  ),
                 ),
               ),
             ],

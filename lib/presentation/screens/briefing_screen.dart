@@ -54,27 +54,18 @@ class _BriefingScreenState extends State<BriefingScreen> {
           scrolledUnderElevation: 0.0,
           automaticallyImplyLeading: true,
           backgroundColor: ConstantColors.primaryColor1,
-          title: const Text(
-            'Morning Briefing',
-            style: TextThemes.subtitle,
-          ),
+          title: const Text('Morning Briefing', style: TextThemes.subtitle),
           centerTitle: true,
           leading: Builder(
             builder: (context) {
               if (Platform.isIOS) {
                 return IconButton(
-                  icon: const Icon(
-                    Icons.arrow_back_ios_new_rounded,
-                    size: 15,
-                  ),
+                  icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 15),
                   onPressed: () => Navigator.pop(context),
                 );
               } else {
                 return IconButton(
-                  icon: const Icon(
-                    Icons.arrow_back_rounded,
-                    size: 20,
-                  ),
+                  icon: const Icon(Icons.arrow_back_rounded, size: 20),
                   onPressed: () => Navigator.pop(context),
                 );
               }
@@ -83,9 +74,7 @@ class _BriefingScreenState extends State<BriefingScreen> {
         ),
         // providers: StateManager.getBriefBlocProviders(),
         body: DecoratedBox(
-          decoration: const BoxDecoration(
-            color: ConstantColors.primaryColor1,
-          ),
+          decoration: const BoxDecoration(color: ConstantColors.primaryColor1),
           child: Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
@@ -116,15 +105,15 @@ class _BriefingScreenState extends State<BriefingScreen> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-      
+
                             // ~:Page Description:~
-                            const Text(
+                            Text(
                               'Masukkan data untuk membuat laporan pagi.',
                               style: TextThemes.normal,
                             ),
                           ],
                         ),
-      
+
                         // ~:Location Textfield:~
                         BlocBuilder<LoginBloc, LoginState>(
                           builder: (context, state) {
@@ -132,7 +121,7 @@ class _BriefingScreenState extends State<BriefingScreen> {
                               // ~:Set the location controller text:~
                               locationController.text = state.getUserCreds.name;
                             }
-      
+
                             return CustomTextFormField(
                               'your location',
                               'Location',
@@ -144,7 +133,7 @@ class _BriefingScreenState extends State<BriefingScreen> {
                             );
                           },
                         ),
-      
+
                         // ~:Counter Section:~
                         Wrap(
                           runSpacing: 10,
@@ -152,23 +141,29 @@ class _BriefingScreenState extends State<BriefingScreen> {
                           children: [
                             // ~:Total Person:~
                             Counter.person(context, 'total', 'Jumlah Peserta'),
-      
+
                             // ~:Number of Shop Manager:~
                             Counter.person(
-                                context, 'shop_manager', 'Shop Manager'),
-      
+                              context,
+                              'shop_manager',
+                              'Shop Manager',
+                            ),
+
                             // ~:Number of Sales Counter:~
                             Counter.person(
-                                context, 'sales_counter', 'Sales Counter'),
-      
+                              context,
+                              'sales_counter',
+                              'Sales Counter',
+                            ),
+
                             // ~:Number of Salesman:~
                             Counter.person(context, 'salesman', 'Salesman'),
-      
+
                             // ~:Number of Others:~
                             Counter.person(context, 'others', 'Other'),
                           ],
                         ),
-      
+
                         // ~:Description Section:~
                         Padding(
                           padding: const EdgeInsets.only(top: 16),
@@ -189,11 +184,12 @@ class _BriefingScreenState extends State<BriefingScreen> {
                               hintStyle: TextThemes.textfieldPlaceholder,
                               labelText: 'Description',
                               labelStyle: TextThemes.textfieldPlaceholder,
-                              floatingLabelBehavior: FloatingLabelBehavior.always,
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.always,
                             ),
                           ),
                         ),
-      
+
                         // ~:Image Section:~
                         Padding(
                           padding: const EdgeInsets.only(top: 16),
@@ -233,7 +229,9 @@ class _BriefingScreenState extends State<BriefingScreen> {
                                       'Camera permission denied',
                                     );
                                   } else if (state is PhotoPermissionError) {
-                                    log('Camera Permission error: ${state.error}');
+                                    log(
+                                      'Camera Permission error: ${state.error}',
+                                    );
                                     CustomSnackbar.showSnackbar(
                                       context,
                                       state.error,
@@ -269,7 +267,8 @@ class _BriefingScreenState extends State<BriefingScreen> {
                                                     child: ClipRRect(
                                                       borderRadius:
                                                           BorderRadius.circular(
-                                                              16),
+                                                            16,
+                                                          ),
                                                       child: Image.memory(
                                                         base64Decode(
                                                           state.photoUrl,
@@ -296,23 +295,28 @@ class _BriefingScreenState extends State<BriefingScreen> {
                                             right: 4,
                                             top: 4,
                                             child: InkWell(
-                                              onTap: () => photoBloc.add(
-                                                DeletePhotoEvent(
-                                                  state.photoUrl,
-                                                ),
-                                              ),
+                                              onTap:
+                                                  () => photoBloc.add(
+                                                    DeletePhotoEvent(
+                                                      state.photoUrl,
+                                                    ),
+                                                  ),
                                               child: Container(
                                                 decoration: const BoxDecoration(
-                                                  color: ConstantColors
-                                                      .primaryColor2,
+                                                  color:
+                                                      ConstantColors
+                                                          .primaryColor2,
                                                   shape: BoxShape.circle,
                                                 ),
-                                                padding: const EdgeInsets.all(4),
+                                                padding: const EdgeInsets.all(
+                                                  4,
+                                                ),
                                                 child: const Icon(
                                                   Icons.close_rounded,
                                                   size: 16,
-                                                  color: ConstantColors
-                                                      .primaryColor3,
+                                                  color:
+                                                      ConstantColors
+                                                          .primaryColor3,
                                                 ),
                                               ),
                                             ),
@@ -321,10 +325,12 @@ class _BriefingScreenState extends State<BriefingScreen> {
                                       ),
                                     );
                                   }
-      
+
                                   return InkWell(
                                     onTap: () async {
-                                      log('Camera permission: ${cameraCubit.state}');
+                                      log(
+                                        'Camera permission: ${cameraCubit.state}',
+                                      );
                                       await cameraCubit.checkCameraPermission();
                                       if (cameraCubit.state ==
                                               PermissionStatus.denied ||
@@ -335,15 +341,21 @@ class _BriefingScreenState extends State<BriefingScreen> {
                                         await cameraCubit
                                             .requestCameraPermission()
                                             .then((_) {
-                                          photoBloc.add(CheckCameraPermission(
-                                            cameraCubit.state,
-                                          ));
-                                        });
+                                              photoBloc.add(
+                                                CheckCameraPermission(
+                                                  cameraCubit.state,
+                                                ),
+                                              );
+                                            });
                                       } else {
-                                        log('Camera permission: ${cameraCubit.state}');
-                                        photoBloc.add(CheckCameraPermission(
-                                          cameraCubit.state,
-                                        ));
+                                        log(
+                                          'Camera permission: ${cameraCubit.state}',
+                                        );
+                                        photoBloc.add(
+                                          CheckCameraPermission(
+                                            cameraCubit.state,
+                                          ),
+                                        );
                                       }
                                     },
                                     child: SizedBox(
@@ -377,7 +389,7 @@ class _BriefingScreenState extends State<BriefingScreen> {
                     ),
                   ),
                 ),
-      
+
                 // ~:Footer Section:~
                 ElevatedButton(
                   onPressed: () {
@@ -387,7 +399,7 @@ class _BriefingScreenState extends State<BriefingScreen> {
                     //   log('$key - $value');
                     // });
                     // log('Description: ${descriptionController.text}');
-      
+
                     String pic = '';
                     if (photoBloc.state is! PhotoInitial &&
                         (photoBloc.state as PhotoUploadSuccess)
@@ -397,26 +409,26 @@ class _BriefingScreenState extends State<BriefingScreen> {
                     } else {
                       // log('No photo uploaded');
                     }
-      
+
                     LoginModel user =
                         (loginBloc.state as LoginSuccess).getUserCreds;
-      
+
                     context.read<BriefBloc>().add(
-                          BriefCreation(
-                            user.id,
-                            user.branch,
-                            user.shop,
-                            DateTime.now().toString().split(' ')[0],
-                            locationController.text,
-                            counterCubit.getCount()['total']!,
-                            counterCubit.getCount()['shop_manager']!,
-                            counterCubit.getCount()['sales_counter']!,
-                            counterCubit.getCount()['salesman']!,
-                            counterCubit.getCount()['others']!,
-                            descriptionController.text,
-                            pic,
-                          ),
-                        );
+                      BriefCreation(
+                        user.id,
+                        user.branch,
+                        user.shop,
+                        DateTime.now().toString().split(' ')[0],
+                        locationController.text,
+                        counterCubit.getCount()['total']!,
+                        counterCubit.getCount()['shop_manager']!,
+                        counterCubit.getCount()['sales_counter']!,
+                        counterCubit.getCount()['salesman']!,
+                        counterCubit.getCount()['others']!,
+                        descriptionController.text,
+                        pic,
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: ConstantColors.primaryColor1,
@@ -439,18 +451,15 @@ class _BriefingScreenState extends State<BriefingScreen> {
                             context,
                             'Briefing report created successfully',
                           );
-      
+
                           // ~:Get the latest data:~
                           Filter.onRefreshOrDateChanged(context);
-      
+
                           // ~:Return to the home page:~
                           Navigator.pop(context);
                         } else if (state is BriefCreationFail) {
                           // ~:Inform the user:~
-                          CustomSnackbar.showSnackbar(
-                            context,
-                            state.error,
-                          );
+                          CustomSnackbar.showSnackbar(context, state.error);
                         }
                       },
                       builder: (context, state) {
@@ -464,7 +473,7 @@ class _BriefingScreenState extends State<BriefingScreen> {
                             androidCircleColor: ConstantColors.primaryColor3,
                           );
                         }
-      
+
                         return const Text(
                           'Buat',
                           style: TextThemes.subtitle,

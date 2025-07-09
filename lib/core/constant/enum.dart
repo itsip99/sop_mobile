@@ -1,39 +1,9 @@
-enum FilterType {
-  none,
-  briefing,
-  report,
-  salesman,
-}
+enum FilterType { none, briefing, report, salesman }
 
-enum StuType {
-  stu,
-  result,
-  target,
-  ach,
-  lm,
-  growth,
-}
+enum StuType { stu, result, target, ach, lm, growth }
 
-enum PaymentType {
-  payment,
-  result,
-  target,
-  growth,
-}
+enum PaymentType { payment, result, target, growth }
 
-enum LeasingType {
-  leasing,
-  spk,
-  terbuka,
-  disetujui,
-  ditolak,
-  approval,
-}
+enum LeasingType { leasing, spk, terbuka, disetujui, ditolak, approval }
 
-enum SalesmanType {
-  sales,
-  status,
-  spk,
-  stu,
-  lm,
-}
+enum SalesmanType { sales, position, spk, stu, lm }

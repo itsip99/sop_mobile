@@ -394,7 +394,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             return Container(
                               height: MediaQuery.of(context).size.height * 0.7,
                               alignment: Alignment.center,
-                              child: const Text(
+                              child: Text(
                                 'Connection timed out',
                                 style: TextThemes.normal,
                                 textAlign: TextAlign.center,
@@ -417,7 +417,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height * 0.7,
                           alignment: Alignment.center,
-                          child: const Text(
+                          child: Text(
                             'No data available',
                             style: TextThemes.normal,
                             textAlign: TextAlign.center,

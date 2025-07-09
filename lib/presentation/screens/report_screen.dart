@@ -64,20 +64,11 @@ class _ReportScreenState extends State<ReportScreen> {
     int newValue,
   ) {
     if (columnName == 'Result') {
-      stuBloc.add(ModifyStuData(
-        rowIndex: rowIndex,
-        newResultValue: newValue,
-      ));
+      stuBloc.add(ModifyStuData(rowIndex: rowIndex, newResultValue: newValue));
     } else if (columnName == 'Target') {
-      stuBloc.add(ModifyStuData(
-        rowIndex: rowIndex,
-        newTargetValue: newValue,
-      ));
+      stuBloc.add(ModifyStuData(rowIndex: rowIndex, newTargetValue: newValue));
     } else if (columnName == 'LM') {
-      stuBloc.add(ModifyStuData(
-        rowIndex: rowIndex,
-        newLmValue: newValue,
-      ));
+      stuBloc.add(ModifyStuData(rowIndex: rowIndex, newLmValue: newValue));
     }
   }
 
@@ -88,15 +79,13 @@ class _ReportScreenState extends State<ReportScreen> {
     int newValue,
   ) {
     if (columnName == 'Result') {
-      paymentBloc.add(PaymentDataModified(
-        rowIndex: rowIndex,
-        newResultValue: newValue,
-      ));
+      paymentBloc.add(
+        PaymentDataModified(rowIndex: rowIndex, newResultValue: newValue),
+      );
     } else if (columnName == 'LM') {
-      paymentBloc.add(PaymentDataModified(
-        rowIndex: rowIndex,
-        newTargetValue: newValue,
-      ));
+      paymentBloc.add(
+        PaymentDataModified(rowIndex: rowIndex, newTargetValue: newValue),
+      );
     }
   }
 
@@ -108,16 +97,14 @@ class _ReportScreenState extends State<ReportScreen> {
   ) {
     if (columnName == 'Accepted') {
       // 'accept'
-      leasingBloc.add(LeasingDataModified(
-        rowIndex: rowIndex,
-        newAcceptedValue: newValue,
-      ));
+      leasingBloc.add(
+        LeasingDataModified(rowIndex: rowIndex, newAcceptedValue: newValue),
+      );
     } else if (columnName == 'Rejected') {
       // 'reject'
-      leasingBloc.add(LeasingDataModified(
-        rowIndex: rowIndex,
-        newRejectedValue: newValue,
-      ));
+      leasingBloc.add(
+        LeasingDataModified(rowIndex: rowIndex, newRejectedValue: newValue),
+      );
     }
   }
 
@@ -137,22 +124,19 @@ class _ReportScreenState extends State<ReportScreen> {
     log('New value: $newValue');
     if (columnName == 'SPK') {
       // 'SPK'
-      salesmanBloc.add(ModifySalesman(
-        rowIndex: rowIndex,
-        newSpkValue: newValue,
-      ));
+      salesmanBloc.add(
+        ModifySalesman(rowIndex: rowIndex, newSpkValue: newValue),
+      );
     } else if (columnName == 'STU') {
       // 'STU'
-      salesmanBloc.add(ModifySalesman(
-        rowIndex: rowIndex,
-        newStuValue: newValue,
-      ));
+      salesmanBloc.add(
+        ModifySalesman(rowIndex: rowIndex, newStuValue: newValue),
+      );
     } else if (columnName == 'STU LM') {
       // 'STU LM'
-      salesmanBloc.add(ModifySalesman(
-        rowIndex: rowIndex,
-        newLmValue: newValue,
-      ));
+      salesmanBloc.add(
+        ModifySalesman(rowIndex: rowIndex, newLmValue: newValue),
+      );
     }
   }
 
@@ -162,12 +146,13 @@ class _ReportScreenState extends State<ReportScreen> {
     // Initialize data source with initial empty data
     _leasingDataSource = LeasingInsertDataSource(
       [],
-      onCellValueEdited: (rowIndex, columnName, newValue) => editLeasingValue(
-        context.read<LeasingBloc>(),
-        rowIndex,
-        columnName,
-        newValue,
-      ),
+      onCellValueEdited:
+          (rowIndex, columnName, newValue) => editLeasingValue(
+            context.read<LeasingBloc>(),
+            rowIndex,
+            columnName,
+            newValue,
+          ),
     );
   }
 
@@ -185,27 +170,18 @@ class _ReportScreenState extends State<ReportScreen> {
           scrolledUnderElevation: 0.0,
           automaticallyImplyLeading: true,
           backgroundColor: ConstantColors.primaryColor1,
-          title: const Text(
-            'Daily Report',
-            style: TextThemes.subtitle,
-          ),
+          title: const Text('Daily Report', style: TextThemes.subtitle),
           centerTitle: true,
           leading: Builder(
             builder: (context) {
               if (Platform.isIOS) {
                 return IconButton(
-                  icon: const Icon(
-                    Icons.arrow_back_ios_new_rounded,
-                    size: 15,
-                  ),
+                  icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 15),
                   onPressed: () => Navigator.pop(context),
                 );
               } else {
                 return IconButton(
-                  icon: const Icon(
-                    Icons.arrow_back_rounded,
-                    size: 20,
-                  ),
+                  icon: const Icon(Icons.arrow_back_rounded, size: 20),
                   onPressed: () => Navigator.pop(context),
                 );
               }
@@ -213,9 +189,7 @@ class _ReportScreenState extends State<ReportScreen> {
           ),
         ),
         body: DecoratedBox(
-          decoration: const BoxDecoration(
-            color: ConstantColors.primaryColor1,
-          ),
+          decoration: const BoxDecoration(color: ConstantColors.primaryColor1),
           child: Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
@@ -243,7 +217,7 @@ class _ReportScreenState extends State<ReportScreen> {
                     ),
 
                     // ~:Description:~
-                    const Text(
+                    Text(
                       'Masukkan data untuk membuat laporan harian.',
                       style: TextThemes.normal,
                     ),
@@ -267,9 +241,10 @@ class _ReportScreenState extends State<ReportScreen> {
                                 if (state is LoginSuccess) {
                                   // ~:Set the dealer controller text:~
                                   if (locationController.text.isEmpty) {
-                                    locationController.text =
-                                        Formatter.toTitleCase(
-                                            state.getUserCreds.name);
+                                    locationController
+                                        .text = Formatter.toTitleCase(
+                                      state.getUserCreds.name,
+                                    );
                                   }
                                 }
 
@@ -341,11 +316,11 @@ class _ReportScreenState extends State<ReportScreen> {
                                     onCellValueEdited:
                                         (rowIndex, columnName, newValue) =>
                                             editStuValue(
-                                      context.read<StuBloc>(),
-                                      rowIndex,
-                                      columnName,
-                                      newValue,
-                                    ),
+                                              context.read<StuBloc>(),
+                                              rowIndex,
+                                              columnName,
+                                              newValue,
+                                            ),
                                   ),
                                   tableHeight: 310,
                                   StuType.values
@@ -354,6 +329,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                   allowEditing: true,
                                   horizontalScrollPhysics:
                                       const BouncingScrollPhysics(),
+                                  textStyle: TextThemes.normal,
                                 );
                               },
                             ),
@@ -374,11 +350,11 @@ class _ReportScreenState extends State<ReportScreen> {
                                     onCellValueEdited:
                                         (rowIndex, columnName, newValue) =>
                                             editPaymentValue(
-                                      context.read<PaymentBloc>(),
-                                      rowIndex,
-                                      columnName,
-                                      newValue,
-                                    ),
+                                              context.read<PaymentBloc>(),
+                                              rowIndex,
+                                              columnName,
+                                              newValue,
+                                            ),
                                   ),
                                   PaymentType.values
                                       .map((e) => e.name.toString())
@@ -387,6 +363,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                   allowEditing: true,
                                   horizontalScrollPhysics:
                                       const BouncingScrollPhysics(),
+                                  textStyle: TextThemes.normal,
                                 );
                               },
                             ),
@@ -419,13 +396,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                       const BouncingScrollPhysics(),
                                   verticalScrollPhysics:
                                       const AlwaysScrollableScrollPhysics(),
-                                  // enableAddRow: true,
-                                  // addFunction: () async {
-                                  //   log('Add New Row');
-                                  //   context
-                                  //       .read<LeasingBloc>()
-                                  //       .add(LeasingDataAdded());
-                                  // },
+                                  textStyle: TextThemes.normal,
                                 );
                               },
                             ),
@@ -433,9 +404,11 @@ class _ReportScreenState extends State<ReportScreen> {
                             // ~:Salesman Input Table:~
                             BlocBuilder<SalesmanBloc, SalesmanState>(
                               builder: (context, state) {
-                                tableHeight = 260;
-                                salesmanData = state.salesDataList;
-                                salesData = state.fetchSalesList;
+                                tableHeight = 410;
+                                salesData =
+                                    state.fetchSalesList
+                                        .where((e) => e.isActive == 1)
+                                        .toList();
                                 if (state is SalesmanLoading) {
                                   return Loading.platformIndicator(
                                     iosRadius: 13,
@@ -448,18 +421,34 @@ class _ReportScreenState extends State<ReportScreen> {
                                         ConstantColors.primaryColor3,
                                   );
                                 } else if (state is SalesmanFetched) {
-                                  salesmanData = state.salesDataList;
+                                  salesmanData =
+                                      state.salesDataList
+                                          .where(
+                                            (e) => salesData.any(
+                                              (f) => f.userName == e.name,
+                                            ),
+                                          )
+                                          .toList();
                                 } else if (state is SalesmanModified) {
-                                  salesmanData = state.newData;
+                                  salesmanData =
+                                      state.newData
+                                          .where(
+                                            (e) => salesData.any(
+                                              (f) => f.userName == e.name,
+                                            ),
+                                          )
+                                          .toList();
                                 }
                                 log('Salesman length: ${salesmanData.length}');
 
                                 // ~:Set a dynamic table height:~
                                 if (salesmanData.isEmpty) {
                                   return const SizedBox();
-                                } else if (salesmanData.length <= 6) {
-                                  tableHeight =
-                                      260 + (50 * (salesmanData.length - 3));
+                                }
+
+                                if (salesmanData.length <= 6) {
+                                  tableHeight +=
+                                      (50 * (salesmanData.length - 3));
                                 }
 
                                 return CustomDataGrid.report(
@@ -469,11 +458,11 @@ class _ReportScreenState extends State<ReportScreen> {
                                     onCellValueEdited:
                                         (rowIndex, columnName, newValue) =>
                                             editSalesmanValue(
-                                      context.read<SalesmanBloc>(),
-                                      rowIndex,
-                                      columnName,
-                                      newValue,
-                                    ),
+                                              context.read<SalesmanBloc>(),
+                                              rowIndex,
+                                              columnName,
+                                              newValue,
+                                            ),
                                   ),
                                   SalesmanType.values
                                       .map((e) => e.name.toString())
@@ -487,6 +476,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                       const AlwaysScrollableScrollPhysics(),
                                   columnWidthMode:
                                       ColumnWidthMode.fitByCellValue,
+                                  textStyle: TextThemes.normal,
                                 );
                               },
                             ),
@@ -510,10 +500,7 @@ class _ReportScreenState extends State<ReportScreen> {
                     } else if (state is ReportCreationWarning ||
                         state is ReportCreationError) {
                       log('Report creation warning / error: ${state.message}');
-                      CustomSnackbar.showSnackbar(
-                        context,
-                        state.message,
-                      );
+                      CustomSnackbar.showSnackbar(context, state.message);
                     }
                   },
                   builder: (context, state) {
@@ -521,43 +508,18 @@ class _ReportScreenState extends State<ReportScreen> {
                       context: context,
                       text: 'Buat',
                       func: () {
-                        // log('Dealer: ${locationController.text}');
-                        // log('Area: ${areaController.text.split(' ')[1]}');
-                        // log('PIC: ${personController.text}');
-                        // log('');
-                        //
-                        // log('STU Data length (screen): ${stuData.length}');
-                        // for (var data in stuData) {
-                        //   log('STU Data: ${data.type}, Result: ${data.result}, Target: ${data.target}, Ach: ${data.ach}, LM: ${data.lm}, Growth: ${data.growth}');
-                        // }
-                        // log('');
-                        //
-                        // for (var data in paymentData) {
-                        //   log('Payment Data: ${data.type}, Result: ${data.result}, Target: ${data.lm}, Growth: ${data.growth}%');
-                        // }
-                        // log('');
-                        //
-                        // for (var data in leasingData) {
-                        //   log('Leasing Data: ${data.type}, SPK: ${data.spk}, Opened: ${data.open}, Accepted: ${data.accept}, Rejected: ${data.reject}, Approval: ${data.approve}');
-                        // }
-                        // log('');
-                        //
-                        // for (var data in salesmanData) {
-                        //   log('Salesman Data: ${data.name}, Status: ${data.status}, SPK: ${data.spk}, STU: ${data.stu}, STU LM: ${data.stuLm}');
-                        // }
-
                         context.read<ReportBloc>().add(
-                              CreateReport(
-                                dealerName: locationController.text,
-                                areaName: areaController.text.split(' ')[0],
-                                personInCharge: personController.text,
-                                stuData: stuData,
-                                paymentData: paymentData,
-                                leasingData: leasingData,
-                                salesmanData: salesmanData,
-                                salesData: salesData,
-                              ),
-                            );
+                          CreateReport(
+                            dealerName: locationController.text,
+                            areaName: areaController.text.split(' ')[0],
+                            personInCharge: personController.text,
+                            stuData: stuData,
+                            paymentData: paymentData,
+                            leasingData: leasingData,
+                            salesmanData: salesmanData,
+                            salesData: salesData,
+                          ),
+                        );
                       },
                       bgColor: ConstantColors.primaryColor1,
                       textStyle: TextThemes.subtitle,

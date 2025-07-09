@@ -48,7 +48,7 @@ class TextThemes {
     color: Colors.black,
   );
 
-  static const TextStyle normal = TextStyle(
+  static TextStyle normal = const TextStyle(
     fontFamily: TextFontFamily.roboto,
     fontSize: 14,
     color: ConstantColors.primaryColor3,

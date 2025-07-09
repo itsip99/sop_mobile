@@ -385,7 +385,13 @@ void main() {
             () => mockStorageRepo.getUserCredentials(),
           ).thenAnswer((_) async => tUserCreds);
           when(
-            () => mockSalesRepo.addSalesman(any(), any(), any(), any(), any()),
+            () => mockSalesRepo.addOrModifySalesman(
+              any(),
+              any(),
+              any(),
+              any(),
+              any(),
+            ),
           ).thenAnswer((_) async => {'status': 'success'});
         },
         build: () => salesmanBloc,

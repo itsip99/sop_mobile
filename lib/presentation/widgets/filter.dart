@@ -27,9 +27,7 @@ class Filter {
     }
   }
 
-  static Future<void> onRefreshOrDateChanged(
-    BuildContext context,
-  ) async {
+  static Future<void> onRefreshOrDateChanged(BuildContext context) async {
     log('Refreshed or Date changed');
     final bloc = context.read<FilterBloc>();
     final cubit = context.read<DateCubit>();
@@ -59,23 +57,12 @@ class Filter {
                 crossAxisAlignment: WrapCrossAlignment.center,
                 runAlignment: WrapAlignment.center,
                 children: [
-                  // ~:Date:~
-                  BlocBuilder<DateCubit, String>(
-                    builder: (context, state) {
-                      final cubit = context.read<DateCubit>();
-
-                      return FilterButton.dateButton(
-                        () => DatePicker.single(context),
-                        cubit.getDate(),
-                      );
-                    },
-                  ),
-
                   // ~:Morning Briefing:~
                   BlocBuilder<FilterBloc, FilterState>(
                     builder: (context, state) {
-                      final isActive =
-                          state.activeFilter.contains(FilterType.briefing);
+                      final isActive = state.activeFilter.contains(
+                        FilterType.briefing,
+                      );
 
                       log('Active Filter: ${state.activeFilter}');
 
@@ -91,8 +78,9 @@ class Filter {
                   // ~:Daily Report:~
                   BlocBuilder<FilterBloc, FilterState>(
                     builder: (context, state) {
-                      final isActive =
-                          state.activeFilter.contains(FilterType.report);
+                      final isActive = state.activeFilter.contains(
+                        FilterType.report,
+                      );
 
                       log('Active Filter: ${state.activeFilter}');
 
@@ -119,6 +107,18 @@ class Filter {
                   //     );
                   //   },
                   // ),
+
+                  // ~:Date:~
+                  BlocBuilder<DateCubit, String>(
+                    builder: (context, state) {
+                      final cubit = context.read<DateCubit>();
+
+                      return FilterButton.dateButton(
+                        () => DatePicker.single(context),
+                        cubit.getDate(),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),

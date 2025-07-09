@@ -11,6 +11,7 @@ import 'package:sop_mobile/presentation/state/login/login_event.dart';
 import 'package:sop_mobile/presentation/state/login/login_state.dart';
 import 'package:sop_mobile/presentation/state/route/route_bloc.dart';
 import 'package:sop_mobile/presentation/state/route/route_event.dart';
+import 'package:sop_mobile/presentation/themes/styles.dart';
 import 'package:sop_mobile/presentation/widgets/loading.dart';
 import 'package:sop_mobile/routes.dart';
 
@@ -73,26 +74,38 @@ class _SplashScreenState extends State<SplashScreen> {
           height: MediaQuery.of(context).size.height,
           color: ConstantColors.primaryColor2,
           child: Column(
-            spacing: 20,
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(
-                'assets/images/logo.png',
-                scale: 0.8,
-                width: 150,
-                height: 150,
+              // ~:Logo:~
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/images/logo.png',
+                      scale: 0.8,
+                      width: 175,
+                      height: 175,
+                    ),
+                    Builder(
+                      builder: (context) {
+                        return Loading.platformIndicator(
+                          iosRadius: 13,
+                          iosCircleColor: ConstantColors.primaryColor3,
+                          androidWidth: 28,
+                          androidHeight: 28,
+                          androidStrokeWidth: 3.5,
+                          androidCircleColor: ConstantColors.primaryColor3,
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
-              Builder(
-                builder: (context) {
-                  return Loading.platformIndicator(
-                    iosRadius: 13,
-                    iosCircleColor: ConstantColors.primaryColor3,
-                    androidWidth: 28,
-                    androidHeight: 28,
-                    androidStrokeWidth: 3.5,
-                    androidCircleColor: ConstantColors.primaryColor3,
-                  );
-                },
+
+              // ~:Version:~
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Text('Ver. 1.0.0', style: TextThemes.normal),
               ),
             ],
           ),

@@ -275,14 +275,18 @@ class SalesmanBloc<BaseEvent, BaseState>
           // ~:Emit success state with user data:~
           emit(SalesmanStatusModified('Data successfully updated'));
         } else {
-          emit(SalesmanError(result['data'] as String));
+          emit(SalesmanStatusModifyError(result['data'] as String));
         }
       } else {
-        emit(SalesmanError('User credentials not found'));
+        emit(SalesmanStatusModifyError('User credentials not found'));
       }
     } catch (e) {
       log('Error: ${e.toString()}');
-      emit(SalesmanError('Failed to modify salesman status: ${e.toString()}'));
+      emit(
+        SalesmanStatusModifyError(
+          'Failed to modify salesman status: ${e.toString()}',
+        ),
+      );
     }
   }
 }

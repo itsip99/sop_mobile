@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -7,7 +6,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:sop_mobile/core/constant/colors.dart';
 import 'package:sop_mobile/core/helpers/formatter.dart';
-import 'package:sop_mobile/data/models/report.dart';
+import 'package:sop_mobile/data/models/sales.dart';
 import 'package:sop_mobile/data/models/sales_import.dart';
 import 'package:sop_mobile/presentation/state/cubit/sales_status.dart';
 import 'package:sop_mobile/presentation/state/import/import_bloc.dart';
@@ -361,7 +360,7 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                         ),
 
                         // ~:Page Description:~
-                        const Text(
+                        Text(
                           'Data diri salesman yang telah terdaftar di sistem.',
                           style: TextThemes.normal,
                         ),
@@ -374,69 +373,70 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                         builder: (context) {
                           if (args != null &&
                               args.containsKey('registeredSales') &&
-                              (args['registeredSales'] as List<SalesmanModel>)
+                              (args['registeredSales'] as List<SalesModel>)
                                   .isNotEmpty) {
-                            log(
-                              'Registered sales list: ${args['registeredSales']}',
-                            );
-
                             return SingleChildScrollView(
                               physics: const AlwaysScrollableScrollPhysics(),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 12,
-                                ),
-                                child: Column(
-                                  spacing: 8.0,
-                                  children:
-                                      (args['registeredSales'] as List<SalesmanModel>).map((
-                                        salesProfile,
-                                      ) {
-                                        return Card(
-                                          color: ConstantColors.primaryColor2,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              20,
-                                            ),
-                                          ),
-                                          elevation: 5,
-                                          shadowColor:
-                                              ConstantColors.shadowColor,
-                                          child: ListTile(
-                                            contentPadding:
-                                                const EdgeInsets.symmetric(
-                                                  vertical: 4,
-                                                  horizontal: 20,
-                                                ),
-                                            title: Text(
-                                              'ID ${Formatter.toTitleCase(salesProfile.idCardNumber)}',
-                                              style: TextThemes.normal.copyWith(
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            subtitle: Text(
-                                              '${Formatter.toTitleCase(salesProfile.name)} - ${Formatter.toTitleCase(salesProfile.tierLevel)}',
-                                              style: TextThemes.normal,
-                                            ),
-                                            // ~:Change to CheckBox for further use:~
-                                            // trailing: IconButton(
-                                            //   icon: const Icon(
-                                            //     Icons.delete_rounded,
-                                            //     color: ConstantColors.primaryColor3,
-                                            //   ),
-                                            //   onPressed: () {},
-                                            // ),
-                                          ),
-                                        );
-                                      }).toList(),
-                                ),
+                              child: CustomCard.salesmanProfile(
+                                salesmanBloc,
+                                args['registeredSales'] as List<SalesModel>,
+                                isPreview: true,
                               ),
+                              // child: Padding(
+                              //   padding: const EdgeInsets.symmetric(
+                              //     vertical: 12,
+                              //   ),
+                              //   child: Column(
+                              //     spacing: 8.0,
+                              //     children:
+                              //         (args['registeredSales']
+                              //                 as List<SalesmanModel>)
+                              //             .map((salesProfile) {
+                              //               return Card(
+                              //                 color:
+                              //                     ConstantColors.primaryColor2,
+                              //                 shape: RoundedRectangleBorder(
+                              //                   borderRadius:
+                              //                       BorderRadius.circular(20),
+                              //                 ),
+                              //                 elevation: 5,
+                              //                 shadowColor:
+                              //                     ConstantColors.shadowColor,
+                              //                 child: ListTile(
+                              //                   contentPadding:
+                              //                       const EdgeInsets.symmetric(
+                              //                         vertical: 4,
+                              //                         horizontal: 20,
+                              //                       ),
+                              //                   title: Text(
+                              //                     'ID ${Formatter.toTitleCase(salesProfile.idCardNumber)}',
+                              //                     style: TextThemes.normal
+                              //                         .copyWith(
+                              //                           fontWeight:
+                              //                               FontWeight.bold,
+                              //                         ),
+                              //                   ),
+                              //                   subtitle: Text(
+                              //                     '${Formatter.toTitleCase(salesProfile.name)} - ${Formatter.toTitleCase(salesProfile.tierLevel)}',
+                              //                     style: TextThemes.normal,
+                              //                   ),
+                              //                 ),
+                              //               );
+                              //             })
+                              //             .toList(),
+                              //   ),
+                              // ),
                             );
                           }
 
                           return Refresh.iOSnAndroid(
                             onRefresh: () => salesmanBloc.add(FetchSalesman()),
                             child: BlocBuilder<SalesmanBloc, SalesmanState>(
+                              buildWhen:
+                                  (previous, current) =>
+                                      current is SalesmanLoading ||
+                                      current is SalesmanFetched ||
+                                      current is SalesmanError,
                               builder: (context, state) {
                                 if (state is SalesmanLoading) {
                                   return SizedBox(
@@ -466,12 +466,12 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                                       textAlign: TextAlign.center,
                                     ),
                                   );
+                                } else {
+                                  return CustomCard.salesmanProfile(
+                                    salesmanBloc,
+                                    state.fetchSalesList,
+                                  );
                                 }
-
-                                return CustomCard.salesmanProfile(
-                                  salesmanBloc,
-                                  state.fetchSalesList,
-                                );
                               },
                             ),
                           );
@@ -487,7 +487,7 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                         builder: (context) {
                           if (args != null &&
                               args.containsKey('registeredSales') &&
-                              (args['registeredSales'] as List<SalesmanModel>)
+                              (args['registeredSales'] as List<SalesModel>)
                                   .isNotEmpty) {
                             return const SizedBox();
                           }
@@ -497,17 +497,17 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               // ~:Delete Button:~
-                              CustomButton.primaryButton2(
-                                context: context,
-                                width: 40,
-                                height: 40,
-                                enableIcon: true,
-                                icon: Icons.delete_rounded,
-                                func: () {},
-                                bgColor: ConstantColors.primaryColor2,
-                                textStyle: TextThemes.normal,
-                                shadowColor: ConstantColors.primaryColor1,
-                              ),
+                              // CustomButton.primaryButton2(
+                              //   context: context,
+                              //   width: 40,
+                              //   height: 40,
+                              //   enableIcon: true,
+                              //   icon: Icons.delete_rounded,
+                              //   func: () {},
+                              //   bgColor: ConstantColors.primaryColor2,
+                              //   textStyle: TextThemes.normal,
+                              //   shadowColor: ConstantColors.primaryColor1,
+                              // ),
 
                               // ~:Import File Button:~
                               BlocConsumer<ImportBloc, ImportState>(

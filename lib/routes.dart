@@ -6,6 +6,7 @@ import 'package:sop_mobile/presentation/screens/location_screen.dart';
 import 'package:sop_mobile/presentation/screens/login_screen.dart';
 import 'package:sop_mobile/presentation/screens/report_screen.dart';
 import 'package:sop_mobile/presentation/screens/salesman_screen.dart';
+import 'package:sop_mobile/presentation/screens/about_screen.dart';
 import 'package:sop_mobile/presentation/screens/signup_screen.dart';
 import 'package:sop_mobile/presentation/screens/splash_screen.dart';
 import 'package:sop_mobile/presentation/screens/welcome_screen.dart';
@@ -18,10 +19,10 @@ class ConstantRoutes {
   static const String location = '/location';
   static const String home = '/home';
   static const String settings = '/settings';
+  static const String about = '/about';
   static const String brief = '/brief';
   static const String report = '/report';
   static const String sales = '/sales';
-  static const String about = '/about';
 
   static Map<String, Widget Function(BuildContext)> maps = {
     ConstantRoutes.init: (context) => const SplashScreen(),
@@ -31,6 +32,7 @@ class ConstantRoutes {
     ConstantRoutes.location: (context) => const LocationScreen(),
     ConstantRoutes.home: (context) => const HomeScreen(),
     ConstantRoutes.settings: (context) => const SettingsScreen(),
+    ConstantRoutes.about: (context) => const AboutScreen(),
     ConstantRoutes.brief: (context) => const BriefingScreen(),
     ConstantRoutes.report: (context) => const ReportScreen(),
     ConstantRoutes.sales: (context) => const SalesmanScreen(),

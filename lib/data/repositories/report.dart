@@ -33,7 +33,7 @@ class ReportRepoImp extends ReportRepo {
         "CName": dealerName,
         "Area": areaName,
         "PIC": personInChange,
-      }
+      },
     };
     log('Map Body: $body');
 
@@ -52,29 +52,17 @@ class ReportRepoImp extends ReportRepo {
         log('Success');
         if (res['Data'][0]['ResultMessage'] != null &&
             res['Data'][0]['ResultMessage'] == 'SUKSES') {
-          return {
-            'status': 'success',
-            'data': 'Laporan berhasil dibuat.',
-          };
+          return {'status': 'success', 'data': 'Laporan berhasil dibuat.'};
         } else {
-          return {
-            'status': 'warn',
-            'data': res['Data'][0]['ResultMessage'],
-          };
+          return {'status': 'warn', 'data': res['Data'][0]['ResultMessage']};
         }
       } else {
         log('Fail');
-        return {
-          'status': 'fail',
-          'data': 'Laporan gagal dibuat.',
-        };
+        return {'status': 'fail', 'data': 'Laporan gagal dibuat.'};
       }
     } else {
       log('Response: ${response.statusCode}');
-      return {
-        'status': 'error',
-        'data': 'Status Code ${response.statusCode}',
-      };
+      return {'status': 'error', 'data': 'Status Code ${response.statusCode}'};
     }
   }
 
@@ -102,7 +90,7 @@ class ReportRepoImp extends ReportRepo {
         "TargetSTU": stuData.target,
         "LMSTU": stuData.lm,
         "Line": index,
-      }
+      },
     };
     log('Map Body: $body');
 
@@ -124,30 +112,18 @@ class ReportRepoImp extends ReportRepo {
         if (res['Data'][0]['ResultMessage'] != null &&
             res['Data'][0]['ResultMessage'] == 'SUKSES') {
           log('Success');
-          return {
-            'status': 'success',
-            'data': 'Laporan STU berhasil dibuat.',
-          };
+          return {'status': 'success', 'data': 'Laporan STU berhasil dibuat.'};
         } else {
           log('Warn');
-          return {
-            'status': 'warn',
-            'data': res['Data'][0]['ResultMessage'],
-          };
+          return {'status': 'warn', 'data': res['Data'][0]['ResultMessage']};
         }
       } else {
         log('Fail');
-        return {
-          'status': 'fail',
-          'data': 'Laporan STU gagal dibuat.',
-        };
+        return {'status': 'fail', 'data': 'Laporan STU gagal dibuat.'};
       }
     } else {
       log('Response: ${response.statusCode}');
-      return {
-        'status': 'error',
-        'data': 'Status Code ${response.statusCode}',
-      };
+      return {'status': 'error', 'data': 'Status Code ${response.statusCode}'};
     }
   }
 
@@ -174,7 +150,7 @@ class ReportRepoImp extends ReportRepo {
         "ResultPayment": paymentData.result,
         "LMPayment": paymentData.lm,
         "Line": index,
-      }
+      },
     };
     log('Map Body: $body');
 
@@ -198,24 +174,15 @@ class ReportRepoImp extends ReportRepo {
             'data': 'Laporan Payment berhasil dibuat.',
           };
         } else {
-          return {
-            'status': 'warn',
-            'data': res['Data'][0]['ResultMessage'],
-          };
+          return {'status': 'warn', 'data': res['Data'][0]['ResultMessage']};
         }
       } else {
         log('Fail');
-        return {
-          'status': 'fail',
-          'data': 'Laporan Payment gagal dibuat.',
-        };
+        return {'status': 'fail', 'data': 'Laporan Payment gagal dibuat.'};
       }
     } else {
       log('Response: ${response.statusCode}');
-      return {
-        'status': 'error',
-        'data': 'Status Code ${response.statusCode}',
-      };
+      return {'status': 'error', 'data': 'Status Code ${response.statusCode}'};
     }
   }
 
@@ -244,7 +211,7 @@ class ReportRepoImp extends ReportRepo {
         "ApprovedSPK": leasingData.accept,
         "RejectedSPK": leasingData.reject,
         "Line": index,
-      }
+      },
     };
     log('Map Body: $body');
 
@@ -268,24 +235,15 @@ class ReportRepoImp extends ReportRepo {
             'data': 'Laporan Leasing berhasil dibuat.',
           };
         } else {
-          return {
-            'status': 'warn',
-            'data': res['Data'][0]['ResultMessage'],
-          };
+          return {'status': 'warn', 'data': res['Data'][0]['ResultMessage']};
         }
       } else {
         log('Fail');
-        return {
-          'status': 'fail',
-          'data': 'Laporan Leasing gagal dibuat.',
-        };
+        return {'status': 'fail', 'data': 'Laporan Leasing gagal dibuat.'};
       }
     } else {
       log('Response: ${response.statusCode}');
-      return {
-        'status': 'error',
-        'data': 'Status Code ${response.statusCode}',
-      };
+      return {'status': 'error', 'data': 'Status Code ${response.statusCode}'};
     }
   }
 
@@ -310,12 +268,12 @@ class ReportRepoImp extends ReportRepo {
         'CustomerID': username,
         'TransDate': date,
         'KTPSales': userId,
-        'StatusSM': salesmanData.status,
+        'StatusSM': salesmanData.position,
         'SPK': salesmanData.spk,
         'STU': salesmanData.stu,
         'STULM': salesmanData.stuLm,
         "Line": index,
-      }
+      },
     };
     log('Map Body: $body');
 
@@ -339,24 +297,15 @@ class ReportRepoImp extends ReportRepo {
             'data': 'Laporan Salesman berhasil dibuat.',
           };
         } else {
-          return {
-            'status': 'warn',
-            'data': res['Data'][0]['ResultMessage'],
-          };
+          return {'status': 'warn', 'data': res['Data'][0]['ResultMessage']};
         }
       } else {
         log('Fail');
-        return {
-          'status': 'fail',
-          'data': 'Laporan Salesman gagal dibuat.',
-        };
+        return {'status': 'fail', 'data': 'Laporan Salesman gagal dibuat.'};
       }
     } else {
       log('Response: ${response.statusCode}');
-      return {
-        'status': 'error',
-        'data': 'Status Code ${response.statusCode}',
-      };
+      return {'status': 'error', 'data': 'Status Code ${response.statusCode}'};
     }
   }
 }

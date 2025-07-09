@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sop_mobile/presentation/themes/styles.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class CustomDataGrid {
@@ -19,7 +18,7 @@ class CustomDataGrid {
         const NeverScrollableScrollPhysics(),
     final double rowHeaderWidth = 60,
     final double rowBodyWidth = 60,
-    final TextStyle textStyle = TextThemes.normal,
+    final TextStyle? textStyle,
     final Alignment textAlignment = Alignment.center,
     final VoidCallback? addFunction,
     final Key? key,
@@ -58,11 +57,9 @@ class CustomDataGrid {
                       firstValue == 'sales'
                           ? '${(firstValue[0].toUpperCase() + firstValue.substring(1))}man List'
                           : firstValue != 'stu'
-                              ? '${(firstValue[0].toUpperCase() + firstValue.substring(1))} Report'
-                              : '${firstValue.toUpperCase()} Report',
-                      style: textStyle.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                          ? '${(firstValue[0].toUpperCase() + firstValue.substring(1))} Report'
+                          : '${firstValue.toUpperCase()} Report',
+                      style: textStyle?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -70,44 +67,41 @@ class CustomDataGrid {
             ],
           ),
         ],
-        columns: loadedData.asMap().entries.map((name) {
-          final int index = name.key;
-          final String data = name.value;
+        columns:
+            loadedData.asMap().entries.map((name) {
+              final int index = name.key;
+              final String data = name.value;
 
-          if (index == 0) {
-            return GridColumn(
-              columnName: data,
-              width: rowHeaderWidth,
-              label: Container(
-                alignment: textAlignment,
-                child: Text(
-                  data != 'stu'
-                      ? data[0].toUpperCase() + data.substring(1)
-                      : data.toUpperCase(),
-                  style: textStyle.copyWith(
-                    fontWeight: FontWeight.bold,
+              if (index == 0) {
+                return GridColumn(
+                  columnName: data,
+                  width: rowHeaderWidth,
+                  label: Container(
+                    alignment: textAlignment,
+                    child: Text(
+                      data != 'stu'
+                          ? data[0].toUpperCase() + data.substring(1)
+                          : data.toUpperCase(),
+                      style: textStyle?.copyWith(fontWeight: FontWeight.bold),
+                    ),
                   ),
-                ),
-              ),
-            );
-          } else {
-            return GridColumn(
-              columnName: data,
-              width: rowHeaderWidth,
-              label: Container(
-                alignment: textAlignment,
-                child: Text(
-                  data == 'stu' || data == 'lm' || data == 'spk'
-                      ? data.toUpperCase()
-                      : data[0].toUpperCase() + data.substring(1),
-                  style: textStyle.copyWith(
-                    fontWeight: FontWeight.bold,
+                );
+              } else {
+                return GridColumn(
+                  columnName: data,
+                  width: rowHeaderWidth,
+                  label: Container(
+                    alignment: textAlignment,
+                    child: Text(
+                      data == 'stu' || data == 'lm' || data == 'spk'
+                          ? data.toUpperCase()
+                          : data[0].toUpperCase() + data.substring(1),
+                      style: textStyle?.copyWith(fontWeight: FontWeight.bold),
+                    ),
                   ),
-                ),
-              ),
-            );
-          }
-        }).toList(),
+                );
+              }
+            }).toList(),
       ),
     );
   }
