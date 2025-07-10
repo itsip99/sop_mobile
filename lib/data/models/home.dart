@@ -10,6 +10,6 @@ class HomeModel {
   HomeModel({
     required this.briefingData,
     required this.reportData,
-    required this.salesData,
+    this.salesData = const [],
   });
 }

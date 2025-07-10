@@ -23,6 +23,7 @@ import 'package:sop_mobile/presentation/widgets/counter.dart';
 import 'package:sop_mobile/presentation/widgets/filter.dart';
 import 'package:sop_mobile/presentation/widgets/loading.dart';
 import 'package:sop_mobile/presentation/widgets/snackbar.dart';
+import 'package:sop_mobile/presentation/widgets/text.dart';
 import 'package:sop_mobile/presentation/widgets/textformfield.dart';
 import 'package:dotted_border/dotted_border.dart';
 
@@ -99,17 +100,16 @@ class _BriefingScreenState extends State<BriefingScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             // ~:Page Title:~
-                            Text(
-                              'Informasi Briefing',
-                              style: TextThemes.subtitle.copyWith(
+                            CustomText.subtitle(
+                              text: 'Informasi Briefing',
+                              themes: TextThemes.subtitle.copyWith(
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
 
                             // ~:Page Description:~
-                            Text(
-                              'Masukkan data untuk membuat laporan pagi.',
-                              style: TextThemes.normal,
+                            CustomText.normal(
+                              text: 'Masukkan data untuk membuat laporan pagi.',
                             ),
                           ],
                         ),
@@ -139,9 +139,6 @@ class _BriefingScreenState extends State<BriefingScreen> {
                           runSpacing: 10,
                           crossAxisAlignment: WrapCrossAlignment.center,
                           children: [
-                            // ~:Total Person:~
-                            Counter.person(context, 'total', 'Jumlah Peserta'),
-
                             // ~:Number of Shop Manager:~
                             Counter.person(
                               context,
@@ -161,6 +158,13 @@ class _BriefingScreenState extends State<BriefingScreen> {
 
                             // ~:Number of Others:~
                             Counter.person(context, 'others', 'Other'),
+
+                            // ~:Total Person:~
+                            Counter.automaticPerson(
+                              context,
+                              'total',
+                              'Jumlah Peserta',
+                            ),
                           ],
                         ),
 

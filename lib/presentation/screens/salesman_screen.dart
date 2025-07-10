@@ -2,17 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:sop_mobile/core/constant/colors.dart';
 import 'package:sop_mobile/core/helpers/formatter.dart';
 import 'package:sop_mobile/data/models/sales.dart';
 import 'package:sop_mobile/data/models/sales_import.dart';
 import 'package:sop_mobile/presentation/state/cubit/sales_status.dart';
-import 'package:sop_mobile/presentation/state/import/import_bloc.dart';
-import 'package:sop_mobile/presentation/state/import/import_event.dart';
-import 'package:sop_mobile/presentation/state/import/import_state.dart';
-import 'package:sop_mobile/presentation/state/permission/storage_cubit.dart';
 import 'package:sop_mobile/presentation/state/salesman/salesman_bloc.dart';
 import 'package:sop_mobile/presentation/state/salesman/salesman_event.dart';
 import 'package:sop_mobile/presentation/state/salesman/salesman_state.dart';
@@ -20,7 +15,6 @@ import 'package:sop_mobile/presentation/state/cubit/sales_position.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
 import 'package:sop_mobile/presentation/widgets/buttons.dart';
 import 'package:sop_mobile/presentation/widgets/card.dart';
-import 'package:sop_mobile/presentation/widgets/dialog.dart';
 import 'package:sop_mobile/presentation/widgets/dropdown.dart';
 import 'package:sop_mobile/presentation/widgets/functions.dart';
 import 'package:sop_mobile/presentation/widgets/loading.dart';
@@ -41,25 +35,26 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
   final TextEditingController idController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
 
-  Future<void> _onImportButtonPressed(BuildContext context) async {
-    final storageCubit = context.read<StorageCubit>();
-    final importBloc = context.read<ImportBloc>();
-
-    // This implementation assumes `askStoragePermission` can be modified
-    // to be an `async` method that returns the `PermissionStatus`.
-    final permissionStatus = await storageCubit.askStoragePermission();
-
-    if (!context.mounted) return;
-
-    if (permissionStatus.isGranted) {
-      importBloc.add(ImportExcelEvent());
-    } else {
-      CustomSnackbar.showSnackbar(
-        context,
-        'Storage permission is required to import files',
-      );
-    }
-  }
+  // ~:Import salesman data via Xls file (not implemented yet):~
+  // Future<void> _onImportButtonPressed(BuildContext context) async {
+  //   final storageCubit = context.read<StorageCubit>();
+  //   final importBloc = context.read<ImportBloc>();
+  //
+  //   // This implementation assumes `askStoragePermission` can be modified
+  //   // to be an `async` method that returns the `PermissionStatus`.
+  //   final permissionStatus = await storageCubit.askStoragePermission();
+  //
+  //   if (!context.mounted) return;
+  //
+  //   if (permissionStatus.isGranted) {
+  //     importBloc.add(ImportExcelEvent());
+  //   } else {
+  //     CustomSnackbar.showSnackbar(
+  //       context,
+  //       'Storage permission is required to import files',
+  //     );
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -508,50 +503,50 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                               //   textStyle: TextThemes.normal,
                               //   shadowColor: ConstantColors.primaryColor1,
                               // ),
-
-                              // ~:Import File Button:~
-                              BlocConsumer<ImportBloc, ImportState>(
-                                listener: (context, state) {
-                                  if (state is ImportExcelSucceed) {
-                                    CustomFunctions.displayDialog(
-                                      context,
-                                      CustomDialog.alertSalesImport(
-                                        context,
-                                        state.salesmanList,
-                                        () {
-                                          CustomFunctions.addSalesman(
-                                            salesmanBloc,
-                                            panelController,
-                                            state.salesmanList,
-                                          );
-
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                    );
-                                  } else if (state is ImportExcelFailed) {
-                                    CustomSnackbar.showSnackbar(
-                                      context,
-                                      state.message,
-                                    );
-                                  }
-                                },
-                                builder: (context, state) {
-                                  return CustomButton.primaryButton2(
-                                    context: context,
-                                    width: 40,
-                                    height: 40,
-                                    enableIcon: true,
-                                    icon: Icons.upload_rounded,
-                                    func: () => _onImportButtonPressed(context),
-                                    bgColor: ConstantColors.primaryColor2,
-                                    textStyle: TextThemes.normal,
-                                    shadowColor: ConstantColors.primaryColor1,
-                                    isLoading: state is ImportLoading,
-                                  );
-                                },
-                              ),
-
+                              //
+                              // ~:Import File Button (not used for now):~
+                              // BlocConsumer<ImportBloc, ImportState>(
+                              //   listener: (context, state) {
+                              //     if (state is ImportExcelSucceed) {
+                              //       CustomFunctions.displayDialog(
+                              //         context,
+                              //         CustomDialog.alertSalesImport(
+                              //           context,
+                              //           state.salesmanList,
+                              //           () {
+                              //             CustomFunctions.addSalesman(
+                              //               salesmanBloc,
+                              //               panelController,
+                              //               state.salesmanList,
+                              //             );
+                              //
+                              //             Navigator.pop(context);
+                              //           },
+                              //         ),
+                              //       );
+                              //     } else if (state is ImportExcelFailed) {
+                              //       CustomSnackbar.showSnackbar(
+                              //         context,
+                              //         state.message,
+                              //       );
+                              //     }
+                              //   },
+                              //   builder: (context, state) {
+                              //     return CustomButton.primaryButton2(
+                              //       context: context,
+                              //       width: 40,
+                              //       height: 40,
+                              //       enableIcon: true,
+                              //       icon: Icons.upload_rounded,
+                              //       func: () => _onImportButtonPressed(context),
+                              //       bgColor: ConstantColors.primaryColor2,
+                              //       textStyle: TextThemes.normal,
+                              //       shadowColor: ConstantColors.primaryColor1,
+                              //       isLoading: state is ImportLoading,
+                              //     );
+                              //   },
+                              // ),
+                              //
                               // ~:Edit Button:~
                               // CustomButton.primaryButton2(
                               //   context: context,

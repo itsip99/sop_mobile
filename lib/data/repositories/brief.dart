@@ -44,7 +44,7 @@ class BriefRepoImp extends BriefRepo {
         "Topic": desc,
         "Pic1": img,
         "PicThumb": img,
-      }
+      },
     };
     // log('Map Body: $body');
 
@@ -61,22 +61,20 @@ class BriefRepoImp extends BriefRepo {
       log("${res['Msg']}, ${res['Code']}");
       if (res['Msg'] == 'Sukses' && res['Code'] == '100') {
         log('Success');
-        return {
-          'status': 'success',
-          'data': res['Data'][0]['ResultMessage'],
-        };
+        return {'status': 'success', 'data': res['Data'][0]['ResultMessage']};
       } else {
         log('Fail');
-        return {
-          'status': 'fail',
-          'data': res['Data'][0]['ResultMessage'],
-        };
+        if (res['Data'][0]['ResultMessage'].contains('duplicate key')) {
+          return {'status': 'fail', 'data': 'Laporan pagi sudah dibuat'};
+        }
+
+        return {'status': 'fail', 'data': res['Data'][0]['ResultMessage']};
       }
     } else {
       log('Response: ${response.statusCode}');
       return {
         'status': 'fail',
-        'data': response.statusCode,
+        'data': '${response.statusCode} terjadi kesalahan',
       };
     }
   }

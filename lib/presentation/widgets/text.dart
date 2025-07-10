@@ -3,6 +3,10 @@ import 'package:sop_mobile/presentation/themes/styles.dart';
 import 'package:sop_mobile/core/constant/colors.dart';
 
 class CustomText {
+  static Widget normal({required String text, TextStyle? themes}) {
+    return Text(text, style: themes ?? TextThemes.normal);
+  }
+
   static Widget title({required String text}) {
     return Text(text, style: TextThemes.title1);
   }

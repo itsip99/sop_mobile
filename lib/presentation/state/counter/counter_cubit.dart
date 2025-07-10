@@ -12,7 +12,12 @@ class CounterCubit extends Cubit<Map<String, int>> {
   void increment(String type) => emit({...state, type: (state[type] ?? 1) + 1});
 
   // ~:Decrease Counter:~
-  void decrement(String type) => emit({...state, type: (state[type] ?? 1) - 1});
+  void decrement(String type) {
+    final currentValue = state[type] ?? 1;
+    if (currentValue > 0) {
+      emit({...state, type: currentValue - 1});
+    }
+  }
 
   // ~:Reset Counter:~
   void reset() => emit({});

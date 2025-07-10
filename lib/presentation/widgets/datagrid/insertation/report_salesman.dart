@@ -34,6 +34,8 @@ class SalesmanData {
 class SalesmanInsertDataSource extends DataGridSource {
   final Function(int rowIndex, String columnName, int newValue)?
   onCellValueEdited;
+  final Map<String, TextEditingController> _controllers = {};
+  final Map<String, FocusNode> _focusNodes = {};
 
   SalesmanInsertDataSource(List<SalesmanData> data, {this.onCellValueEdited}) {
     _salesmanData = data;
@@ -43,6 +45,22 @@ class SalesmanInsertDataSource extends DataGridSource {
 
   List<SalesmanData> _salesmanData = [];
   List<DataGridRow> dataGridRows = [];
+
+  @override
+  void dispose() {
+    // Clean up all controllers and focus nodes
+    for (var controller in _controllers.values) {
+      controller.dispose();
+    }
+    for (var focusNode in _focusNodes.values) {
+      focusNode.dispose();
+    }
+    super.dispose();
+  }
+
+  String _getControllerKey(int rowIndex, int cellIndex) {
+    return '${rowIndex}_$cellIndex';
+  }
 
   @override
   List<DataGridRow> get rows {
@@ -93,21 +111,56 @@ class SalesmanInsertDataSource extends DataGridSource {
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
     log('Row length: ${row.getCells().length}');
+    final int rowIndex = dataGridRows.indexOf(row);
+    if (rowIndex == -1) return const DataGridRowAdapter(cells: []);
+
     return DataGridRowAdapter(
       cells:
           row.getCells().asMap().entries.map<Widget>((entry) {
-            // final int cellIndex = entry.key;
+            final int cellIndex = entry.key;
             final DataGridCell<dynamic> dataGridCell = entry.value;
             final String columnName = dataGridCell.columnName;
-            // dynamic data = entry.value.value;
-            log('Column: $columnName, Value: ${dataGridCell.value.toString()}');
 
-            if (dataGridCell.value is int) {
+            // Check if the cell is editable (SPK, STU, or STU LM columns)
+            bool isEditable =
+                columnName == 'SPK' ||
+                columnName == 'STU' ||
+                columnName == 'STU LM';
+
+            if (isEditable) {
+              // Create or get controller and focus node for this cell
+              final controllerKey = _getControllerKey(rowIndex, cellIndex);
+              final controller =
+                  _controllers[controllerKey] ??
+                  TextEditingController(text: dataGridCell.value.toString());
+              final focusNode = _focusNodes[controllerKey] ?? FocusNode();
+
+              // Store them if they're new
+              if (!_controllers.containsKey(controllerKey)) {
+                _controllers[controllerKey] = controller;
+                _focusNodes[controllerKey] = focusNode;
+
+                // Set up focus listener to select all text when focused
+                focusNode.addListener(() {
+                  if (focusNode.hasFocus) {
+                    controller.selection = TextSelection(
+                      baseOffset: 0,
+                      extentOffset: controller.text.length,
+                    );
+                  }
+                });
+              } else {
+                // Update controller value if it already exists
+                controller.text = dataGridCell.value.toString();
+              }
+
+              // Editable cell with TextFormField
               return Container(
                 alignment: Alignment.center,
                 padding: const EdgeInsets.symmetric(horizontal: 4.0),
                 child: TextFormField(
-                  initialValue: dataGridCell.value.toString(),
+                  controller: controller,
+                  focusNode: focusNode,
                   textAlign: TextAlign.center,
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -118,33 +171,34 @@ class SalesmanInsertDataSource extends DataGridSource {
                   ),
                   onChanged: (String newValue) {
                     int? parsedValue = int.tryParse(newValue);
-                    // You can add logic here to update the underlying data model if needed
-                    final rowIndex = dataGridRows.indexOf(row);
-                    // log('Row index: $rowIndex, Column: $columnName, New Value: $parsedValue');
-                    if (newValue.isEmpty) parsedValue = 0;
+                    if (rowIndex != -1) {
+                      switch (columnName) {
+                        case 'SPK':
+                          _salesmanData[rowIndex].spk = parsedValue ?? 0;
+                          break;
+                        case 'STU':
+                          _salesmanData[rowIndex].stu = parsedValue ?? 0;
+                          break;
+                        case 'STU LM':
+                          _salesmanData[rowIndex].stuLm = parsedValue ?? 0;
+                          break;
+                      }
 
-                    if (parsedValue != null && onCellValueEdited != null) {
-                      onCellValueEdited!(rowIndex, columnName, parsedValue);
+                      if (parsedValue != null && onCellValueEdited != null) {
+                        onCellValueEdited!(rowIndex, columnName, parsedValue);
+                      }
                     }
                   },
                 ),
               );
             } else {
-              String temp = dataGridCell.value.toString().toLowerCase();
-              String displayText = temp
-                  .split(' ')
-                  .map((word) {
-                    // if (word.isEmpty) return ' ';
-                    return word[0].toUpperCase() + word.substring(1);
-                  })
-                  .join(' ');
-
-              return Align(
+              // Non-editable cell
+              return Container(
                 alignment: Alignment.center,
+                padding: const EdgeInsets.symmetric(horizontal: 4.0),
                 child: Text(
-                  displayText,
+                  dataGridCell.value.toString(),
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 14),
                 ),
               );
             }

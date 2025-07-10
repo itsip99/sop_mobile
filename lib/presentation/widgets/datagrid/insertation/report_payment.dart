@@ -16,12 +16,7 @@ class PaymentData extends Equatable {
   final String growth;
 
   // Add a copyWith method for easier immutable updates
-  PaymentData copyWith({
-    String? type,
-    int? result,
-    int? lm,
-    String? growth,
-  }) {
+  PaymentData copyWith({String? type, int? result, int? lm, String? growth}) {
     return PaymentData(
       type ?? this.type,
       result ?? this.result,
@@ -37,13 +32,11 @@ class PaymentData extends Equatable {
 // DataGridSource implementation for the STU table
 class PaymentInsertDataSource extends DataGridSource {
   final Function(int rowIndex, String columnName, int newValue)?
-      onCellValueEdited;
+  onCellValueEdited;
+  final Map<String, TextEditingController> _controllers = {};
+  final Map<String, FocusNode> _focusNodes = {};
 
   PaymentInsertDataSource(List<PaymentData> data, {this.onCellValueEdited}) {
-    // _paymentData = [
-    //   PaymentData('Cash', 0, 0, 0),
-    //   PaymentData('Credit', 0, 0, 0),
-    // ];
     _paymentData = data;
     buildDataGridRows();
     notifyListeners();
@@ -52,15 +45,34 @@ class PaymentInsertDataSource extends DataGridSource {
   late List<PaymentData> _paymentData;
   late List<DataGridRow> _dataGridRows;
 
+  @override
+  void dispose() {
+    // Clean up all controllers and focus nodes
+    for (var controller in _controllers.values) {
+      controller.dispose();
+    }
+    for (var focusNode in _focusNodes.values) {
+      focusNode.dispose();
+    }
+    super.dispose();
+  }
+
+  String _getControllerKey(int rowIndex, int cellIndex) {
+    return '${rowIndex}_$cellIndex';
+  }
+
   void buildDataGridRows() {
-    _dataGridRows = _paymentData.map<DataGridRow>((data) {
-      return DataGridRow(cells: [
-        DataGridCell<String>(columnName: 'STU', value: data.type),
-        DataGridCell<int>(columnName: 'Result', value: data.result),
-        DataGridCell<int>(columnName: 'LM', value: data.lm),
-        DataGridCell<String>(columnName: 'Growth', value: data.growth),
-      ]);
-    }).toList();
+    _dataGridRows =
+        _paymentData.map<DataGridRow>((data) {
+          return DataGridRow(
+            cells: [
+              DataGridCell<String>(columnName: 'STU', value: data.type),
+              DataGridCell<int>(columnName: 'Result', value: data.result),
+              DataGridCell<int>(columnName: 'LM', value: data.lm),
+              DataGridCell<String>(columnName: 'Growth', value: data.growth),
+            ],
+          );
+        }).toList();
   }
 
   @override
@@ -69,80 +81,110 @@ class PaymentInsertDataSource extends DataGridSource {
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
     final int rowIndex = _dataGridRows.indexOf(row);
+    if (rowIndex == -1) return const DataGridRowAdapter(cells: []);
+
     PaymentData paymentEntry = _paymentData[rowIndex];
 
     return DataGridRowAdapter(
-      cells: row.getCells().asMap().entries.map<Widget>((entry) {
-        // log('Cell key: ${cell.key}');
-        // log('Cell value: ${cell.value.value}');
-        final int cellIndex = entry.key;
-        final DataGridCell<dynamic> dataGridCell = entry.value;
-        final String columnName = dataGridCell.columnName;
+      cells:
+          row.getCells().asMap().entries.map<Widget>((entry) {
+            final int cellIndex = entry.key;
+            final DataGridCell<dynamic> dataGridCell = entry.value;
+            final String columnName = dataGridCell.columnName;
 
-        bool isEditable = columnName == 'Result' || columnName == 'LM';
+            bool isEditable = columnName == 'Result' || columnName == 'LM';
 
-        if (isEditable) {
-          return Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: TextFormField(
-              initialValue: dataGridCell.value.toString(),
-              textAlign: TextAlign.center,
-              keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                isDense: true,
-                contentPadding: EdgeInsets.symmetric(vertical: 8),
-              ),
-              onChanged: (String newValue) {
-                int? parsedValue = int.tryParse(newValue);
-                // You can add logic here to update the underlying data model if needed
-                final rowIndex = _dataGridRows.indexOf(row);
-                if (rowIndex != -1) {
-                  PaymentData oldData = _paymentData[rowIndex];
-                  PaymentData newData;
-                  switch (cellIndex) {
-                    case 1:
-                      newData = oldData.copyWith(result: parsedValue ?? 0);
-                      break;
-                    case 2:
-                      newData = oldData.copyWith(lm: parsedValue ?? 0);
-                      break;
-                    default:
-                      newData = oldData; // Should not happen for editable cells
-                      break;
+            if (isEditable) {
+              // Create or get controller and focus node for this cell
+              final controllerKey = _getControllerKey(rowIndex, cellIndex);
+              final controller =
+                  _controllers[controllerKey] ??
+                  TextEditingController(text: dataGridCell.value.toString());
+              final focusNode = _focusNodes[controllerKey] ?? FocusNode();
+
+              // Store them if they're new
+              if (!_controllers.containsKey(controllerKey)) {
+                _controllers[controllerKey] = controller;
+                _focusNodes[controllerKey] = focusNode;
+
+                // Set up focus listener to select all text when focused
+                focusNode.addListener(() {
+                  if (focusNode.hasFocus) {
+                    controller.selection = TextSelection(
+                      baseOffset: 0,
+                      extentOffset: controller.text.length,
+                    );
                   }
-                  _paymentData[rowIndex] = newData;
-                }
+                });
+              } else {
+                // Update controller value if it already exists
+                controller.text = dataGridCell.value.toString();
+              }
 
-                if (parsedValue != null && onCellValueEdited != null) {
-                  onCellValueEdited!(rowIndex, columnName, parsedValue);
-                }
-              },
-            ),
-          );
-        } else if (columnName == 'Growth') {
-          // Format the approvalRate (double 0.0-1.0) as a percentage string
-          String growthText = paymentEntry.growth;
-          return Center(
-            child: Text(
-              '$growthText%',
-              textAlign: TextAlign.center,
-              style: TextThemes.normal, // (using existing style)
-            ),
-          );
-        } else {
-          // 'Leasing' column (Type)
-          return Center(
-            child: Text(
-              dataGridCell.value.toString(),
-              textAlign: TextAlign.center,
-              style: TextThemes.normal.copyWith(fontWeight: FontWeight.bold), //
-            ),
-          );
-        }
-      }).toList(),
+              return Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                child: TextFormField(
+                  controller: controller,
+                  focusNode: focusNode,
+                  textAlign: TextAlign.center,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    isDense: true,
+                    contentPadding: EdgeInsets.symmetric(vertical: 8),
+                  ),
+                  onChanged: (String newValue) {
+                    int? parsedValue = int.tryParse(newValue);
+                    final rowIndex = _dataGridRows.indexOf(row);
+                    if (rowIndex != -1) {
+                      PaymentData oldData = _paymentData[rowIndex];
+                      PaymentData newData;
+                      switch (cellIndex) {
+                        case 1:
+                          newData = oldData.copyWith(result: parsedValue ?? 0);
+                          break;
+                        case 2:
+                          newData = oldData.copyWith(lm: parsedValue ?? 0);
+                          break;
+                        default:
+                          newData =
+                              oldData; // Should not happen for editable cells
+                          break;
+                      }
+                      _paymentData[rowIndex] = newData;
+                    }
+
+                    if (parsedValue != null && onCellValueEdited != null) {
+                      onCellValueEdited!(rowIndex, columnName, parsedValue);
+                    }
+                  },
+                ),
+              );
+            } else if (columnName == 'Growth') {
+              // Format the approvalRate (double 0.0-1.0) as a percentage string
+              String growthText = paymentEntry.growth;
+              return Center(
+                child: Text(
+                  '$growthText%',
+                  textAlign: TextAlign.center,
+                  style: TextThemes.normal, // (using existing style)
+                ),
+              );
+            } else {
+              // 'Leasing' column (Type)
+              return Center(
+                child: Text(
+                  dataGridCell.value.toString(),
+                  textAlign: TextAlign.center,
+                  style: TextThemes.normal.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ), //
+                ),
+              );
+            }
+          }).toList(),
     );
   }
 }

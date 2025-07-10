@@ -31,19 +31,23 @@ class FilterRepoImp extends FilterRepo {
     if (userCredentials.username != '') {
       log('Username: ${userCredentials.username}');
 
+      // ~:Simulate briefing data fetching:~
+      // change from Success Map to data retrieval for briefing
       log('isBriefAvailable: $isBriefAvailable');
-      Map<String, dynamic> briefData = isBriefAvailable
-          ? await fetchBriefingData(userCredentials.username, date)
-          : {'status': 'fail', 'data': <BriefingModel>[]};
+      Map<String, dynamic> briefData =
+          isBriefAvailable
+              ? await fetchBriefingData(userCredentials.username, date)
+              : {'status': 'fail', 'data': <BriefingModel>[]};
       log('Briefing data: ${briefData['data']}');
       log('Briefing data type: ${briefData['data'].runtimeType}');
 
       // ~:Simulate report data fetching:~
       // change from Success Map to data retrieval for report
       log('isReportAvailable: $isReportAvailable');
-      Map<String, dynamic> reportData = isReportAvailable
-          ? await fetchReportData(userCredentials.username, date)
-          : {'status': 'fail', 'data': <ReportModel>[]};
+      Map<String, dynamic> reportData =
+          isReportAvailable
+              ? await fetchReportData(userCredentials.username, date)
+              : {'status': 'fail', 'data': <ReportModel>[]};
       log('Report data: ${reportData['data']}');
       log('Report data type: ${reportData['data'].runtimeType}');
 
@@ -52,25 +56,15 @@ class FilterRepoImp extends FilterRepo {
       // log('isSalesAvailable: $isSalesAvailable');
       // Map<String, dynamic> salesData = isSalesAvailable
       //     ? await fetchSalesData(userCredentials.username, date)
-      //     : {'status': 'fail', 'data': <SalesModel>[]};
+      //     : {'status': 'fail', 'data': [] as List<SalesModel>};
       // log('Sales data: ${salesData['data']}');
       // log('Sales data type: ${salesData['data'].runtimeType}');
 
-      if (briefData['status'] == 'success' ||
-              reportData['status'] ==
-                  'success' /*||
-          salesData['status'] == 'success'*/
-          ) {
-        log('Data fetched successfully');
-        return HomeModel(
-          briefingData: briefData['data'],
-          reportData: reportData['data'],
-          salesData: [] /*salesData['data']*/,
-        );
-      } else {
-        log('Data fetch failed');
-        return HomeModel(briefingData: [], reportData: [], salesData: []);
-      }
+      return HomeModel(
+        briefingData: briefData['status'] == 'success' ? briefData['data'] : [],
+        reportData: reportData['status'] == 'success' ? reportData['data'] : [],
+        salesData: [],
+      );
     } else {
       log('Username is empty');
       return HomeModel(briefingData: [], reportData: [], salesData: []);
@@ -83,13 +77,12 @@ class FilterRepoImp extends FilterRepo {
     String date,
   ) async {
     // Simulate a network call or data fetching
-    Uri uri =
-        Uri.https(APIConstants.baseUrl, APIConstants.fetchBriefDataEndpoint);
+    Uri uri = Uri.https(
+      APIConstants.baseUrl,
+      APIConstants.fetchBriefDataEndpoint,
+    );
 
-    Map body = {
-      "CustomerID": username,
-      "TransDate": date,
-    };
+    Map body = {"CustomerID": username, "TransDate": date};
     log('Map Body: $body');
 
     final response = await http.post(
@@ -99,32 +92,25 @@ class FilterRepoImp extends FilterRepo {
     );
     log('Response: $response');
 
+    List<BriefingModel> data = [];
     if (response.statusCode <= 200) {
       log('Response: ${response.statusCode}');
       final res = jsonDecode(response.body);
       log("${res['Msg']}, ${res['Code']}");
       if (res['Msg'] == 'Sukses' && res['Code'] == '100') {
         log('Briefing fetch success');
-        final List<BriefingModel> data = (res['Data'] as List)
-            .map((e) => BriefingModel.fromJson(e))
-            .toList();
-        return {
-          'status': 'success',
-          'data': data,
-        };
+        data =
+            (res['Data'] as List)
+                .map((e) => BriefingModel.fromJson(e))
+                .toList();
+        return {'status': 'success', 'data': data};
       } else {
         log('Briefing fetch fail');
-        return {
-          'status': 'fail',
-          'data': [],
-        };
+        return {'status': 'fail', 'data': data};
       }
     } else {
       log('Response: ${response.statusCode}');
-      return {
-        'status': 'fail',
-        'data': [],
-      };
+      return {'status': 'fail', 'data': data};
     }
   }
 
@@ -138,10 +124,7 @@ class FilterRepoImp extends FilterRepo {
       APIConstants.fetchReportDataEndpoint,
     );
 
-    Map body = {
-      "CustomerID": username,
-      "TransDate": date,
-    };
+    Map body = {"CustomerID": username, "TransDate": date};
     log('Map Body: $body');
 
     final response = await http.post(
@@ -151,31 +134,23 @@ class FilterRepoImp extends FilterRepo {
     );
     log('Response: $response');
 
+    List<ReportModel> data = [];
     if (response.statusCode <= 200) {
       log('Response: ${response.statusCode}');
       final res = jsonDecode(response.body);
       log("${res['Msg']}, ${res['Code']}");
       if (res['Msg'] == 'Sukses' && res['Code'] == '100') {
         log('Briefing fetch success');
-        final List<ReportModel> data =
+        data =
             (res['Data'] as List).map((e) => ReportModel.fromJson(e)).toList();
-        return {
-          'status': 'success',
-          'data': data,
-        };
+        return {'status': 'success', 'data': data};
       } else {
         log('Briefing fetch fail');
-        return {
-          'status': 'fail',
-          'data': [],
-        };
+        return {'status': 'fail', 'data': data};
       }
     } else {
       log('Response: ${response.statusCode}');
-      return {
-        'status': 'fail',
-        'data': [],
-      };
+      return {'status': 'fail', 'data': data};
     }
   }
 

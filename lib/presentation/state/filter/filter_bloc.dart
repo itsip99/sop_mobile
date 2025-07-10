@@ -12,8 +12,8 @@ class FilterBloc extends Bloc<FilterEvent, FilterState> {
   final FilterRepo filterRepo;
 
   FilterBloc({FilterRepo? filterRepo})
-      : filterRepo = filterRepo ?? FilterRepoImp(),
-        super(FilterInitial()) {
+    : filterRepo = filterRepo ?? FilterRepoImp(),
+      super(FilterInitial()) {
     on<FilterAdded>(addFilterHandler);
     on<FilterRemoved>(removeFilterHandler);
     on<FilterModified>(modifyFilterHandler);
@@ -38,16 +38,16 @@ class FilterBloc extends Bloc<FilterEvent, FilterState> {
         event.date,
       );
 
-      if (res.briefingData.isNotEmpty ||
-          res.reportData.isNotEmpty ||
-          res.salesData.isNotEmpty) {
+      if (res.briefingData.isNotEmpty || res.reportData.isNotEmpty) {
         log('Data retrieval completed');
-        emit(FilterSuccess(
-          state.activeFilter,
-          res.briefingData,
-          res.reportData,
-          res.salesData,
-        ));
+        emit(
+          FilterSuccess(
+            state.activeFilter,
+            res.briefingData,
+            res.reportData,
+            [],
+          ),
+        );
       } else {
         log('No data available');
         emit(FilterError(state.activeFilter, 'No data available'));
@@ -62,9 +62,11 @@ class FilterBloc extends Bloc<FilterEvent, FilterState> {
     FilterRemoved event,
     Emitter<FilterState> emit,
   ) async {
-    emit(FilterState(
-      state.activeFilter.where((e) => e != event.unselectFilter).toList(),
-    ));
+    emit(
+      FilterState(
+        state.activeFilter.where((e) => e != event.unselectFilter).toList(),
+      ),
+    );
 
     try {
       log('Deactivate Filter: ${state.activeFilter}');
@@ -76,15 +78,15 @@ class FilterBloc extends Bloc<FilterEvent, FilterState> {
         event.date,
       );
 
-      if (res.briefingData.isNotEmpty ||
-          res.reportData.isNotEmpty ||
-          res.salesData.isNotEmpty) {
-        emit(FilterSuccess(
-          state.activeFilter,
-          res.briefingData,
-          res.reportData,
-          res.salesData,
-        ));
+      if (res.briefingData.isNotEmpty || res.reportData.isNotEmpty) {
+        emit(
+          FilterSuccess(
+            state.activeFilter,
+            res.briefingData,
+            res.reportData,
+            res.salesData,
+          ),
+        );
       } else {
         emit(FilterError(state.activeFilter, 'No data available'));
       }
@@ -108,16 +110,16 @@ class FilterBloc extends Bloc<FilterEvent, FilterState> {
         event.date,
       );
 
-      if (res.briefingData.isNotEmpty ||
-          res.reportData.isNotEmpty ||
-          res.salesData.isNotEmpty) {
+      if (res.briefingData.isNotEmpty || res.reportData.isNotEmpty) {
         log('Data retrieval completed');
-        emit(FilterSuccess(
-          state.activeFilter,
-          res.briefingData,
-          res.reportData,
-          res.salesData,
-        ));
+        emit(
+          FilterSuccess(
+            state.activeFilter,
+            res.briefingData,
+            res.reportData,
+            res.salesData,
+          ),
+        );
       } else {
         log('No data available');
         emit(FilterError(state.activeFilter, 'No data available'));
