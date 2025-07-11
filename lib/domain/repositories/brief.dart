@@ -13,4 +13,6 @@ abstract class BriefRepo {
     String desc,
     String img,
   );
+
+  Future<Map<String, dynamic>> retrieveBriefImage(String userId, String date);
 }

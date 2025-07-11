@@ -8,9 +8,10 @@ class BriefBloc<BaseEvent, BaseState> extends Bloc<BriefEvent, BriefState> {
   final BriefRepo briefRepo;
 
   BriefBloc({BriefRepo? briefRepo})
-      : briefRepo = briefRepo ?? BriefRepoImp(),
-        super(BriefInitial()) {
+    : briefRepo = briefRepo ?? BriefRepoImp(),
+      super(BriefInitial()) {
     on<BriefCreation>(createBriefReport);
+    on<BriefImageRetrieval>(retrieveBriefImage);
   }
 
   Future<void> createBriefReport(
@@ -63,20 +64,46 @@ class BriefBloc<BaseEvent, BaseState> extends Bloc<BriefEvent, BriefState> {
         if (errors.length == 1) {
           emit(BriefCreationFail('${errors[0]} is required.'));
         } else {
-          emit(BriefCreationFail(
-            '${errors.asMap().entries.map(
-              (e) {
+          emit(
+            BriefCreationFail(
+              '${errors.asMap().entries.map((e) {
                 final i = e.key;
                 final v = e.value;
 
                 return i == 0 ? v : v.toLowerCase();
-              },
-            ).join(', ')} are required',
-          ));
+              }).join(', ')} are required',
+            ),
+          );
         }
       }
     } catch (e) {
       emit(BriefCreationFail(e.toString()));
+    }
+  }
+
+  Future<void> retrieveBriefImage(
+    BriefImageRetrieval event,
+    Emitter<BriefState> emit,
+  ) async {
+    emit(BriefLoading());
+    try {
+      Map<String, dynamic> user = await briefRepo.retrieveBriefImage(
+        event.userId,
+        event.date,
+      );
+
+      // ~:Unit Test Passed:~
+      // Fake Repo Source Code...
+
+      if (user['status'] == 'success') {
+        // ~:Emit success state with user data:~
+        emit(BriefImageRetrievalSuccess(user['data']));
+      } else {
+        // ~:Emit failure state with an error message:~
+        emit(BriefImageRetrievalFail(user['data']));
+      }
+    } catch (e) {
+      emit(BriefImageRetrievalFail(e.toString()));
     }
   }
 }

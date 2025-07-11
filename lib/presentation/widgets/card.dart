@@ -177,113 +177,100 @@ class CustomCard {
     return SizedBox(
       width: boxWidth,
       height: boxHeight,
-      child: ListView.builder(
-        physics: scrollBehavior,
-        controller: scrollController,
-        itemCount: briefingData.length,
-        itemBuilder: (context, index) {
-          final data = briefingData[index];
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children:
+            briefingData
+                .asMap()
+                .entries
+                .map(
+                  (e) => card(
+                    context,
+                    cardWidth,
+                    cardHeight,
+                    cardAlignment,
+                    cardBorderColor,
+                    cardBackgroundColor,
+                    cardShadowColor,
+                    cardScrollBehavior,
+                    borderWidth: cardBorderWidth,
+                    marginConfig: cardMargin,
+                    [
+                      brief(
+                        context,
+                        'Lokasi',
+                        e.value.location,
+                        padHorizontal: 8,
+                        padVertical: 2,
+                      ),
 
-          return card(
-            context,
-            cardWidth,
-            cardHeight,
-            cardAlignment,
-            cardBorderColor,
-            cardBackgroundColor,
-            cardShadowColor,
-            cardScrollBehavior,
-            borderWidth: cardBorderWidth,
-            marginConfig: cardMargin,
-            [
-              brief(context, 'Lokasi', data.location, padHorizontal: 8),
+                      brief(
+                        context,
+                        'Peserta',
+                        '${e.value.participants} orang',
+                        padHorizontal: 8,
+                        padVertical: 2,
+                      ),
 
-              brief(
-                context,
-                'Peserta',
-                '${data.participants} orang',
-                padHorizontal: 8,
-              ),
+                      brief(
+                        context,
+                        'Shop Manager',
+                        '${e.value.shopManager} orang',
+                        padHorizontal: 8,
+                        padVertical: 2,
+                      ),
 
-              brief(
-                context,
-                'Shop Manager',
-                '${data.shopManager} orang',
-                padHorizontal: 8,
-              ),
+                      brief(
+                        context,
+                        'Sales Counter',
+                        '${e.value.salesCounter} orang',
+                        padHorizontal: 8,
+                        padVertical: 2,
+                      ),
 
-              brief(
-                context,
-                'Sales Counter',
-                '${data.salesCounter} orang',
-                padHorizontal: 8,
-              ),
+                      brief(
+                        context,
+                        'Salesman',
+                        '${e.value.salesman} orang',
+                        padHorizontal: 8,
+                        padVertical: 2,
+                      ),
 
-              brief(
-                context,
-                'Salesman',
-                '${data.salesman} orang',
-                padHorizontal: 8,
-              ),
+                      brief(
+                        context,
+                        'Others',
+                        '${e.value.others} orang',
+                        padHorizontal: 8,
+                        padVertical: 2,
+                      ),
 
-              brief(
-                context,
-                'Others',
-                '${data.others} orang',
-                padHorizontal: 8,
-              ),
+                      brief(
+                        context,
+                        'Description',
+                        e.value.topic,
+                        isHorizontal: false,
+                        padHorizontal: 8,
+                        padVertical: 2,
+                      ),
 
-              brief(
-                context,
-                'Description',
-                data.topic,
-                isHorizontal: false,
-                padHorizontal: 8,
-              ),
-
-              // ~:Image:~
-              button(
-                context,
-                () {
-                  // showDialog(
-                  //   context: context,
-                  //   builder: (context) {
-                  //     return Dialog(
-                  //       backgroundColor:
-                  //           ConstantColors
-                  //               .primaryColor2,
-                  //       child: ClipRRect(
-                  //         borderRadius:
-                  //             BorderRadius
-                  //                 .circular(
-                  //                     16),
-                  //         child: Image
-                  //             .memory(
-                  //           base64Decode(
-                  //             briefing
-                  //                 .pic,
-                  //           ),
-                  //           fit: BoxFit
-                  //               .contain,
-                  //         ),
-                  //       ),
-                  //     );
-                  //   },
-                  // );
-                },
-                MediaQuery.of(context).size.width,
-                30,
-                Alignment.center,
-                'Lihat Gambar',
-                TextThemes.normal,
-                ConstantColors.primaryColor1,
-                8,
-                8,
-                20,
-              ),
-            ],
-          );
-        },
+                      // ~:Image:~
+                      button(
+                        context,
+                        () {},
+                        MediaQuery.of(context).size.width,
+                        30,
+                        Alignment.center,
+                        'Lihat Gambar',
+                        TextThemes.normal,
+                        ConstantColors.primaryColor1,
+                        8,
+                        8,
+                        20,
+                      ),
+                    ],
+                  ),
+                )
+                .toList(),
       ),
     );
   }
@@ -317,7 +304,7 @@ class CustomCard {
       margin: EdgeInsets.all(marginConfig),
       child: SingleChildScrollView(
         physics: physicsConfig,
-        child: Wrap(runSpacing: verticalDivider, children: [...children]),
+        child: Column(spacing: verticalDivider, children: [...children]),
       ),
     );
   }

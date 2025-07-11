@@ -31,6 +31,7 @@ import 'package:sop_mobile/presentation/widgets/card.dart';
 import 'package:sop_mobile/presentation/widgets/filter.dart';
 import 'package:sop_mobile/presentation/widgets/loading.dart';
 import 'package:sop_mobile/presentation/widgets/refresh.dart';
+import 'package:sop_mobile/presentation/widgets/snackbar.dart';
 import 'package:sop_mobile/routes.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -92,25 +93,44 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 children: [
                   // ~:Morning Briefing:~
-                  DefaultTextStyle(
-                    style: TextThemes.normalTextButton,
-                    child: CustomButton.normalButton(
-                      context: context,
-                      text: 'Morning Briefing',
-                      func: () {
-                        photoBloc.add(InitPhotoEvent());
-                        counterCubit.setInitial('total', 1);
-                        counterCubit.setInitial('shop_manager', 1);
-                        counterCubit.setInitial('sales_counter', 1);
-                        counterCubit.setInitial('salesman', 1);
-                        counterCubit.setInitial('others', 1);
+                  BlocBuilder<FilterBloc, FilterState>(
+                    builder: (context, state) {
+                      return DefaultTextStyle(
+                        style: TextThemes.normalTextButton,
+                        child: CustomButton.normalButton(
+                          context: context,
+                          text: 'Morning Briefing',
+                          func: () {
+                            log('Status: ${state.toString()}');
+                            if ((state is FilterError &&
+                                    state.errorMessage == 'No data available' ||
+                                (state is FilterSuccess &&
+                                    state.briefingData.isEmpty))) {
+                              photoBloc.add(InitPhotoEvent());
+                              counterCubit.setInitial('total', 1);
+                              counterCubit.setInitial('shop_manager', 1);
+                              counterCubit.setInitial('sales_counter', 1);
+                              counterCubit.setInitial('salesman', 1);
+                              counterCubit.setInitial('others', 1);
 
-                        routeBloc.add(RoutePush(ConstantRoutes.brief));
-                        Navigator.pushNamed(context, ConstantRoutes.brief);
-                        panelController.close();
-                      },
-                      bgColor: Colors.transparent,
-                    ),
+                              routeBloc.add(RoutePush(ConstantRoutes.brief));
+                              Navigator.pushNamed(
+                                context,
+                                ConstantRoutes.brief,
+                              );
+                              panelController.close();
+                            } else {
+                              panelController.close();
+                              CustomSnackbar.showSnackbar(
+                                context,
+                                'Anda tidak dapat membuat laporan pagi lagi karena sudah ada',
+                              );
+                            }
+                          },
+                          bgColor: Colors.transparent,
+                        ),
+                      );
+                    },
                   ),
                   const Divider(height: 0.5),
                   DefaultTextStyle(
@@ -335,7 +355,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             crossAxisAlignment: WrapCrossAlignment.center,
                             runAlignment: WrapAlignment.center,
                             alignment: WrapAlignment.center,
-                            runSpacing: 10,
+                            runSpacing: 12,
                             children: [
                               // ~:Briefing Section:~
                               Builder(
@@ -344,12 +364,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                     return CustomCard.briefSection(
                                       context,
                                       MediaQuery.of(context).size.width,
-                                      360,
+                                      325,
                                       scrollController,
                                       data.briefingData,
                                       MediaQuery.of(context).size.width,
-                                      350,
+                                      315,
                                       cardMargin: 4.0,
+                                      cardAlignment: Alignment.topCenter,
                                     );
                                   }
 
@@ -388,25 +409,18 @@ class _HomeScreenState extends State<HomeScreen> {
                             ],
                           );
                         } else if (state is FilterError) {
+                          String message = state.errorMessage;
                           if (state.errorMessage.toLowerCase().contains(
                             'connection timed out',
                           )) {
-                            return Container(
-                              height: MediaQuery.of(context).size.height * 0.7,
-                              alignment: Alignment.center,
-                              child: Text(
-                                'Connection timed out',
-                                style: TextThemes.normal,
-                                textAlign: TextAlign.center,
-                              ),
-                            );
+                            message = 'Connection timed out';
                           }
 
                           return Container(
                             height: MediaQuery.of(context).size.height * 0.7,
                             alignment: Alignment.center,
                             child: Text(
-                              state.errorMessage,
+                              message,
                               style: TextThemes.normal,
                               textAlign: TextAlign.center,
                             ),

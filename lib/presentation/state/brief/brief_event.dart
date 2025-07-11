@@ -35,3 +35,10 @@ class BriefCreation extends BriefEvent {
     this.img,
   );
 }
+
+class BriefImageRetrieval extends BriefEvent {
+  final String userId;
+  final String date;
+
+  BriefImageRetrieval(this.userId, this.date);
+}

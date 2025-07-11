@@ -78,4 +78,47 @@ class BriefRepoImp extends BriefRepo {
       };
     }
   }
+
+  @override
+  Future<Map<String, dynamic>> retrieveBriefImage(
+    String userId,
+    String date,
+  ) async {
+    // Simulate a network call
+    Uri uri = Uri.https(
+      APIConstants.baseUrl,
+      APIConstants.fetchBriefDataEndpoint,
+    );
+
+    Map body = {"CustomerID": userId, "TransDate": date};
+
+    final response = await http.post(
+      uri,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode <= 200) {
+      log('Response: ${response.statusCode}');
+      final res = jsonDecode(response.body);
+      log("${res['Msg']}, ${res['Code']}");
+      if (res['Msg'] == 'Sukses' && res['Code'] == '100') {
+        log('Success');
+        return {'status': 'success', 'data': res['Data'][0]['ResultMessage']};
+      } else {
+        log('Fail');
+        if (res['Data'][0]['ResultMessage'].contains('duplicate key')) {
+          return {'status': 'fail', 'data': 'Laporan pagi sudah dibuat'};
+        }
+
+        return {'status': 'fail', 'data': res['Data'][0]['ResultMessage']};
+      }
+    } else {
+      log('Response: ${response.statusCode}');
+      return {
+        'status': 'fail',
+        'data': '${response.statusCode} terjadi kesalahan',
+      };
+    }
+  }
 }

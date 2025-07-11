@@ -30,3 +30,19 @@ class BriefCreationFail extends BriefState {
 
   String get getBriefLoadFail => error;
 }
+
+class BriefImageRetrievalSuccess extends BriefState {
+  final String resultMessage;
+
+  BriefImageRetrievalSuccess(this.resultMessage);
+
+  String get getBriefLoaded => resultMessage;
+}
+
+class BriefImageRetrievalFail extends BriefState {
+  final String error;
+
+  BriefImageRetrievalFail(this.error);
+
+  String get getBriefLoadFail => error;
+}
