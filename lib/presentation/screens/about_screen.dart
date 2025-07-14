@@ -91,14 +91,14 @@ class AboutScreen extends StatelessWidget {
                               style: TextThemes.normal,
                             ),
                             TextSpan(
-                              text: 'Joseph',
+                              text: 'Joseph Angelus',
                               style: TextThemes.normal.copyWith(
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             TextSpan(text: ' & ', style: TextThemes.normal),
                             TextSpan(
-                              text: 'Jose',
+                              text: 'Joseano Jeffry',
                               style: TextThemes.normal.copyWith(
                                 fontWeight: FontWeight.bold,
                               ),

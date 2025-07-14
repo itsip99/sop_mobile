@@ -6,6 +6,7 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:sop_mobile/core/constant/colors.dart';
 import 'package:sop_mobile/data/models/home.dart';
 import 'package:sop_mobile/presentation/state/counter/counter_cubit.dart';
+import 'package:sop_mobile/presentation/state/date/date_cubit.dart';
 import 'package:sop_mobile/presentation/state/leasing/leasing_bloc.dart';
 import 'package:sop_mobile/presentation/state/cubit/sales_position.dart';
 import 'package:sop_mobile/presentation/state/filter/filter_bloc.dart';
@@ -45,11 +46,74 @@ class _HomeScreenState extends State<HomeScreen> {
   final PanelController panelController = PanelController();
   final ScrollController scrollController = ScrollController();
 
+  void onMorningBriefingPressed(
+    BuildContext context,
+    FilterState state,
+    DateCubit cubit,
+  ) {
+    final panelController = this.panelController;
+    final photoBloc = context.read<PhotoBloc>();
+    final counterCubit = context.read<CounterCubit>();
+    final routeBloc = context.read<RouteBloc>();
+
+    log('Date: ${cubit.getDate()}');
+    log('Status: ${state.toString()}');
+
+    final isTodayValue = isToday(cubit.getDate());
+    final shouldInit = shouldInitBriefing(state);
+
+    if (isTodayValue && shouldInit) {
+      // 1. Today & Should Init
+      initMorningBriefing(photoBloc, counterCubit);
+      panelController.close();
+      routeBloc.add(RoutePush(ConstantRoutes.brief));
+      Navigator.pushNamed(context, ConstantRoutes.brief);
+    } else if (isTodayValue && !shouldInit) {
+      // 2. Today & Should NOT Init
+      panelController.close();
+      CustomSnackbar.showSnackbar(
+        context,
+        'Anda tidak dapat membuat laporan pagi lagi karena sudah ada',
+      );
+    } else if (!isTodayValue && shouldInit) {
+      // 3. Not Today & Should Init
+      panelController.close();
+      CustomSnackbar.showSnackbar(
+        context,
+        'Tanggal tidak sesuai dengan tanggal sekarang.',
+      );
+    } else {
+      // 4. Not Today & Should NOT Init
+      panelController.close();
+      CustomSnackbar.showSnackbar(
+        context,
+        'Tanggal tidak sesuai dan briefing sudah ada',
+      );
+    }
+  }
+
+  bool isToday(String date) {
+    return DateTime.now().toString().split(' ')[0] == date;
+  }
+
+  bool shouldInitBriefing(FilterState state) {
+    return (state is FilterError &&
+            state.errorMessage == 'No data available') ||
+        (state is FilterSuccess && state.briefingData.isEmpty);
+  }
+
+  void initMorningBriefing(PhotoBloc photoBloc, CounterCubit counterCubit) {
+    photoBloc.add(InitPhotoEvent());
+    counterCubit.setInitial('total', 1);
+    counterCubit.setInitial('shop_manager', 1);
+    counterCubit.setInitial('sales_counter', 1);
+    counterCubit.setInitial('salesman', 1);
+    counterCubit.setInitial('others', 1);
+  }
+
   @override
   Widget build(BuildContext context) {
     final routeBloc = context.read<RouteBloc>();
-    final counterCubit = context.read<CounterCubit>();
-    final photoBloc = context.read<PhotoBloc>();
     final salesProfileBloc = context.read<SalesmanBloc>();
     final salesPositionCubit = context.read<SalesPositionCubit>();
 
@@ -95,38 +159,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   // ~:Morning Briefing:~
                   BlocBuilder<FilterBloc, FilterState>(
                     builder: (context, state) {
+                      final cubit = context.read<DateCubit>();
                       return DefaultTextStyle(
                         style: TextThemes.normalTextButton,
                         child: CustomButton.normalButton(
                           context: context,
                           text: 'Morning Briefing',
-                          func: () {
-                            log('Status: ${state.toString()}');
-                            if ((state is FilterError &&
-                                    state.errorMessage == 'No data available' ||
-                                (state is FilterSuccess &&
-                                    state.briefingData.isEmpty))) {
-                              photoBloc.add(InitPhotoEvent());
-                              counterCubit.setInitial('total', 1);
-                              counterCubit.setInitial('shop_manager', 1);
-                              counterCubit.setInitial('sales_counter', 1);
-                              counterCubit.setInitial('salesman', 1);
-                              counterCubit.setInitial('others', 1);
-
-                              routeBloc.add(RoutePush(ConstantRoutes.brief));
-                              Navigator.pushNamed(
+                          func:
+                              () => onMorningBriefingPressed(
                                 context,
-                                ConstantRoutes.brief,
-                              );
-                              panelController.close();
-                            } else {
-                              panelController.close();
-                              CustomSnackbar.showSnackbar(
-                                context,
-                                'Anda tidak dapat membuat laporan pagi lagi karena sudah ada',
-                              );
-                            }
-                          },
+                                state,
+                                cubit,
+                              ),
                           bgColor: Colors.transparent,
                         ),
                       );
@@ -358,11 +402,12 @@ class _HomeScreenState extends State<HomeScreen> {
                             runSpacing: 12,
                             children: [
                               // ~:Briefing Section:~
-                              Builder(
-                                builder: (context) {
+                              BlocBuilder<DateCubit, String>(
+                                builder: (context, date) {
                                   if (data.briefingData.isNotEmpty) {
                                     return CustomCard.briefSection(
                                       context,
+                                      date,
                                       MediaQuery.of(context).size.width,
                                       325,
                                       scrollController,

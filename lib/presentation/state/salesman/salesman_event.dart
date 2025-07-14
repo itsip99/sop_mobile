@@ -35,16 +35,20 @@ class AddSalesmanList extends SalesmanEvent {
 
 class ModifySalesman extends SalesmanEvent {
   final int rowIndex;
-  final int? newSpkValue;
-  final int? newStuValue;
-  final int? newLmValue;
+  // final int? newSpkValue;
+  // final int? newStuValue;
+  // final int? newLmValue;
+  final String columnName;
+  final int newValue;
 
   ModifySalesman({
     required this.rowIndex,
-    this.newSpkValue,
-    this.newStuValue,
-    this.newLmValue,
+    required this.columnName,
+    required this.newValue,
   });
+
+  @override
+  List<Object?> get props => [rowIndex, columnName, newValue];
 }
 
 class ModifySalesmanStatus extends SalesmanEvent {

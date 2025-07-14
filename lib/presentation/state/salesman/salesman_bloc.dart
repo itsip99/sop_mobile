@@ -187,69 +187,106 @@ class SalesmanBloc<BaseEvent, BaseState>
     Emitter<SalesmanState> emit,
   ) async {
     try {
-      log('Modify Salesman Handler called');
-      List<SalesmanData> newList = [];
-      if (state is SalesmanFetched) {
-        // Create a NEW list based on the current state's data
-        newList = List<SalesmanData>.from(
-          (state as SalesmanFetched).salesDataList,
-        );
-      } else if (state is SalesmanModified) {
-        newList = List<SalesmanData>.from(
-          (state as SalesmanModified).salesDataList,
-        );
-      } else {
-        log('State is not SalesmanFetched, cannot modify sales data');
-        emit(SalesmanError('No sales data available to modify'));
-      }
+      // Only proceed if we have data to modify
+      if (state is! SalesmanFetched && state is! SalesmanModified) return;
 
-      for (var entry in newList) {
-        log(
-          'Salesman: ${entry.name}, SPK: ${entry.spk}, STU: ${entry.stu}, STU LM: ${entry.stuLm}',
-        );
-      }
+      // 1. Create a NEW list from the current state's list.
+      final List<SalesmanData> newList = List<SalesmanData>.from(
+        state.salesDataList,
+      );
 
+      // 2. Check for a valid index.
+      if (event.rowIndex < 0 || event.rowIndex >= newList.length) return;
+
+      // 3. Get a reference to the specific object to be updated.
       SalesmanData entryToUpdate = newList[event.rowIndex];
 
-      log(
-        'Entry to update: ${entryToUpdate.name}, SPK: ${entryToUpdate.spk}, STU: ${entryToUpdate.stu}, STU LM: ${entryToUpdate.stuLm}',
-      );
-      int currentSpk = entryToUpdate.spk;
-      int currentStu = entryToUpdate.stu;
-      int currentStuLm = entryToUpdate.stuLm;
-      log(
-        'Current SPK: $currentSpk, Current STU: $currentStu, Current STU LM: $currentStuLm',
-      );
-
-      if (event.newSpkValue != null) {
-        currentSpk = event.newSpkValue!;
+      // 4. Use `copyWith` and a switch on the column name to create a new instance.
+      switch (event.columnName) {
+        case 'SPK':
+          entryToUpdate = entryToUpdate.copyWith(spk: event.newValue);
+          break;
+        case 'STU':
+          entryToUpdate = entryToUpdate.copyWith(stu: event.newValue);
+          break;
+        case 'STU LM':
+          entryToUpdate = entryToUpdate.copyWith(stuLm: event.newValue);
+          break;
       }
-      if (event.newStuValue != null) {
-        currentStu = event.newStuValue!;
-      }
-      if (event.newLmValue != null) {
-        currentStuLm = event.newLmValue!;
-      }
-      log(
-        'Updated SPK: $currentSpk, Updated STU: $currentStu, Updated STU LM: $currentStuLm',
-      );
 
-      // Create new LeasingData with updated values
-      newList[event.rowIndex] = entryToUpdate.copyWith(
-        spk: currentSpk,
-        stu: currentStu,
-        stuLm: currentStuLm,
-      );
+      // 5. Replace the old object with the new one in our new list.
+      newList[event.rowIndex] = entryToUpdate;
 
-      log(
-        'Row ${event.rowIndex} updated: SPK: $currentSpk, STU: $currentStu, STU LM: $currentStuLm',
-      );
-      emit(SalesmanModified(newList));
-      log('Updated data length: ${newList.length}');
+      // 6. Emit a new state containing the new list.
+      emit(SalesmanModified(state, newList));
     } catch (e) {
-      log('Error modifying salesman data: $e');
-      emit(SalesmanError(e.toString()));
+      log('Error: ${e.toString()}');
+      emit(SalesmanError('Failed to modify sales data: ${e.toString()}'));
     }
+    // try {
+    //   log('Modify Salesman Handler called');
+    //   List<SalesmanData> newList = [];
+    //   if (state is SalesmanFetched) {
+    //     // Create a NEW list based on the current state's data
+    //     newList = List<SalesmanData>.from(
+    //       (state as SalesmanFetched).salesDataList,
+    //     );
+    //   } else if (state is SalesmanModified) {
+    //     newList = List<SalesmanData>.from(
+    //       (state as SalesmanModified).salesDataList,
+    //     );
+    //   } else {
+    //     log('State is not SalesmanFetched, cannot modify sales data');
+    //     emit(SalesmanError('No sales data available to modify'));
+    //   }
+
+    //   for (var entry in newList) {
+    //     log(
+    //       'Salesman: ${entry.name}, SPK: ${entry.spk}, STU: ${entry.stu}, STU LM: ${entry.stuLm}',
+    //     );
+    //   }
+
+    //   SalesmanData entryToUpdate = newList[event.rowIndex];
+
+    //   log(
+    //     'Entry to update: ${entryToUpdate.name}, SPK: ${entryToUpdate.spk}, STU: ${entryToUpdate.stu}, STU LM: ${entryToUpdate.stuLm}',
+    //   );
+    //   int currentSpk = entryToUpdate.spk;
+    //   int currentStu = entryToUpdate.stu;
+    //   int currentStuLm = entryToUpdate.stuLm;
+    //   log(
+    //     'Current SPK: $currentSpk, Current STU: $currentStu, Current STU LM: $currentStuLm',
+    //   );
+
+    //   if (event.newSpkValue != null) {
+    //     currentSpk = event.newSpkValue!;
+    //   }
+    //   if (event.newStuValue != null) {
+    //     currentStu = event.newStuValue!;
+    //   }
+    //   if (event.newLmValue != null) {
+    //     currentStuLm = event.newLmValue!;
+    //   }
+    //   log(
+    //     'Updated SPK: $currentSpk, Updated STU: $currentStu, Updated STU LM: $currentStuLm',
+    //   );
+
+    //   // Create new LeasingData with updated values
+    //   newList[event.rowIndex] = entryToUpdate.copyWith(
+    //     spk: currentSpk,
+    //     stu: currentStu,
+    //     stuLm: currentStuLm,
+    //   );
+
+    //   log(
+    //     'Row ${event.rowIndex} updated: SPK: $currentSpk, STU: $currentStu, STU LM: $currentStuLm',
+    //   );
+    //   emit(SalesmanModified(newList));
+    //   log('Updated data length: ${newList.length}');
+    // } catch (e) {
+    //   log('Error modifying salesman data: $e');
+    //   emit(SalesmanError(e.toString()));
+    // }
   }
 
   Future<void> modifySalesmanStatusHandler(

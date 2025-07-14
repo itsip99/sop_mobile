@@ -75,9 +75,10 @@ class SalesmanError extends SalesmanState {
 
 // ~:Table Insertation:~
 class SalesmanModified extends SalesmanState {
+  final SalesmanState previousState;
   final List<SalesmanData> newData;
 
-  SalesmanModified(this.newData) : super([], [], newData);
+  SalesmanModified(this.previousState, this.newData) : super([], [], newData);
 }
 
 // ~:Modify Salesman Status:~

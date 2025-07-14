@@ -85,15 +85,12 @@ class BriefBloc<BaseEvent, BaseState> extends Bloc<BriefEvent, BriefState> {
     BriefImageRetrieval event,
     Emitter<BriefState> emit,
   ) async {
-    emit(BriefLoading());
+    emit(BriefImageLoading());
     try {
       Map<String, dynamic> user = await briefRepo.retrieveBriefImage(
         event.userId,
         event.date,
       );
-
-      // ~:Unit Test Passed:~
-      // Fake Repo Source Code...
 
       if (user['status'] == 'success') {
         // ~:Emit success state with user data:~

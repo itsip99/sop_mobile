@@ -1,7 +1,20 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:sop_mobile/data/models/sales_import.dart';
+import 'package:sop_mobile/presentation/themes/styles.dart';
 
 class CustomDialog {
+  static Widget viewBriefImage(BuildContext context, String image) {
+    return AlertDialog(
+      title: Text(
+        'Bukti Laporan Pagi',
+        style: TextThemes.title2.copyWith(fontSize: 16),
+      ),
+      content: Image.memory(base64Decode(image), fit: BoxFit.contain),
+    );
+  }
+
   static Widget alertSalesImport(
     BuildContext context,
     List<NewSalesModel> list,

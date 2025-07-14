@@ -31,18 +31,22 @@ class BriefCreationFail extends BriefState {
   String get getBriefLoadFail => error;
 }
 
+class BriefImageLoading extends BriefState {
+  List<BriefingModel> get getBriefLoading => [];
+}
+
 class BriefImageRetrievalSuccess extends BriefState {
-  final String resultMessage;
+  final String image;
 
-  BriefImageRetrievalSuccess(this.resultMessage);
+  BriefImageRetrievalSuccess(this.image);
 
-  String get getBriefLoaded => resultMessage;
+  String get getBriefLoaded => image;
 }
 
 class BriefImageRetrievalFail extends BriefState {
-  final String error;
+  final String message;
 
-  BriefImageRetrievalFail(this.error);
+  BriefImageRetrievalFail(this.message);
 
-  String get getBriefLoadFail => error;
+  String get getBriefLoadFail => message;
 }

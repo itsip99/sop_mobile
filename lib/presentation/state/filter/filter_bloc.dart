@@ -84,7 +84,7 @@ class FilterBloc extends Bloc<FilterEvent, FilterState> {
             state.activeFilter,
             res.briefingData,
             res.reportData,
-            res.salesData,
+            [],
           ),
         );
       } else {
@@ -117,7 +117,7 @@ class FilterBloc extends Bloc<FilterEvent, FilterState> {
             state.activeFilter,
             res.briefingData,
             res.reportData,
-            res.salesData,
+            [],
           ),
         );
       } else {

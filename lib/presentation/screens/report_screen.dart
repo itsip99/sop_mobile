@@ -125,17 +125,29 @@ class _ReportScreenState extends State<ReportScreen> {
     if (columnName == 'SPK') {
       // 'SPK'
       salesmanBloc.add(
-        ModifySalesman(rowIndex: rowIndex, newSpkValue: newValue),
+        ModifySalesman(
+          rowIndex: rowIndex,
+          columnName: columnName,
+          newValue: newValue,
+        ),
       );
     } else if (columnName == 'STU') {
       // 'STU'
       salesmanBloc.add(
-        ModifySalesman(rowIndex: rowIndex, newStuValue: newValue),
+        ModifySalesman(
+          rowIndex: rowIndex,
+          columnName: columnName,
+          newValue: newValue,
+        ),
       );
     } else if (columnName == 'STU LM') {
       // 'STU LM'
       salesmanBloc.add(
-        ModifySalesman(rowIndex: rowIndex, newLmValue: newValue),
+        ModifySalesman(
+          rowIndex: rowIndex,
+          columnName: columnName,
+          newValue: newValue,
+        ),
       );
     }
   }
@@ -405,6 +417,16 @@ class _ReportScreenState extends State<ReportScreen> {
                             BlocBuilder<SalesmanBloc, SalesmanState>(
                               builder: (context, state) {
                                 tableHeight = 410;
+                                // ~:Set a dynamic table height:~
+                                if (salesmanData.isEmpty) {
+                                  return const SizedBox();
+                                }
+
+                                if (salesmanData.length <= 6) {
+                                  tableHeight +=
+                                      (50 * (salesmanData.length - 3));
+                                }
+
                                 salesData =
                                     state.fetchSalesList
                                         .where((e) => e.isActive == 1)
@@ -441,28 +463,24 @@ class _ReportScreenState extends State<ReportScreen> {
                                 }
                                 log('Salesman length: ${salesmanData.length}');
 
-                                // ~:Set a dynamic table height:~
-                                if (salesmanData.isEmpty) {
-                                  return const SizedBox();
-                                }
-
-                                if (salesmanData.length <= 6) {
-                                  tableHeight +=
-                                      (50 * (salesmanData.length - 3));
-                                }
-
                                 return CustomDataGrid.report(
+                                  key: ValueKey(salesmanData),
                                   context,
                                   SalesmanInsertDataSource(
                                     salesmanData,
-                                    onCellValueEdited:
-                                        (rowIndex, columnName, newValue) =>
-                                            editSalesmanValue(
-                                              context.read<SalesmanBloc>(),
-                                              rowIndex,
-                                              columnName,
-                                              newValue,
-                                            ),
+                                    onCellValueEdited: (
+                                      rowIndex,
+                                      columnName,
+                                      newValue,
+                                    ) {
+                                      context.read<SalesmanBloc>().add(
+                                        ModifySalesman(
+                                          rowIndex: rowIndex,
+                                          columnName: columnName,
+                                          newValue: newValue,
+                                        ),
+                                      );
+                                    },
                                   ),
                                   SalesmanType.values
                                       .map((e) => e.name.toString())

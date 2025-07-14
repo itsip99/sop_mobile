@@ -87,7 +87,7 @@ class BriefRepoImp extends BriefRepo {
     // Simulate a network call
     Uri uri = Uri.https(
       APIConstants.baseUrl,
-      APIConstants.fetchBriefDataEndpoint,
+      APIConstants.fetchBriefImageEndpoint,
     );
 
     Map body = {"CustomerID": userId, "TransDate": date};
@@ -104,20 +104,16 @@ class BriefRepoImp extends BriefRepo {
       log("${res['Msg']}, ${res['Code']}");
       if (res['Msg'] == 'Sukses' && res['Code'] == '100') {
         log('Success');
-        return {'status': 'success', 'data': res['Data'][0]['ResultMessage']};
+        return {'status': 'success', 'data': res['Data'][0]['Pic1']};
       } else {
         log('Fail');
-        if (res['Data'][0]['ResultMessage'].contains('duplicate key')) {
-          return {'status': 'fail', 'data': 'Laporan pagi sudah dibuat'};
-        }
-
-        return {'status': 'fail', 'data': res['Data'][0]['ResultMessage']};
+        return {'status': 'fail', 'data': 'Gambar tidak ada.'};
       }
     } else {
       log('Response: ${response.statusCode}');
       return {
         'status': 'fail',
-        'data': '${response.statusCode} terjadi kesalahan',
+        'data': '${response.statusCode} terjadi kesalahan.',
       };
     }
   }

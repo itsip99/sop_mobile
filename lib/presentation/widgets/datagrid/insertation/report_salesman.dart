@@ -7,11 +7,11 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 class SalesmanData {
   SalesmanData(this.name, this.position, this.spk, this.stu, this.stuLm);
 
-  String name;
-  String position;
-  int spk;
-  int stu;
-  int stuLm;
+  final String name;
+  final String position;
+  final int spk;
+  final int stu;
+  final int stuLm;
 
   // Add a copyWith method for easier immutable updates
   SalesmanData copyWith({
@@ -171,22 +171,26 @@ class SalesmanInsertDataSource extends DataGridSource {
                   ),
                   onChanged: (String newValue) {
                     int? parsedValue = int.tryParse(newValue);
-                    if (rowIndex != -1) {
-                      switch (columnName) {
-                        case 'SPK':
-                          _salesmanData[rowIndex].spk = parsedValue ?? 0;
-                          break;
-                        case 'STU':
-                          _salesmanData[rowIndex].stu = parsedValue ?? 0;
-                          break;
-                        case 'STU LM':
-                          _salesmanData[rowIndex].stuLm = parsedValue ?? 0;
-                          break;
-                      }
+                    // if (rowIndex != -1) {
+                    //   switch (columnName) {
+                    //     case 'SPK':
+                    //       _salesmanData[rowIndex].spk = parsedValue ?? 0;
+                    //       break;
+                    //     case 'STU':
+                    //       _salesmanData[rowIndex].stu = parsedValue ?? 0;
+                    //       break;
+                    //     case 'STU LM':
+                    //       _salesmanData[rowIndex].stuLm = parsedValue ?? 0;
+                    //       break;
+                    //   }
+                    //
+                    //   if (parsedValue != null && onCellValueEdited != null) {
+                    //     onCellValueEdited!(rowIndex, columnName, parsedValue);
+                    //   }
+                    // }
 
-                      if (parsedValue != null && onCellValueEdited != null) {
-                        onCellValueEdited!(rowIndex, columnName, parsedValue);
-                      }
+                    if (parsedValue != null && onCellValueEdited != null) {
+                      onCellValueEdited!(rowIndex, columnName, parsedValue);
                     }
                   },
                 ),

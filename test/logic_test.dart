@@ -415,7 +415,10 @@ void main() {
         'emits [SalesmanModified] with updated data',
         build: () => salesmanBloc,
         seed: () => initialState,
-        act: (bloc) => bloc.add(ModifySalesman(rowIndex: 0, newSpkValue: 10)),
+        act:
+            (bloc) => bloc.add(
+              ModifySalesman(rowIndex: 0, columnName: 'SPK', newValue: 10),
+            ),
         expect:
             () => [
               isA<SalesmanModified>().having(

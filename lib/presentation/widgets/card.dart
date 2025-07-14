@@ -1,17 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sop_mobile/core/constant/colors.dart';
 import 'package:sop_mobile/core/helpers/formatter.dart';
 import 'package:sop_mobile/data/models/briefing.dart';
 import 'package:sop_mobile/data/models/report.dart';
 import 'package:sop_mobile/data/models/sales.dart';
 import 'package:sop_mobile/data/models/sales_import.dart';
+import 'package:sop_mobile/data/models/user.dart';
+import 'package:sop_mobile/data/repositories/storage.dart';
+import 'package:sop_mobile/presentation/state/brief/brief_bloc.dart';
+import 'package:sop_mobile/presentation/state/brief/brief_event.dart';
+import 'package:sop_mobile/presentation/state/brief/brief_state.dart';
 import 'package:sop_mobile/presentation/state/salesman/salesman_bloc.dart';
 import 'package:sop_mobile/presentation/state/salesman/salesman_event.dart';
 import 'package:sop_mobile/presentation/themes/styles.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/source/leasing_source.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/source/payment_source.dart';
 import 'package:sop_mobile/presentation/widgets/datagrid/source/stu_source.dart';
+import 'package:sop_mobile/presentation/widgets/dialog.dart';
+import 'package:sop_mobile/presentation/widgets/functions.dart';
+import 'package:sop_mobile/presentation/widgets/loading.dart';
 import 'package:sop_mobile/presentation/widgets/salesman_profile.dart';
+import 'package:sop_mobile/presentation/widgets/snackbar.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class CustomCard {
@@ -158,6 +168,7 @@ class CustomCard {
 
   static Widget briefSection(
     final BuildContext context,
+    final String currentDate,
     final double boxWidth,
     final double boxHeight,
     final ScrollController scrollController,
@@ -254,9 +265,21 @@ class CustomCard {
                       ),
 
                       // ~:Image:~
-                      button(
+                      briefImageButton(
                         context,
-                        () {},
+                        () async {
+                          UserCredsModel userCredentials =
+                              await StorageRepoImp().getUserCredentials();
+
+                          if (context.mounted) {
+                            context.read<BriefBloc>().add(
+                              BriefImageRetrieval(
+                                userCredentials.username,
+                                e.value.date,
+                              ),
+                            );
+                          }
+                        },
                         MediaQuery.of(context).size.width,
                         30,
                         Alignment.center,
@@ -360,7 +383,7 @@ class CustomCard {
     }
   }
 
-  static Widget button(
+  static Widget briefImageButton(
     BuildContext context,
     Function func,
     double buttonWidth,
@@ -374,7 +397,7 @@ class CustomCard {
     double radius,
   ) {
     return ElevatedButton(
-      onPressed: () => func(),
+      onPressed: () async => await func(),
       style: ElevatedButton.styleFrom(
         backgroundColor: buttonColor,
         padding: EdgeInsets.symmetric(
@@ -389,7 +412,32 @@ class CustomCard {
         width: buttonWidth,
         height: buttonHeigth,
         alignment: textAlignment,
-        child: Text(text, style: style),
+        child: BlocConsumer<BriefBloc, BriefState>(
+          listener: (context, state) {
+            if (state is BriefImageRetrievalSuccess) {
+              CustomFunctions.displayDialog(
+                context,
+                CustomDialog.viewBriefImage(context, state.image),
+              );
+            } else if (state is BriefImageRetrievalFail) {
+              CustomSnackbar.showSnackbar(context, state.message);
+            }
+          },
+          builder: (context, state) {
+            if (state is BriefImageLoading) {
+              return Loading.platformIndicator(
+                iosRadius: 13,
+                iosCircleColor: ConstantColors.primaryColor3,
+                androidWidth: 24,
+                androidHeight: 24,
+                androidStrokeWidth: 3.5,
+                androidCircleColor: ConstantColors.primaryColor3,
+              );
+            } else {
+              return Text(text, style: style);
+            }
+          },
+        ),
       ),
     );
   }
