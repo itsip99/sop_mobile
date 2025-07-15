@@ -16,7 +16,7 @@ class CustomFunctions {
       if (context.mounted) {
         CustomSnackbar.showSnackbar(
           context,
-          'Unable to open the link. Please check the URL and try again.',
+          'Tidak dapat membuka tautan. Periksa URL dan coba lagi.',
           margin: 12,
           behavior: SnackBarBehavior.floating,
           radius: 16,

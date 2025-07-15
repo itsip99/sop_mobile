@@ -49,6 +49,7 @@ class _BriefingScreenState extends State<BriefingScreen> {
       top: false,
       left: false,
       right: false,
+      bottom: false,
       child: Scaffold(
         appBar: AppBar(
           elevation: 0.0,

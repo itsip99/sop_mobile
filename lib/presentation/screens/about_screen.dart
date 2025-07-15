@@ -8,27 +8,12 @@ class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
 
   @override
-  /// Builds the about screen.
-  ///
-  /// This screen displays the logo of Basra Corporation, the version of the
-  /// application, and the copyright notice.
-  ///
-  /// The screen has a navigation bar with a back button. The back button is
-  /// displayed differently depending on the platform. If the platform is iOS, the
-  /// button is displayed as a chevron icon. If the platform is not iOS, the button
-  /// is displayed as a left arrow icon.
-  ///
-  /// The screen also displays a column of widgets. The first widget in the column
-  /// is an image of the logo of Basra Corporation. The second widget is a column of
-  /// text widgets. The first text widget displays the version of the application.
-  /// The second text widget displays the copyright notice. The third text widget
-  /// displays the names of the developers of the application. The copyright notice
-  /// and the names of the developers are displayed in bold font.
   Widget build(BuildContext context) {
     return SafeArea(
       top: false,
       left: false,
       right: false,
+      bottom: false,
       child: Scaffold(
         appBar: AppBar(
           elevation: 0.0,
@@ -72,7 +57,7 @@ class AboutScreen extends StatelessWidget {
                 child: Column(
                   spacing: 12,
                   children: [
-                    Text('Ver. 1.0.0', style: TextThemes.normal),
+                    Text('Version 1.0.0', style: TextThemes.normal),
 
                     SizedBox(
                       width: 250,
@@ -87,7 +72,7 @@ class AboutScreen extends StatelessWidget {
                               ),
                             ),
                             TextSpan(
-                              text: ' created by ',
+                              text: ' developed by ',
                               style: TextThemes.normal,
                             ),
                             TextSpan(

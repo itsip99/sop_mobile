@@ -27,6 +27,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       top: false,
       left: false,
       right: false,
+      bottom: false,
       child: Scaffold(
         appBar: AppBar(
           elevation: 0.0,
@@ -68,6 +69,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     () => CustomFunctions.launchURL(
                       context,
                       'https://yamaha-jatim.co.id/PrivacyPolicySOPMobile.html',
+                    ),
+              ),
+
+              // ~:User Manual:~
+              CustomText.horizontalAlignment(
+                'Panduan Penggunaan',
+                isIcon: true,
+                icon: Icons.open_in_new,
+                onTap:
+                    () => CustomFunctions.launchURL(
+                      context,
+                      'https://www.canva.com/design/DAGtNJbZKKc/6f3Bnf4WAIdUiXZM_aC9YQ/edit?utm_content=DAGtNJbZKKc&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton',
                     ),
               ),
 

@@ -105,7 +105,7 @@ class _SplashScreenState extends State<SplashScreen> {
               // ~:Version:~
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Text('Ver. 1.0.0', style: TextThemes.normal),
+                child: Text('Version 1.0.0', style: TextThemes.normal),
               ),
             ],
           ),

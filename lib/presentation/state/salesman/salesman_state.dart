@@ -39,6 +39,9 @@ class SalesmanFetched extends SalesmanState {
     this.salesList,
     this.salesmanDataList,
   ) : super(previousState.salesDraftList, salesList, salesmanDataList);
+
+  @override
+  List<Object?> get props => [salesDraftList, fetchSalesList, salesDataList];
 }
 
 class SalesmanAdded extends SalesmanState {

@@ -35,9 +35,6 @@ class AddSalesmanList extends SalesmanEvent {
 
 class ModifySalesman extends SalesmanEvent {
   final int rowIndex;
-  // final int? newSpkValue;
-  // final int? newStuValue;
-  // final int? newLmValue;
   final String columnName;
   final int newValue;
 

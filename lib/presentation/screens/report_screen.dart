@@ -108,12 +108,12 @@ class _ReportScreenState extends State<ReportScreen> {
     }
   }
 
-  Future<void> editSalesmanValue(
+  void editSalesmanValue(
     SalesmanBloc salesmanBloc,
     int rowIndex,
     String columnName,
     int newValue,
-  ) async {
+  ) {
     log('Editing salesman at row $rowIndex, column $columnName: $newValue');
     // Add validation for row index
     if (rowIndex < 0) {
@@ -174,6 +174,7 @@ class _ReportScreenState extends State<ReportScreen> {
       top: false,
       left: false,
       right: false,
+      bottom: false,
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
@@ -406,8 +407,6 @@ class _ReportScreenState extends State<ReportScreen> {
                                   allowEditing: true,
                                   horizontalScrollPhysics:
                                       const BouncingScrollPhysics(),
-                                  verticalScrollPhysics:
-                                      const AlwaysScrollableScrollPhysics(),
                                   textStyle: TextThemes.normal,
                                 );
                               },
@@ -417,16 +416,6 @@ class _ReportScreenState extends State<ReportScreen> {
                             BlocBuilder<SalesmanBloc, SalesmanState>(
                               builder: (context, state) {
                                 tableHeight = 410;
-                                // ~:Set a dynamic table height:~
-                                if (salesmanData.isEmpty) {
-                                  return const SizedBox();
-                                }
-
-                                if (salesmanData.length <= 6) {
-                                  tableHeight +=
-                                      (50 * (salesmanData.length - 3));
-                                }
-
                                 salesData =
                                     state.fetchSalesList
                                         .where((e) => e.isActive == 1)
@@ -443,28 +432,23 @@ class _ReportScreenState extends State<ReportScreen> {
                                         ConstantColors.primaryColor3,
                                   );
                                 } else if (state is SalesmanFetched) {
-                                  salesmanData =
-                                      state.salesDataList
-                                          .where(
-                                            (e) => salesData.any(
-                                              (f) => f.userName == e.name,
-                                            ),
-                                          )
-                                          .toList();
+                                  salesmanData = state.salesDataList;
                                 } else if (state is SalesmanModified) {
-                                  salesmanData =
-                                      state.newData
-                                          .where(
-                                            (e) => salesData.any(
-                                              (f) => f.userName == e.name,
-                                            ),
-                                          )
-                                          .toList();
+                                  salesmanData = state.newData;
                                 }
                                 log('Salesman length: ${salesmanData.length}');
 
+                                if (salesmanData.length <= 6) {
+                                  tableHeight +=
+                                      (50 * (salesmanData.length - 3));
+                                }
+
+                                // ~:Set a dynamic table height:~
+                                if (salesmanData.isEmpty) {
+                                  return const SizedBox();
+                                }
+
                                 return CustomDataGrid.report(
-                                  key: ValueKey(salesmanData),
                                   context,
                                   SalesmanInsertDataSource(
                                     salesmanData,
@@ -473,12 +457,11 @@ class _ReportScreenState extends State<ReportScreen> {
                                       columnName,
                                       newValue,
                                     ) {
-                                      context.read<SalesmanBloc>().add(
-                                        ModifySalesman(
-                                          rowIndex: rowIndex,
-                                          columnName: columnName,
-                                          newValue: newValue,
-                                        ),
+                                      editSalesmanValue(
+                                        context.read<SalesmanBloc>(),
+                                        rowIndex,
+                                        columnName,
+                                        newValue,
                                       );
                                     },
                                   ),

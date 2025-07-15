@@ -191,6 +191,9 @@ class SalesmanInsertDataSource extends DataGridSource {
 
                     if (parsedValue != null && onCellValueEdited != null) {
                       onCellValueEdited!(rowIndex, columnName, parsedValue);
+                    } else if (newValue.isEmpty && onCellValueEdited != null) {
+                      // Handle clearing the field by sending 0
+                      onCellValueEdited!(rowIndex, columnName, 0);
                     }
                   },
                 ),

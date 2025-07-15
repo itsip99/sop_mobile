@@ -62,6 +62,9 @@ class _HomeScreenState extends State<HomeScreen> {
     final isTodayValue = isToday(cubit.getDate());
     final shouldInit = shouldInitBriefing(state);
 
+    log('Is Today: $isTodayValue');
+    log('Should Init: $shouldInit');
+
     if (isTodayValue && shouldInit) {
       // 1. Today & Should Init
       initMorningBriefing(photoBloc, counterCubit);
@@ -470,18 +473,18 @@ class _HomeScreenState extends State<HomeScreen> {
                               textAlign: TextAlign.center,
                             ),
                           );
+                        } else {
+                          return Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height * 0.7,
+                            alignment: Alignment.center,
+                            child: Text(
+                              'No data available',
+                              style: TextThemes.normal,
+                              textAlign: TextAlign.center,
+                            ),
+                          );
                         }
-
-                        return Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height * 0.7,
-                          alignment: Alignment.center,
-                          child: Text(
-                            'No data available',
-                            style: TextThemes.normal,
-                            textAlign: TextAlign.center,
-                          ),
-                        );
                       },
                     ),
                   ),

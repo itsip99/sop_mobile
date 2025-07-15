@@ -38,20 +38,14 @@ class _LoginScreenState extends State<LoginScreen> {
           builder: (context) {
             if (Platform.isIOS) {
               return IconButton(
-                icon: const Icon(
-                  Icons.arrow_back_ios_new_rounded,
-                  size: 20,
-                ),
+                icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
                 onPressed: () {
                   Navigator.pop(context);
                 },
               );
             } else {
               return IconButton(
-                icon: const Icon(
-                  Icons.arrow_back_rounded,
-                  size: 20,
-                ),
+                icon: const Icon(Icons.arrow_back_rounded, size: 20),
                 onPressed: () {
                   Navigator.pop(context);
                 },
@@ -135,7 +129,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
                                   // ~:Login Subtitle:~
                                   CustomText.subtitle(
-                                    text: 'Please enter your credentials',
+                                    text:
+                                        'Silakan masukkan kredensial pengguna Anda',
                                   ),
                                 ],
                               ),
@@ -188,7 +183,6 @@ class _LoginScreenState extends State<LoginScreen> {
                               listener: (context, state) {
                                 if (state is LoginSuccess) {
                                   log('Login Success.');
-                                  // log(state.login);
                                   Navigator.pushNamedAndRemoveUntil(
                                     context,
                                     '/home',
@@ -207,7 +201,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 return CustomButton.primaryButton2(
                                   context: context,
                                   text: 'Sign In',
-                                  func: () => context.read<LoginBloc>().add(
+                                  func:
+                                      () => context.read<LoginBloc>().add(
                                         LoginButtonPressed(
                                           username: usernameController.text,
                                           password: passwordController.text,
@@ -235,17 +230,16 @@ class _LoginScreenState extends State<LoginScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           // ~:Footer Title~:
-                          CustomText.footer(
-                            text: 'Don\'t have an account?',
-                          ),
+                          CustomText.footer(text: 'Tidak memiliki akun?'),
 
                           // ~:Footer Button:~
                           CustomText.footerButton(
                             text: 'Sign Up',
-                            pressedFunc: () => Navigator.pushReplacementNamed(
-                              context,
-                              '/register',
-                            ),
+                            pressedFunc:
+                                () => Navigator.pushReplacementNamed(
+                                  context,
+                                  '/register',
+                                ),
                           ),
                         ],
                       ),
