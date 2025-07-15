@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sop_mobile/core/helpers/formatter.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class SalesmanData {
@@ -171,23 +172,6 @@ class SalesmanInsertDataSource extends DataGridSource {
                   ),
                   onChanged: (String newValue) {
                     int? parsedValue = int.tryParse(newValue);
-                    // if (rowIndex != -1) {
-                    //   switch (columnName) {
-                    //     case 'SPK':
-                    //       _salesmanData[rowIndex].spk = parsedValue ?? 0;
-                    //       break;
-                    //     case 'STU':
-                    //       _salesmanData[rowIndex].stu = parsedValue ?? 0;
-                    //       break;
-                    //     case 'STU LM':
-                    //       _salesmanData[rowIndex].stuLm = parsedValue ?? 0;
-                    //       break;
-                    //   }
-                    //
-                    //   if (parsedValue != null && onCellValueEdited != null) {
-                    //     onCellValueEdited!(rowIndex, columnName, parsedValue);
-                    //   }
-                    // }
 
                     if (parsedValue != null && onCellValueEdited != null) {
                       onCellValueEdited!(rowIndex, columnName, parsedValue);
@@ -204,7 +188,7 @@ class SalesmanInsertDataSource extends DataGridSource {
                 alignment: Alignment.center,
                 padding: const EdgeInsets.symmetric(horizontal: 4.0),
                 child: Text(
-                  dataGridCell.value.toString(),
+                  Formatter.toTitleCase(dataGridCell.value.toString()),
                   textAlign: TextAlign.center,
                 ),
               );

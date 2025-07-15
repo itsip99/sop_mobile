@@ -415,7 +415,6 @@ class _ReportScreenState extends State<ReportScreen> {
                             // ~:Salesman Input Table:~
                             BlocBuilder<SalesmanBloc, SalesmanState>(
                               builder: (context, state) {
-                                tableHeight = 410;
                                 salesData =
                                     state.fetchSalesList
                                         .where((e) => e.isActive == 1)
@@ -438,9 +437,12 @@ class _ReportScreenState extends State<ReportScreen> {
                                 }
                                 log('Salesman length: ${salesmanData.length}');
 
-                                if (salesmanData.length <= 6) {
-                                  tableHeight +=
-                                      (50 * (salesmanData.length - 3));
+                                if (salesmanData.length < 6) {
+                                  tableHeight = double.parse(
+                                    (50 * salesmanData.length).toString(),
+                                  );
+                                } else {
+                                  tableHeight = 410;
                                 }
 
                                 // ~:Set a dynamic table height:~
@@ -474,7 +476,9 @@ class _ReportScreenState extends State<ReportScreen> {
                                   horizontalScrollPhysics:
                                       const BouncingScrollPhysics(),
                                   verticalScrollPhysics:
-                                      const AlwaysScrollableScrollPhysics(),
+                                      salesmanData.length < 6
+                                          ? const NeverScrollableScrollPhysics()
+                                          : const AlwaysScrollableScrollPhysics(),
                                   columnWidthMode:
                                       ColumnWidthMode.fitByCellValue,
                                   textStyle: TextThemes.normal,
