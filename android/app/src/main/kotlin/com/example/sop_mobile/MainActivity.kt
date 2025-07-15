@@ -1,4 +1,4 @@
-package com.basra.sop_mobile
+package com.basra.sopmobile
 
 import io.flutter.embedding.android.FlutterActivity
 
