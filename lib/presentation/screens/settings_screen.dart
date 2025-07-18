@@ -96,7 +96,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
               BlocListener<LoginBloc, LoginState>(
                 listener: (context, state) {
                   if (state is LogoutSuccess) {
-                    Navigator.pushReplacementNamed(context, '/welcome');
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      '/welcome',
+                      (route) => false,
+                    );
                   } else if (state is LogoutFailure) {
                     CustomSnackbar.showSnackbar(
                       context,

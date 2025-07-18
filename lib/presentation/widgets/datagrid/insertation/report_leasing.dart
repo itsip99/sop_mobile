@@ -17,12 +17,12 @@ class LeasingData {
     this.approve,
   );
 
-  String type;
-  int spk;
-  int open;
-  int accept;
-  int reject;
-  double approve;
+  final String type;
+  final int spk;
+  final int open;
+  final int accept;
+  final int reject;
+  final double approve;
 
   // Add a copyWith method for easier immutable updates
   LeasingData copyWith({
@@ -55,6 +55,7 @@ class LeasingInsertDataSource extends DataGridSource {
     log('Data Source length: ${data.length}');
     _leasingData = List<LeasingData>.from(data);
     buildDataGridRows();
+    notifyListeners();
   }
 
   @override
@@ -174,29 +175,29 @@ class LeasingInsertDataSource extends DataGridSource {
                   ),
                   onChanged: (String newValue) {
                     int? parsedValue = int.tryParse(newValue);
-                    if (rowIndex != -1) {
-                      LeasingData oldData = _leasingData[rowIndex];
-                      LeasingData newData;
-                      switch (cellIndex) {
-                        case 1: // SPK
-                          newData = oldData.copyWith(spk: parsedValue ?? 0);
-                          break;
-                        case 2: // Opened
-                          newData = oldData.copyWith(open: parsedValue ?? 0);
-                          break;
-                        case 3: // Accepted
-                          newData = oldData.copyWith(accept: parsedValue ?? 0);
-                          break;
-                        case 4: // Rejected
-                          newData = oldData.copyWith(reject: parsedValue ?? 0);
-                          break;
-                        default:
-                          newData =
-                              oldData; // Should not happen for editable cells
-                          break;
-                      }
-                      _leasingData[rowIndex] = newData;
-                    }
+                    // if (rowIndex != -1) {
+                    //   LeasingData oldData = _leasingData[rowIndex];
+                    //   LeasingData newData;
+                    //   switch (cellIndex) {
+                    //     case 1: // SPK
+                    //       newData = oldData.copyWith(spk: parsedValue ?? 0);
+                    //       break;
+                    //     case 2: // Opened
+                    //       newData = oldData.copyWith(open: parsedValue ?? 0);
+                    //       break;
+                    //     case 3: // Accepted
+                    //       newData = oldData.copyWith(accept: parsedValue ?? 0);
+                    //       break;
+                    //     case 4: // Rejected
+                    //       newData = oldData.copyWith(reject: parsedValue ?? 0);
+                    //       break;
+                    //     default:
+                    //       newData =
+                    //           oldData; // Should not happen for editable cells
+                    //       break;
+                    //   }
+                    //   _leasingData[rowIndex] = newData;
+                    // }
 
                     if (parsedValue != null && onCellValueEdited != null) {
                       onCellValueEdited!(rowIndex, columnName, parsedValue);

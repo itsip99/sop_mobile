@@ -66,12 +66,7 @@ class SalesmanPartialSuccess extends SalesmanState {
 class SalesmanError extends SalesmanState {
   final String error;
 
-  SalesmanError(/*SalesmanState previousState,*/ this.error)
-    : super(
-        /*previousState.salesDraftList, previousState.fetchSalesList*/ [],
-        [],
-        [],
-      );
+  SalesmanError(this.error) : super([], [], []);
 
   String get getSalesmanError => 'Error: $error';
 }

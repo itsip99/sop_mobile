@@ -12,12 +12,12 @@ class LeasingDataAdded extends LeasingEvent {
 
 class LeasingDataModified extends LeasingEvent {
   final int rowIndex;
-  final int? newAcceptedValue;
-  final int? newRejectedValue;
+  final String columnName;
+  final int newValue;
 
   LeasingDataModified({
     required this.rowIndex,
-    this.newAcceptedValue,
-    this.newRejectedValue,
+    required this.columnName,
+    required this.newValue,
   });
 }

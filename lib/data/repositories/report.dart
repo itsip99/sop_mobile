@@ -255,57 +255,65 @@ class ReportRepoImp extends ReportRepo {
     SalesmanData salesmanData,
     int index,
   ) async {
-    // Implement the logic to fetch report data
-    Uri uri = Uri.https(
-      APIConstants.baseUrl,
-      APIConstants.salesAndReportEndpoint,
-    );
+    try {
+      // Implement the logic to fetch report data
+      Uri uri = Uri.https(
+        APIConstants.baseUrl,
+        APIConstants.salesAndReportEndpoint,
+      );
 
-    Map body = {
-      'Jenis': 'SUBDEALER SPK',
-      'Mode': '1',
-      'Data': {
-        'CustomerID': username,
-        'TransDate': date,
-        'KTPSales': userId,
-        'StatusSM': salesmanData.position,
-        'SPK': salesmanData.spk,
-        'STU': salesmanData.stu,
-        'STULM': salesmanData.stuLm,
-        "Line": index,
-      },
-    };
-    log('Map Body: $body');
+      Map body = {
+        'Jenis': 'SUBDEALER SPK',
+        'Mode': '1',
+        'Data': {
+          'CustomerID': username,
+          'TransDate': date,
+          'KTPSales': userId,
+          'StatusSM': salesmanData.position,
+          'SPK': salesmanData.spk,
+          'STU': salesmanData.stu,
+          'STULM': salesmanData.stuLm,
+          "Line": index,
+        },
+      };
+      log('Map Body: $body');
 
-    final response = await http.post(
-      uri,
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode(body),
-    );
-    log('Response: $response');
+      final response = await http.post(
+        uri,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(body),
+      );
+      log('Response: $response');
 
-    if (response.statusCode <= 200) {
-      log('Response: ${response.statusCode}');
-      final res = jsonDecode(response.body);
-      log("${res['Msg']}, ${res['Code']}");
-      if (res['Msg'] == 'Sukses' && res['Code'] == '100') {
-        log('Success');
-        if (res['Data'][0]['ResultMessage'] != null &&
-            res['Data'][0]['ResultMessage'] == 'SUKSES') {
-          return {
-            'status': 'success',
-            'data': 'Laporan Salesman berhasil dibuat.',
-          };
+      if (response.statusCode <= 200) {
+        log('Response: ${response.statusCode}');
+        final res = jsonDecode(response.body);
+        log("${res['Msg']}, ${res['Code']}");
+        if (res['Msg'] == 'Sukses' && res['Code'] == '100') {
+          log('Success');
+          if (res['Data'][0]['ResultMessage'] != null &&
+              res['Data'][0]['ResultMessage'] == 'SUKSES') {
+            return {
+              'status': 'success',
+              'data': 'Laporan Salesman berhasil dibuat.',
+            };
+          } else {
+            return {'status': 'warn', 'data': res['Data'][0]['ResultMessage']};
+          }
         } else {
-          return {'status': 'warn', 'data': res['Data'][0]['ResultMessage']};
+          log('Fail');
+          return {'status': 'fail', 'data': 'Laporan Salesman gagal dibuat.'};
         }
       } else {
-        log('Fail');
-        return {'status': 'fail', 'data': 'Laporan Salesman gagal dibuat.'};
+        log('Response: ${response.statusCode}');
+        return {
+          'status': 'error',
+          'data': 'Status Code ${response.statusCode}',
+        };
       }
-    } else {
-      log('Response: ${response.statusCode}');
-      return {'status': 'error', 'data': 'Status Code ${response.statusCode}'};
+    } catch (e) {
+      log('Error: $e');
+      return {'status': 'error', 'data': 'Terjadi kesalahan.'};
     }
   }
 }

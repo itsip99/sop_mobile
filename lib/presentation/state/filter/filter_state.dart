@@ -15,7 +15,7 @@ class FilterState extends BaseState with EquatableMixin {
 }
 
 class FilterInitial extends FilterState {
-  FilterInitial() : super([FilterType.briefing]);
+  FilterInitial() : super([FilterType.briefing, FilterType.report]);
 
   // FilterType get getFilterInitial => activeFilter;
 }

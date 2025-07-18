@@ -770,8 +770,8 @@ void main() {
           (bloc) => bloc.add(
             LeasingDataModified(
               rowIndex: 0,
-              newAcceptedValue: 10,
-              newRejectedValue: 5,
+              columnName: 'accept',
+              newValue: 10,
             ),
           ),
       expect:
@@ -794,8 +794,9 @@ void main() {
       'emits [AddLeasingData] with correct approval rate when only accepted value is modified',
       build: () => leasingBloc,
       act:
-          (bloc) =>
-              bloc.add(LeasingDataModified(rowIndex: 1, newAcceptedValue: 8)),
+          (bloc) => bloc.add(
+            LeasingDataModified(rowIndex: 1, columnName: 'accept', newValue: 8),
+          ),
       expect:
           () => [
             isA<AddLeasingData>().having(
@@ -815,8 +816,9 @@ void main() {
       'emits [AddLeasingData] with correct approval rate when only rejected value is modified',
       build: () => leasingBloc,
       act:
-          (bloc) =>
-              bloc.add(LeasingDataModified(rowIndex: 2, newRejectedValue: 4)),
+          (bloc) => bloc.add(
+            LeasingDataModified(rowIndex: 2, columnName: 'reject', newValue: 4),
+          ),
       expect:
           () => [
             isA<AddLeasingData>().having(
@@ -837,11 +839,7 @@ void main() {
       build: () => leasingBloc,
       act:
           (bloc) => bloc.add(
-            LeasingDataModified(
-              rowIndex: 0,
-              newAcceptedValue: 0,
-              newRejectedValue: 0,
-            ),
+            LeasingDataModified(rowIndex: 0, columnName: 'accept', newValue: 0),
           ),
       expect:
           () => [

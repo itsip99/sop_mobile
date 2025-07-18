@@ -238,15 +238,10 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                             Expanded(
                               child: BlocConsumer<SalesmanBloc, SalesmanState>(
                                 listener: (context, state) {
-                                  if (state is SalesmanError) {
+                                  if (state is SalesmanAdded) {
                                     CustomSnackbar.showSnackbar(
                                       context,
-                                      state.error,
-                                    );
-                                  } else if (state is SalesmanAdded) {
-                                    CustomSnackbar.showSnackbar(
-                                      context,
-                                      'Salesman added successfully',
+                                      'Data salesman berhasil ditambah!',
                                     );
                                   }
                                 },
@@ -462,10 +457,24 @@ class _SalesmanScreenState extends State<SalesmanScreen> {
                                     ),
                                   );
                                 } else {
-                                  return CustomCard.salesmanProfile(
-                                    salesmanBloc,
-                                    state.fetchSalesList,
-                                  );
+                                  if (state.fetchSalesList.isNotEmpty) {
+                                    return CustomCard.salesmanProfile(
+                                      salesmanBloc,
+                                      state.fetchSalesList,
+                                    );
+                                  } else {
+                                    return Container(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                          0.7,
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        'Tidak ada data',
+                                        style: TextThemes.normal,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    );
+                                  }
                                 }
                               },
                             ),

@@ -12,7 +12,7 @@ class ReportBloc<BaseEvent, BaseState> extends Bloc<ReportEvent, ReportState> {
   final StorageRepo storageRepo;
 
   ReportBloc({required this.reportRepo, required this.storageRepo})
-      : super(ReportInitial('')) {
+    : super(ReportInitial('')) {
     on<InitiateReport>((event, emit) => emit(ReportInitial('')));
     on<CreateReport>(onCreateReport);
   }
@@ -69,19 +69,21 @@ class ReportBloc<BaseEvent, BaseState> extends Bloc<ReportEvent, ReportState> {
       return; // Exit current function if required fields are empty
     } else {
       for (int i = 0; i < event.stuData.length; i++) {
-        reportSTU.add(await reportRepo.createReportSTU(
-          userCreds.username,
-          DateTime.now().toIso8601String().substring(0, 10),
-          event.stuData[i],
-          i + 1,
-        ));
+        reportSTU.add(
+          await reportRepo.createReportSTU(
+            userCreds.username,
+            DateTime.now().toIso8601String().substring(0, 10),
+            event.stuData[i],
+            i + 1,
+          ),
+        );
       }
 
       isStuSuccess = reportSTU.every((item) => item['status'] == 'success');
       log('STU Success: $isStuSuccess');
       if (!isStuSuccess) {
         log('Gagal membuat semua laporan STU.');
-        emit(ReportCreationError('Gagal membuat semua laporan STU.'));
+        emit(ReportCreationError('Gagal membuat laporan STU.'));
         return;
       }
     }
@@ -92,19 +94,22 @@ class ReportBloc<BaseEvent, BaseState> extends Bloc<ReportEvent, ReportState> {
       return; // Exit current function if required fields are empty
     } else {
       for (int i = 0; i < event.paymentData.length; i++) {
-        reportPayment.add(await reportRepo.createReportPayment(
-          userCreds.username,
-          DateTime.now().toIso8601String().substring(0, 10),
-          event.paymentData[i],
-          i + 1,
-        ));
+        reportPayment.add(
+          await reportRepo.createReportPayment(
+            userCreds.username,
+            DateTime.now().toIso8601String().substring(0, 10),
+            event.paymentData[i],
+            i + 1,
+          ),
+        );
       }
 
-      isPaymentSuccess =
-          reportPayment.every((item) => item['status'] == 'success');
+      isPaymentSuccess = reportPayment.every(
+        (item) => item['status'] == 'success',
+      );
       if (!isPaymentSuccess) {
         log('Gagal membuat semua laporan Payment.');
-        emit(ReportCreationError('Gagal membuat semua laporan Payment.'));
+        emit(ReportCreationError('Gagal membuat laporan Payment.'));
         return;
       }
     }
@@ -115,44 +120,60 @@ class ReportBloc<BaseEvent, BaseState> extends Bloc<ReportEvent, ReportState> {
       return; // Exit current function if required fields are empty
     } else {
       for (int i = 0; i < event.leasingData.length; i++) {
-        reportLeasing.add(await reportRepo.createReportLeasing(
-          userCreds.username,
-          DateTime.now().toIso8601String().substring(0, 10),
-          event.leasingData[i],
-          i + 1,
-        ));
+        reportLeasing.add(
+          await reportRepo.createReportLeasing(
+            userCreds.username,
+            DateTime.now().toIso8601String().substring(0, 10),
+            event.leasingData[i],
+            i + 1,
+          ),
+        );
       }
 
-      isLeasingSuccess =
-          reportLeasing.every((item) => item['status'] == 'success');
+      isLeasingSuccess = reportLeasing.every(
+        (item) => item['status'] == 'success',
+      );
       if (!isLeasingSuccess) {
-        emit(ReportCreationError('Gagal membuat semua laporan Leasing.'));
+        emit(ReportCreationError('Gagal membuat laporan Leasing.'));
         return;
       }
     }
 
-    // ~:Report Salesman Data Creation:~
-    if (event.salesmanData.isEmpty) {
-      emit(ReportCreationWarning('Data Salesman tidak ditemukan.'));
-      return; // Exit current function if required fields are empty
-    } else {
-      for (int i = 0; i < event.salesmanData.length; i++) {
-        reportSalesman.add(await reportRepo.createReportSalesman(
-          event.salesData
-              .where((e) => e.userName == event.salesmanData[i].name)
-              .first
-              .id,
-          userCreds.username,
-          DateTime.now().toIso8601String().substring(0, 10),
-          event.salesmanData[i],
-          i + 1,
-        ));
-      }
+    // ~:Report Salesman Data Creation:~salesmanData
+    try {
+      if (event.salesmanData.isEmpty) {
+        emit(ReportCreationWarning('Data Salesman tidak ditemukan.'));
+        return; // Exit current function if required fields are empty
+      } else {
+        for (int i = 0; i < event.salesmanData.length; i++) {
+          reportSalesman.add(
+            await reportRepo.createReportSalesman(
+              event.salesData
+                  .where((e) => e.userName == event.salesmanData[i].name)
+                  .first
+                  .id,
+              userCreds.username,
+              DateTime.now().toIso8601String().substring(0, 10),
+              event.salesmanData[i],
+              i + 1,
+            ),
+          );
+        }
 
-      isSalesmanSuccess =
-          reportSalesman.every((item) => item['status'] == 'success');
-      if (!isSalesmanSuccess) {
-        emit(ReportCreationError('Gagal membuat semua laporan Salesman.'));
+        isSalesmanSuccess = reportSalesman.every(
+          (item) => item['status'] == 'success',
+        );
+        if (!isSalesmanSuccess) {
+          emit(ReportCreationError('Gagal membuat laporan Salesman.'));
+          return;
+        }
+      }
+    } catch (e) {
+      if (event.salesmanData.isEmpty) {
+        emit(ReportCreationWarning('Data Salesman tidak ditemukan.'));
+        return;
+      } else {
+        emit(ReportCreationError('Gagal membuat laporan Salesman.'));
         return;
       }
     }

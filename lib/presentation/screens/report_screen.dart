@@ -49,6 +49,7 @@ class _ReportScreenState extends State<ReportScreen> {
   final TextEditingController personController = TextEditingController();
 
   late LeasingInsertDataSource _leasingDataSource;
+  late SalesmanInsertDataSource _salesmanDataSource;
   double tableHeight = 260;
 
   List<StuData> stuData = [];
@@ -95,15 +96,42 @@ class _ReportScreenState extends State<ReportScreen> {
     String columnName,
     int newValue,
   ) {
+    log('Column name: $columnName');
     if (columnName == 'Accepted') {
       // 'accept'
       leasingBloc.add(
-        LeasingDataModified(rowIndex: rowIndex, newAcceptedValue: newValue),
+        LeasingDataModified(
+          rowIndex: rowIndex,
+          columnName: columnName,
+          newValue: newValue,
+        ),
       );
     } else if (columnName == 'Rejected') {
       // 'reject'
       leasingBloc.add(
-        LeasingDataModified(rowIndex: rowIndex, newRejectedValue: newValue),
+        LeasingDataModified(
+          rowIndex: rowIndex,
+          columnName: columnName,
+          newValue: newValue,
+        ),
+      );
+    } else if (columnName == 'SPK') {
+      // 'spk'
+      leasingBloc.add(
+        LeasingDataModified(
+          rowIndex: rowIndex,
+          columnName: columnName,
+          newValue: newValue,
+        ),
+      );
+    } else if (columnName == 'Opened') {
+      // 'opened'
+      leasingBloc.add(
+        LeasingDataModified(
+          rowIndex: rowIndex,
+          columnName: columnName,
+          newValue: newValue,
+        ),
       );
     }
   }
@@ -166,6 +194,17 @@ class _ReportScreenState extends State<ReportScreen> {
             newValue,
           ),
     );
+
+    _salesmanDataSource = SalesmanInsertDataSource(
+      [],
+      onCellValueEdited:
+          (rowIndex, columnName, newValue) => editSalesmanValue(
+            context.read<SalesmanBloc>(),
+            rowIndex,
+            columnName,
+            newValue,
+          ),
+    );
   }
 
   @override
@@ -178,7 +217,6 @@ class _ReportScreenState extends State<ReportScreen> {
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
-          // toolbarHeight: 100,
           elevation: 0.0,
           scrolledUnderElevation: 0.0,
           automaticallyImplyLeading: true,
@@ -432,13 +470,16 @@ class _ReportScreenState extends State<ReportScreen> {
                                   );
                                 } else if (state is SalesmanFetched) {
                                   salesmanData = state.salesDataList;
+                                  _salesmanDataSource.updateData(salesmanData);
                                 } else if (state is SalesmanModified) {
                                   salesmanData = state.newData;
+                                  _salesmanDataSource.updateData(salesmanData);
                                 }
                                 log('Salesman length: ${salesmanData.length}');
 
+                                tableHeight = 120;
                                 if (salesmanData.length < 6) {
-                                  tableHeight = double.parse(
+                                  tableHeight += double.parse(
                                     (50 * salesmanData.length).toString(),
                                   );
                                 } else {
@@ -452,21 +493,7 @@ class _ReportScreenState extends State<ReportScreen> {
 
                                 return CustomDataGrid.report(
                                   context,
-                                  SalesmanInsertDataSource(
-                                    salesmanData,
-                                    onCellValueEdited: (
-                                      rowIndex,
-                                      columnName,
-                                      newValue,
-                                    ) {
-                                      editSalesmanValue(
-                                        context.read<SalesmanBloc>(),
-                                        rowIndex,
-                                        columnName,
-                                        newValue,
-                                      );
-                                    },
-                                  ),
+                                  _salesmanDataSource,
                                   SalesmanType.values
                                       .map((e) => e.name.toString())
                                       .toList(),
@@ -513,18 +540,35 @@ class _ReportScreenState extends State<ReportScreen> {
                       context: context,
                       text: 'Buat',
                       func: () {
-                        context.read<ReportBloc>().add(
-                          CreateReport(
-                            dealerName: locationController.text,
-                            areaName: areaController.text.split(' ')[0],
-                            personInCharge: personController.text,
-                            stuData: stuData,
-                            paymentData: paymentData,
-                            leasingData: leasingData,
-                            salesmanData: salesmanData,
-                            salesData: salesData,
-                          ),
-                        );
+                        // for (int i = 0; i < salesmanData.length; i++) {
+                        //   log(
+                        //     salesData
+                        //         .where(
+                        //           (e) => e.userName == salesmanData[i].name,
+                        //         )
+                        //         .first
+                        //         .id,
+                        //   );
+                        // }
+                        for (int i = 0; i < salesData.length; i++) {
+                          log(salesData[i].userName);
+                        }
+                        log('');
+                        for (int i = 0; i < salesmanData.length; i++) {
+                          log(salesmanData[i].name);
+                        }
+                        // context.read<ReportBloc>().add(
+                        //   CreateReport(
+                        //     dealerName: locationController.text,
+                        //     areaName: areaController.text.split(' ')[0],
+                        //     personInCharge: personController.text,
+                        //     stuData: stuData,
+                        //     paymentData: paymentData,
+                        //     leasingData: leasingData,
+                        //     salesmanData: salesmanData,
+                        //     salesData: salesData,
+                        //   ),
+                        // );
                       },
                       bgColor: ConstantColors.primaryColor1,
                       textStyle: TextThemes.subtitle,

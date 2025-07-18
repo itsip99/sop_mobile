@@ -27,22 +27,25 @@ class SalesRepoImp extends SalesRepo {
 
     // return LoginModel.fromJson(jsonDecode(res.body));
 
+    List<SalesModel> salesList = [];
     if (response.statusCode <= 200) {
       log('Response: ${response.statusCode}');
       final res = jsonDecode(response.body);
       log("${res['Msg']}, ${res['Code']}");
       if (res['Msg'] == 'Sukses' && res['Code'] == '100') {
         log('Success');
-        return {
-          'status': 'success',
-          'data':
-              (res['Data'] as List)
-                  .map((item) => SalesModel.fromJson(item))
-                  .toList(),
-        };
+        salesList =
+            (res['Data'] as List)
+                .map((item) => SalesModel.fromJson(item))
+                .toList();
+
+        return {'status': 'success', 'data': salesList};
+      } else if (res['Msg'] == 'No Data' && res['Code'] == '100') {
+        log('Success, no data');
+        return {'status': 'success', 'data': salesList};
       } else {
         log('Fail');
-        return {'status': 'fail', 'data': 'Failed to fetch data'};
+        return {'status': 'fail', 'data': 'Gagal memuat data'};
       }
     } else {
       log('Response: ${response.statusCode}');
@@ -107,10 +110,10 @@ class SalesRepoImp extends SalesRepo {
         }
 
         log('Something\'s wrong');
-        return {'status': 'success', 'data': 'Something went wrong.'};
+        return {'status': 'success', 'data': 'Kesalahan terjadi'};
       } else {
         log('Failed to insert new data');
-        return {'status': 'fail', 'data': 'Failed to insert new data'};
+        return {'status': 'fail', 'data': 'Gagal menambah data'};
       }
     } else {
       log('Response: ${response.statusCode}');

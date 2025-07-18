@@ -46,38 +46,10 @@ class SalesmanBloc<BaseEvent, BaseState>
       UserCredsModel userCredentials = await storageRepo.getUserCredentials();
 
       if (userCredentials.username != '') {
-        // // ~:Network Call Simulation:~
-        // Map<String, dynamic> result = await salesRepo.fetchSalesman(
-        //   userCredentials.username,
-        // );
-
-        // if (result['status'] == 'success') {
-        //   List<SalesmanData> salesDataList =
-        //       (result['data'] as List<SalesModel>)
-        //           .map((e) => SalesmanData(e.userName, e.tierLevel, 0, 0, 0))
-        //           .toList();
-
-        //   log(
-        //     'Salesman data fetched successfully: ${salesDataList.length} entries',
-        //   );
-
-        //   // ~:Emit success state with user data:~
-        //   emit(
-        //     SalesmanFetched(
-        //       state,
-        //       result['data'] as List<SalesModel>,
-        //       salesDataList,
-        //     ),
-        //   );
-        // } else {
-        //   // ~:Emit failure state with an error message:~
-        //   emit(SalesmanError(result['data']));
-        // }
         final result = await salesRepo.fetchSalesman(userCredentials.username);
 
         if (result['status'] == 'success') {
-          final List<SalesModel> fetchedList =
-              result['data'] as List<SalesModel>;
+          final List<SalesModel> fetchedList = result['data'];
 
           // Map from the API model to our new UI model
           final List<SalesmanData> uiList =

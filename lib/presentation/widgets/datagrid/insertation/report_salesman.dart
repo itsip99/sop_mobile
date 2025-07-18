@@ -63,6 +63,12 @@ class SalesmanInsertDataSource extends DataGridSource {
     return '${rowIndex}_$cellIndex';
   }
 
+  void updateData(List<SalesmanData> newData) {
+    _salesmanData = newData;
+    buildDataGridRows();
+    notifyListeners();
+  }
+
   @override
   List<DataGridRow> get rows {
     log('Accessing rows getter, current row count: ${dataGridRows.length}');

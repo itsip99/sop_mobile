@@ -55,10 +55,10 @@ class CustomDataGrid {
                       ),
                     Text(
                       firstValue == 'sales'
-                          ? '${(firstValue[0].toUpperCase() + firstValue.substring(1))}man List'
+                          ? 'Daftar ${(firstValue[0].toUpperCase() + firstValue.substring(1))}man'
                           : firstValue != 'stu'
-                          ? '${(firstValue[0].toUpperCase() + firstValue.substring(1))} Report'
-                          : '${firstValue.toUpperCase()} Report',
+                          ? 'Laporan ${(firstValue[0].toUpperCase() + firstValue.substring(1))}'
+                          : 'Laporan ${firstValue.toUpperCase()}',
                       style: textStyle?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ],
@@ -93,8 +93,10 @@ class CustomDataGrid {
                   label: Container(
                     alignment: textAlignment,
                     child: Text(
-                      data == 'stu' || data == 'lm' || data == 'spk'
-                          ? data.toUpperCase()
+                      data == 'stu' || data == 'stuLm' || data == 'spk'
+                          ? data == 'stuLm'
+                              ? 'STU LM'
+                              : data.toUpperCase()
                           : data[0].toUpperCase() + data.substring(1),
                       style: textStyle?.copyWith(fontWeight: FontWeight.bold),
                     ),

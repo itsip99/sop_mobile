@@ -532,7 +532,7 @@ class CustomCard {
       spacing: 8,
       children: [
         // ~:STU Header:~
-        Text('STU Report', style: TextThemes.title2.copyWith(fontSize: 16)),
+        Text('Laporan STU', style: TextThemes.title2.copyWith(fontSize: 16)),
 
         // ~:STU DataGrid:~
         SizedBox(
@@ -637,7 +637,10 @@ class CustomCard {
       spacing: 8,
       children: [
         // ~:Payment Header:~
-        Text('Payment Report', style: TextThemes.title2.copyWith(fontSize: 16)),
+        Text(
+          'Laporan Payment',
+          style: TextThemes.title2.copyWith(fontSize: 16),
+        ),
 
         // ~:Payment DataGrid:~
         SizedBox(
@@ -716,7 +719,10 @@ class CustomCard {
       spacing: 8,
       children: [
         // ~:Leasing Header:~
-        Text('Leasing Report', style: TextThemes.title2.copyWith(fontSize: 16)),
+        Text(
+          'Laporan Leasing',
+          style: TextThemes.title2.copyWith(fontSize: 16),
+        ),
 
         // ~:Leasing DataGrid:~
         SizedBox(

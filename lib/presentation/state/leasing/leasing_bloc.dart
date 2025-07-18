@@ -8,33 +8,32 @@ import 'package:sop_mobile/presentation/widgets/datagrid/insertation/report_leas
 class LeasingBloc<BaseEvent, BaseState>
     extends Bloc<LeasingEvent, LeasingState> {
   LeasingBloc()
-      : super(
-          LeasingInitial([
-            LeasingData('BAF', 0, 0, 0, 0, 0),
-            LeasingData('Adira', 0, 0, 0, 0, 0),
-            LeasingData('SOF', 0, 0, 0, 0, 0),
-            LeasingData('IMFI', 0, 0, 0, 0, 0),
-            LeasingData('MAF', 0, 0, 0, 0, 0),
-            LeasingData('Others', 0, 0, 0, 0, 0),
-          ]),
-        ) {
+    : super(
+        LeasingInitial([
+          LeasingData('BAF', 0, 0, 0, 0, 0),
+          LeasingData('Adira', 0, 0, 0, 0, 0),
+          LeasingData('SOF', 0, 0, 0, 0, 0),
+          LeasingData('IMFI', 0, 0, 0, 0, 0),
+          LeasingData('MAF', 0, 0, 0, 0, 0),
+          LeasingData('Others', 0, 0, 0, 0, 0),
+        ]),
+      ) {
     on<ResetLeasingData>(resetData);
     on<LeasingDataAdded>(addData);
     on<LeasingDataModified>(modifyData);
   }
 
-  void resetData(
-    ResetLeasingData event,
-    Emitter<LeasingState> emit,
-  ) {
-    emit(LeasingInitial([
-      LeasingData('BAF', 0, 0, 0, 0, 0),
-      LeasingData('Adira', 0, 0, 0, 0, 0),
-      LeasingData('SOF', 0, 0, 0, 0, 0),
-      LeasingData('IMFI', 0, 0, 0, 0, 0),
-      LeasingData('MAF', 0, 0, 0, 0, 0),
-      LeasingData('Others', 0, 0, 0, 0, 0),
-    ]));
+  void resetData(ResetLeasingData event, Emitter<LeasingState> emit) {
+    emit(
+      LeasingInitial([
+        LeasingData('BAF', 0, 0, 0, 0, 0),
+        LeasingData('Adira', 0, 0, 0, 0, 0),
+        LeasingData('SOF', 0, 0, 0, 0, 0),
+        LeasingData('IMFI', 0, 0, 0, 0, 0),
+        LeasingData('MAF', 0, 0, 0, 0, 0),
+        LeasingData('Others', 0, 0, 0, 0, 0),
+      ]),
+    );
   }
 
   Future<void> addData(
@@ -66,12 +65,23 @@ class LeasingBloc<BaseEvent, BaseState>
 
     int currentAccept = entryToUpdate.accept;
     int currentReject = entryToUpdate.reject;
+    int currentSpk = entryToUpdate.spk;
+    int currentOpen = entryToUpdate.open;
 
-    if (event.newAcceptedValue != null) {
-      currentAccept = event.newAcceptedValue!;
-    }
-    if (event.newRejectedValue != null) {
-      currentReject = event.newRejectedValue!;
+    log(
+      'Current values: Accept: $currentAccept, Reject: $currentReject, SPK: $currentSpk, Opened: $currentOpen',
+    );
+
+    if (event.newValue != null) {
+      if (event.columnName == 'Accepted') {
+        currentAccept = event.newValue;
+      } else if (event.columnName == 'Rejected') {
+        currentReject = event.newValue;
+      } else if (event.columnName == 'SPK') {
+        currentSpk = event.newValue;
+      } else if (event.columnName == 'Opened') {
+        currentOpen = event.newValue;
+      }
     }
 
     double newApprovalRate = 0.0;
@@ -84,9 +94,13 @@ class LeasingBloc<BaseEvent, BaseState>
       accept: currentAccept,
       reject: currentReject,
       approve: newApprovalRate,
+      spk: currentSpk,
+      open: currentOpen,
     );
 
-    log('Row ${event.rowIndex} updated: Accept: $currentAccept, Reject: $currentReject, Approval: $newApprovalRate');
+    log(
+      'Row ${event.rowIndex} updated: SPK: $currentSpk, Opened: $currentOpen, Accept: $currentAccept, Reject: $currentReject, Approval: $newApprovalRate',
+    );
     emit(AddLeasingData(newList));
     log('Updated data length: ${newList.length}');
   }
