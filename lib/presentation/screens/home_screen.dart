@@ -74,50 +74,73 @@ class _HomeScreenState extends State<HomeScreen> {
     log('Should Init Briefing: $initBriefing');
     log('Should Init Report: $initReport');
 
-    if (isTodayValue && initBriefing) {
-      // 1. Today & Should Init Briefing
-      initMorningBriefing(photoBloc, counterCubit);
-      panelController.close();
-      routeBloc.add(RoutePush(ConstantRoutes.brief));
-      Navigator.pushNamed(context, ConstantRoutes.brief);
-    } else if (isTodayValue && initReport) {
-      // 2. Today & Should Init Report
-      initDailyReport(
-        context,
-        stuBloc,
-        paymentBloc,
-        leasingBloc,
-        salesmanBloc,
-        reportBloc,
-      );
-      panelController.close();
-      routeBloc.add(RoutePush(ConstantRoutes.report));
-      Navigator.pushNamed(context, ConstantRoutes.report);
-    } else if (isTodayValue && !initBriefing && !initReport) {
-      // 3. Today & Should NOT Init
-      panelController.close();
-      CustomSnackbar.showSnackbar(
-        context,
-        isDailyReport
-            ? 'Anda tidak dapat membuat laporan harian lagi karena sudah ada'
-            : 'Anda tidak dapat membuat laporan pagi lagi karena sudah ada',
-      );
-    } else if (!isTodayValue && (initBriefing || initReport)) {
-      // 4. Not Today & Should Init
-      panelController.close();
-      CustomSnackbar.showSnackbar(
-        context,
-        'Tanggal tidak sesuai dengan tanggal sekarang.',
-      );
+    if (isDailyReport) {
+      // Logic for daily report
+      if (isTodayValue && initReport) {
+        // 1. Today & Should Init Report
+        initDailyReport(
+          context,
+          stuBloc,
+          paymentBloc,
+          leasingBloc,
+          salesmanBloc,
+          reportBloc,
+        );
+        panelController.close();
+        routeBloc.add(RoutePush(ConstantRoutes.report));
+        Navigator.pushNamed(context, ConstantRoutes.report);
+      } else if (isTodayValue && !initReport) {
+        // 2. Today & Should NOT Init Report
+        panelController.close();
+        CustomSnackbar.showSnackbar(
+          context,
+          'Anda tidak dapat membuat Daily Report lagi karena sudah ada',
+        );
+      } else if (!isTodayValue && initReport) {
+        // 3. Not Today & Should Init Report
+        panelController.close();
+        CustomSnackbar.showSnackbar(
+          context,
+          'Tanggal tidak sesuai dengan tanggal sekarang.',
+        );
+      } else {
+        // 4. Not Today & Should NOT Init Report
+        panelController.close();
+        CustomSnackbar.showSnackbar(
+          context,
+          'Tanggal tidak sesuai dan Daily Report sudah ada',
+        );
+      }
     } else {
-      // 5. Not Today & Should NOT Init
-      panelController.close();
-      CustomSnackbar.showSnackbar(
-        context,
-        isDailyReport
-            ? 'Tanggal tidak sesuai dan laporan harian sudah ada'
-            : 'Tanggal tidak sesuai dan briefing sudah ada',
-      );
+      // Logic for morning briefing
+      if (isTodayValue && initBriefing) {
+        // 1. Today & Should Init Briefing
+        initMorningBriefing(photoBloc, counterCubit);
+        panelController.close();
+        routeBloc.add(RoutePush(ConstantRoutes.brief));
+        Navigator.pushNamed(context, ConstantRoutes.brief);
+      } else if (isTodayValue && !initBriefing) {
+        // 2. Today & Should NOT Init Briefing
+        panelController.close();
+        CustomSnackbar.showSnackbar(
+          context,
+          'Anda tidak dapat membuat Morning Briefing lagi karena sudah ada',
+        );
+      } else if (!isTodayValue && initBriefing) {
+        // 3. Not Today & Should Init Briefing
+        panelController.close();
+        CustomSnackbar.showSnackbar(
+          context,
+          'Tanggal tidak sesuai dengan tanggal sekarang.',
+        );
+      } else {
+        // 4. Not Today & Should NOT Init Briefing
+        panelController.close();
+        CustomSnackbar.showSnackbar(
+          context,
+          'Tanggal tidak sesuai dan Morning Briefing sudah ada',
+        );
+      }
     }
   }
 
@@ -125,17 +148,19 @@ class _HomeScreenState extends State<HomeScreen> {
     return DateTime.now().toString().split(' ')[0] == date;
   }
 
-  bool shouldInitBriefing(FilterState state) {
+  bool _shouldInitialize(FilterState state, {required bool isBriefing}) {
+    log('State: ${state.toString()}');
     return (state is FilterError &&
             state.errorMessage == 'No data available') ||
-        (state is FilterSuccess && state.briefingData.isEmpty);
+        (state is FilterSuccess &&
+            (isBriefing ? state.briefingData : state.reportData).isEmpty) ||
+        state is FilterInitial;
   }
 
-  bool shouldInitReport(FilterState state) {
-    return (state is FilterError &&
-            state.errorMessage == 'No data available') ||
-        (state is FilterSuccess && state.reportData.isEmpty);
-  }
+  bool shouldInitBriefing(FilterState state) =>
+      _shouldInitialize(state, isBriefing: true);
+  bool shouldInitReport(FilterState state) =>
+      _shouldInitialize(state, isBriefing: false);
 
   void initMorningBriefing(PhotoBloc photoBloc, CounterCubit counterCubit) {
     photoBloc.add(InitPhotoEvent());
@@ -344,33 +369,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             // ~:Utility Section:~
             actions: [
-              // // ~:Logout Button:~
-              // Padding(
-              //   padding: const EdgeInsets.only(right: 8),
-              //   child: BlocListener<LoginBloc, LoginState>(
-              //     listener: (context, state) {
-              //       if (state is LogoutSuccess) {
-              //         Navigator.pushReplacementNamed(context, '/welcome');
-              //       } else if (state is LogoutFailure) {
-              //         CustomSnackbar.showSnackbar(
-              //           context,
-              //           state.getLogoutFailure,
-              //           backgroundColor: ConstantColors.primaryColor3,
-              //         );
-              //       }
-              //     },
-              //     child: IconButton(
-              //       onPressed: () {
-              //         loginBloc.add(LogoutButtonPressed());
-              //       },
-              //       icon: const Icon(
-              //         Icons.logout,
-              //         color: ConstantColors.primaryColor3,
-              //       ),
-              //     ),
-              //   ),
-              // ),
-
               // ~:Settings Button:~
               Padding(
                 padding: const EdgeInsets.only(right: 12),

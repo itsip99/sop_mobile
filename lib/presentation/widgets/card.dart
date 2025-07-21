@@ -415,10 +415,21 @@ class CustomCard {
         child: BlocConsumer<BriefBloc, BriefState>(
           listener: (context, state) {
             if (state is BriefImageRetrievalSuccess) {
-              CustomFunctions.displayDialog(
-                context,
-                CustomDialog.viewBriefImage(context, state.image),
-              );
+              try {
+                CustomFunctions.displayDialog(
+                  context,
+                  CustomDialog.viewBriefImage(context, state.image),
+                );
+              } catch (e) {
+                if (e.toString().toLowerCase().contains('invalid length')) {
+                  CustomSnackbar.showSnackbar(
+                    context,
+                    'Format gambar tidak valid.',
+                  );
+                } else {
+                  CustomSnackbar.showSnackbar(context, e.toString());
+                }
+              }
             } else if (state is BriefImageRetrievalFail) {
               CustomSnackbar.showSnackbar(context, state.message);
             }
